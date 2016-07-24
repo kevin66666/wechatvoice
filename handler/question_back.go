@@ -9,6 +9,7 @@ import (
 	"wechatvoice/tool/util"
 	//"time"
 	//"strconv"
+	"strconv"
 )
 
 type GeneralResponse struct {
@@ -143,6 +144,47 @@ func GetQuestionSettingsById(ctx *macaron.Context)string{
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
 	response.Setting = *single
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}
+
+func EditWechatVoiceQuestionSettings(ctx *macaron.Context)string{
+	req :=new(Setting)
+
+	response :=new(GeneralResponse)
+
+	body,_:=ctx.Req.Body().String()
+	json.Unmarshal([]byte(body),req)
+
+	setting :=new(model.WechatVoiceQuestionSettings)
+
+	err :=setting.GetConn().Where("uuid = ?",req.SettingId).Find(&setting).Error
+
+	if err!=nil&&!strings.Contains(err.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	setting.LawyerFeePercent = req.LawyerPercent
+	setting.CategoryId = req.CateId
+	setting.CateGoryName = req.CateName
+	setting.PayAmount = req.AmountInt
+	amtInt,_:=strconv.ParseInt(req.AmountInt,10,64)
+	setting.PayAmountInt =  amtInt
+	setting.UserRedPacketPercent   =req.RedPacketPercent
+
+	err = setting.GetConn().Save(&setting).Error
+
+	if err!=nil&&!strings.Contains(err.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
 	ret_str,_:=json.Marshal(response)
 	return string(ret_str)
 }

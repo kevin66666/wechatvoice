@@ -31,7 +31,7 @@ type WechatVoiceQuestions struct {
 
 	IsRanked string //0 未评价  1 已评价
 
-	RankInfo int64 //1 ~5 分
+	RankInfo string //1 ~5 分
 
 	//下边字段补充
 	IsSendToBack string //0 微推送后台进行审核 1 已推送
@@ -125,5 +125,17 @@ func QueryLawerNotSolvedQuestions(catList []string,startLine,endLine int64)([]We
 	var count int64
 	err = conn.Where("category_id in (?)",catList).Where("is_solved =?","1").Find(&l1).Count(&count).Error
 	err = conn.Where("category_id in (?)",catList).Where("is_solved =?","1").Order("important desc").Offset(startLine-1).Limit(endLine-startLine+1).Find(&list).Error
+	return list,count,err
+}
+
+func QueryBadAnswers(statusList []string,startLine,endLine int64)([]WechatVoiceQuestions,int64,error){
+	conn:=dbpool.OpenConn()
+	defer dbpool.CloseConn(&conn)
+	list :=make([]WechatVoiceQuestions,0)
+	l1:=make([]WechatVoiceQuestions,0)
+	var err error
+	var count int64
+	err = conn.Where("category_id in (?)",catList).Where("is_solved =?","1").Where("rank_info in (?)",statusList).Find(&l1).Count(&count).Error
+	err = conn.Where("category_id in (?)",catList).Where("is_solved =?","1").Where("rank_info in (?)",statusList).Offset(startLine-1).Offset(endLine-startLine+1).Find(&l1).Count(&count).Error
 	return list,count,err
 }

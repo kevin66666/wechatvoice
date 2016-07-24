@@ -6,10 +6,10 @@ import (
 	"github.com/Unknwon/macaron"
 	"wechatvoice/model"
 	"strings"
-	"wechatvoice/tool/util"
+	//"wechatvoice/tool/util"
 	//"time"
 	//"strconv"
-	"strconv"
+	//"strconv"
 )
 type QuestionInfoBackResponse struct {
 	Code int64 `json:"code"`
@@ -65,21 +65,7 @@ func GetBadAnswerList(ctx *macaron.Context)string{
 		ret_str,_:=json.Marshal(response)
 		return ret_str
 	}
-	type QuestionInfoBack struct {
-		QuestionId string `json:"questionId"`
-		QuestionTopic string `json:"questionName"`
-		QuestionCategoryId string  `json:"questionCateId"`
-		QuestionCateName string `json:"cateName"`
-		LawyerName string `json:"lawyerName"`
-		LawyerId string `json:"lawyerId"`
-		LawyerOpenId string `json:"lOpenId"`
-		LawyerHeadImg string `json:"lHead"`
-		VoicePath string `json:"path"`
 
-		AskerName string `json:"askerName"`
-		AskerOpenId string `json:"askerOpenId"`
-
-	}
 	retList :=make([]QuestionInfoBack,0)
 	for _,k :=range list{
 		single :=-new(QuestionInfoBack)
@@ -103,7 +89,42 @@ func GetBadAnswerList(ctx *macaron.Context)string{
 	ret_str,_:=json.Marshal(response)
 	return string(ret_str)
 }
-
+type EvaluateRequest struct {
+	Stars string `json:"starts"`
+	PassStatus string  `json:"status"`
+	QuestionId string `json:"questionId"`
+}
 func ReEvaluatBadAnswers(ctx *macaron.Context)string{
-	return ""
+	body,_:=ctx.Req.Body().String()
+
+	req :=new(EvaluateRequest)
+	response :=new(GeneralResponse)
+
+	json.Unmarshal([]byte(body),req)
+
+	question:=new(model.WechatVoiceQuestions)
+
+	err :=question.GetConn().Where("uuid = ?",req.QuestionId).Find(&question).Error
+	if err!=nil&&!strings.Contains(err.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	question.RankInfo = req.Stars
+	question.IsRanked = req.PassStatus
+
+	err = question.GetConn().Save(&question).Error
+
+	if err!=nil{
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
 }

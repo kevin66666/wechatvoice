@@ -13,6 +13,7 @@ type OrderPaymentInfo struct {
 
 	QuestionId string
 	QuestionName string
+	OrderNumber string
 
 	UserPaiedAmount string //用户付款数量 单位是分
 	UserPaiedAmountInt int64

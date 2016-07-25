@@ -41,6 +41,7 @@ type WechatVoiceQuestions struct {
 	AnswerdCount int64 //听取数量
 	IsSolved string //是否解决 0 未解决 1 有人在解决 2 已解决
 
+	OrderNumber string //
 	PaymentInfo string //分记录
 	PaymentInfoInt int64 //int
 

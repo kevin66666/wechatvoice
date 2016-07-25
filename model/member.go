@@ -18,6 +18,7 @@ type MemberInfo struct {
 	HeadImgUrl  string //头像连接
 	Score       string // 积分 //预留字段
 	Name        string
+	OpenId string
 	Balance     string // 用户余额 用于后期提现
 
 	QqNumber    string

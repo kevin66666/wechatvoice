@@ -129,14 +129,14 @@ func QueryLawerNotSolvedQuestions(catList []string,startLine,endLine int64)([]We
 	return list,count,err
 }
 
-func QueryBadAnswers(statusList []string,startLine,endLine int64)([]WechatVoiceQuestions,int64,error){
-	conn:=dbpool.OpenConn()
+func QueryBadAnswers(statusList []string,startLine,endLine int64)([]WechatVoiceQuestions,int64,error) {
+	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
-	list :=make([]WechatVoiceQuestions,0)
-	l1:=make([]WechatVoiceQuestions,0)
+	list := make([]WechatVoiceQuestions, 0)
+	l1 := make([]WechatVoiceQuestions, 0)
 	var err error
 	var count int64
-	err = conn.Where("category_id in (?)",catList).Where("is_solved =?","1").Where("rank_info in (?)",statusList).Find(&l1).Count(&count).Error
-	err = conn.Where("category_id in (?)",catList).Where("is_solved =?","1").Where("rank_info in (?)",statusList).Offset(startLine-1).Offset(endLine-startLine+1).Find(&l1).Count(&count).Error
-	return list,count,err
+	err = conn.Where("category_id in (?)", catList).Where("is_solved =?", "1").Where("rank_info in (?)", statusList).Find(&l1).Count(&count).Error
+	err = conn.Where("category_id in (?)", catList).Where("is_solved =?", "1").Where("rank_info in (?)", statusList).Offset(startLine - 1).Offset(endLine - startLine + 1).Find(&l1).Count(&count).Error
+	return list, count, err
 }

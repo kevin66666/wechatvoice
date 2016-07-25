@@ -216,7 +216,18 @@ func GetFinanceInfoByOrderNumber(ctx *macaron.Context)string{
 type BackFinanceListRequest struct {
 	StartLine int64 `json:"startLine"`
 	EndLine int64 `json:"endLine"`
+	//QuestionId string `json:"questionId"`
+}
+
+type BackFinanceListResponse struct{
+	Code int64 `json:"code"`
+	Msg string 
 }
 func GetFinanceBackList(ctx *macaron.Context)string{
+	body,_:=ctx.Req.Body().String()
+
+	req :=new(BackFinanceListRequest)
+
+
 	return ""
 }

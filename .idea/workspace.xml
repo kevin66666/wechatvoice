@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e031d3d6-06ae-4c9d-80bd-2fdf97fabcae" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/finance.go" afterPath="$PROJECT_DIR$/handler/finance.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/member.go" afterPath="$PROJECT_DIR$/model/member.go" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/order_payment.go" afterPath="$PROJECT_DIR$/model/order_payment.go" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/questions.go" afterPath="$PROJECT_DIR$/model/questions.go" />
     </list>
@@ -25,14 +24,14 @@
     <favorites_list name="wechatvoice" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.6899589">
+    <splitter split-orientation="horizontal" split-proportion="0.57956547">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file leaf-file-name="finance.go" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/handler/finance.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="707">
-                  <caret line="220" column="16" selection-start-line="220" selection-start-column="16" selection-end-line="220" selection-end-column="16" />
+                <state relative-caret-position="797">
+                  <caret line="223" column="19" selection-start-line="223" selection-start-column="19" selection-end-line="223" selection-end-column="19" />
                   <folding>
                     <element signature="e#17#194#0" expanded="true" />
                     <element signature="n#!!block;n#GetFinanceInfoByOrderNumber#0" expanded="false" />
@@ -55,11 +54,11 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="questions.go" pinned="false" current-in-tab="true">
+          <file leaf-file-name="questions.go" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/model/questions.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-30">
-                  <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+                <state relative-caret-position="723">
+                  <caret line="141" column="1" selection-start-line="141" selection-start-column="1" selection-end-line="141" selection-end-column="1" />
                   <folding>
                     <element signature="n#!!block;n#init#0" expanded="false" />
                     <element signature="n#!!block;n#GetConn#0" expanded="false" />
@@ -97,11 +96,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="order_payment.go" pinned="false" current-in-tab="false">
+          <file leaf-file-name="order_payment.go" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/model/order_payment.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="240">
-                  <caret line="17" column="8" selection-start-line="17" selection-start-column="8" selection-end-line="17" selection-end-column="8" />
+                <state relative-caret-position="513">
+                  <caret line="47" column="21" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="21" />
                   <folding />
                 </state>
               </provider>
@@ -188,9 +187,9 @@
         <option value="$PROJECT_DIR$/handler/order_list_back.go" />
         <option value="$PROJECT_DIR$/model/question_setting.go" />
         <option value="$PROJECT_DIR$/model/payment_info.go" />
-        <option value="$PROJECT_DIR$/model/order_payment.go" />
-        <option value="$PROJECT_DIR$/model/questions.go" />
         <option value="$PROJECT_DIR$/model/member.go" />
+        <option value="$PROJECT_DIR$/model/questions.go" />
+        <option value="$PROJECT_DIR$/model/order_payment.go" />
         <option value="$PROJECT_DIR$/handler/finance.go" />
       </list>
     </option>
@@ -842,12 +841,12 @@
       <workItem from="1469340868493" duration="742000" />
       <workItem from="1469348856834" duration="689000" />
       <workItem from="1469349573410" duration="12571000" />
-      <workItem from="1469460076326" duration="3338000" />
+      <workItem from="1469460076326" duration="3827000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="30412000" />
+    <option name="totallyTimeSpent" value="30901000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -1470,6 +1469,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/model/member.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/model/question_setting.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="420">
@@ -1480,18 +1487,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/order_payment.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="17" column="8" selection-start-line="17" selection-start-column="8" selection-end-line="17" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/questions.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-30">
-          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
+        <state relative-caret-position="723">
+          <caret line="141" column="1" selection-start-line="141" selection-start-column="1" selection-end-line="141" selection-end-column="1" />
           <folding>
             <element signature="n#!!block;n#init#0" expanded="false" />
             <element signature="n#!!block;n#GetConn#0" expanded="false" />
@@ -1504,18 +1503,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/member.go">
+    <entry file="file://$PROJECT_DIR$/model/order_payment.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
+        <state relative-caret-position="513">
+          <caret line="47" column="21" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="21" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/handler/finance.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="707">
-          <caret line="220" column="16" selection-start-line="220" selection-start-column="16" selection-end-line="220" selection-end-column="16" />
+        <state relative-caret-position="797">
+          <caret line="223" column="19" selection-start-line="223" selection-start-column="19" selection-end-line="223" selection-end-column="19" />
           <folding>
             <element signature="e#17#194#0" expanded="true" />
             <element signature="n#!!block;n#GetFinanceInfoByOrderNumber#0" expanded="false" />

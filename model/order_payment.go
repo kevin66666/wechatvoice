@@ -44,3 +44,12 @@ func (this *OrderPaymentInfo) GetConn() *gorm.DB {
 func (this *OrderPaymentInfo) CloseConn(db *gorm.DB) {
 	dbpool.CloseConn(db)
 }
+
+func QuerypaymentInfo(startLine,endLine int64)([]OrderPaymentInfo,error){
+	conn:=dbpool.OpenConn()
+	defer dbpool.CloseConn(&conn)
+	list :=make([]OrderPaymentInfo,0)
+	err :=conn.Where("uuid is not null").Order("id desc").Offset(startLine-1).Limit(endLine-startLine+1).Find(&list).Error
+
+	return list,err
+}

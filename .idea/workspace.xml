@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e031d3d6-06ae-4c9d-80bd-2fdf97fabcae" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/model/bbb.go" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/question_front.go" afterPath="$PROJECT_DIR$/handler/question_front.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tool/util/util.go" afterPath="$PROJECT_DIR$/tool/util/util.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/questions.go" afterPath="$PROJECT_DIR$/model/questions.go" />
     </list>
     <ignored path="wechatvoice.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,8 +29,8 @@
           <file leaf-file-name="question_front.go" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/handler/question_front.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1671">
-                  <caret line="442" column="8" selection-start-line="442" selection-start-column="8" selection-end-line="442" selection-end-column="8" />
+                <state relative-caret-position="759">
+                  <caret line="650" column="0" selection-start-line="650" selection-start-column="0" selection-end-line="650" selection-end-column="0" />
                   <folding>
                     <element signature="e#2439#2725#0" expanded="false" />
                     <element signature="n#!!block;n#CreateNewQuestion#0" expanded="false" />
@@ -42,6 +40,7 @@
                     <element signature="n#!!block;n#GetQuestionCateList#0" expanded="false" />
                     <element signature="e#7388#7712#0" expanded="false" />
                     <element signature="n#!!block;n#AppendQuestion#0" expanded="false" />
+                    <element signature="n#!!block;n#DoAnswerQuestion#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -54,15 +53,15 @@
           <file leaf-file-name="questions.go" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/model/questions.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="113">
-                  <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
+                <state relative-caret-position="137">
+                  <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
                   <folding>
                     <element signature="n#!!block;n#init#0" expanded="false" />
                     <element signature="n#!!block;n#GetConn#0" expanded="false" />
                     <element signature="n#!!block;n#CloseConn#0" expanded="false" />
                     <element signature="n#!!block;n#GetQuestionQuery#0" expanded="false" />
-                    <element signature="e#1748#1816#0" expanded="false" />
-                    <element signature="e#1840#1900#0" expanded="false" />
+                    <element signature="e#1777#1845#0" expanded="false" />
+                    <element signature="e#1869#1929#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
@@ -71,8 +70,8 @@
           <file leaf-file-name="lawyer.go" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/model/lawyer.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="0">
-                  <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
+                <state relative-caret-position="168">
+                  <caret line="7" column="5" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
                   <folding>
                     <element signature="e#15#74#0" expanded="true" />
                   </folding>
@@ -92,21 +91,21 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="order_payment.go" pinned="false" current-in-tab="false">
+          <file leaf-file-name="order_payment.go" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/model/order_payment.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="0">
-                  <caret line="41" column="1" selection-start-line="41" selection-start-column="1" selection-end-line="41" selection-end-column="1" />
+                <state relative-caret-position="816">
+                  <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="payment_info.go" pinned="false" current-in-tab="true">
+          <file leaf-file-name="payment_info.go" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/model/payment_info.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="432">
-                  <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+                <state relative-caret-position="456">
+                  <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
                   <folding>
                     <element signature="e#15#74#0" expanded="true" />
                   </folding>
@@ -151,7 +150,6 @@
         <option value="$PROJECT_DIR$/model/question_setting.go" />
         <option value="$PROJECT_DIR$/model/payment_info.go" />
         <option value="$PROJECT_DIR$/model/member.go" />
-        <option value="$PROJECT_DIR$/model/questions.go" />
         <option value="$PROJECT_DIR$/model/order_payment.go" />
         <option value="$PROJECT_DIR$/aaa.js" />
         <option value="$PROJECT_DIR$/aaaa.go" />
@@ -159,6 +157,7 @@
         <option value="$PROJECT_DIR$/model/lawyer.go" />
         <option value="$PROJECT_DIR$/handler/finance.go" />
         <option value="$PROJECT_DIR$/tool/util/util.go" />
+        <option value="$PROJECT_DIR$/model/questions.go" />
         <option value="$PROJECT_DIR$/handler/question_front.go" />
       </list>
     </option>
@@ -812,12 +811,12 @@
       <workItem from="1469349573410" duration="12571000" />
       <workItem from="1469460076326" duration="3827000" />
       <workItem from="1469631242323" duration="2590000" />
-      <workItem from="1469720291643" duration="4438000" />
+      <workItem from="1469720291643" duration="6137000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="37929000" />
+    <option name="totallyTimeSpent" value="39628000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -913,8 +912,8 @@
             <element signature="n#!!block;n#GetConn#0" expanded="false" />
             <element signature="n#!!block;n#CloseConn#0" expanded="false" />
             <element signature="n#!!block;n#GetQuestionQuery#0" expanded="false" />
-            <element signature="e#1748#1816#0" expanded="false" />
-            <element signature="e#1840#1900#0" expanded="false" />
+            <element signature="e#1777#1845#0" expanded="false" />
+            <element signature="e#1869#1929#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -959,8 +958,8 @@
             <element signature="n#!!block;n#GetConn#0" expanded="false" />
             <element signature="n#!!block;n#CloseConn#0" expanded="false" />
             <element signature="n#!!block;n#GetQuestionQuery#0" expanded="false" />
-            <element signature="e#1748#1816#0" expanded="false" />
-            <element signature="e#1840#1900#0" expanded="false" />
+            <element signature="e#1777#1845#0" expanded="false" />
+            <element signature="e#1869#1929#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1005,8 +1004,8 @@
             <element signature="n#!!block;n#GetConn#0" expanded="false" />
             <element signature="n#!!block;n#CloseConn#0" expanded="false" />
             <element signature="n#!!block;n#GetQuestionQuery#0" expanded="false" />
-            <element signature="e#1748#1816#0" expanded="false" />
-            <element signature="e#1840#1900#0" expanded="false" />
+            <element signature="e#1777#1845#0" expanded="false" />
+            <element signature="e#1869#1929#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1051,8 +1050,8 @@
             <element signature="n#!!block;n#GetConn#0" expanded="false" />
             <element signature="n#!!block;n#CloseConn#0" expanded="false" />
             <element signature="n#!!block;n#GetQuestionQuery#0" expanded="false" />
-            <element signature="e#1748#1816#0" expanded="false" />
-            <element signature="e#1840#1900#0" expanded="false" />
+            <element signature="e#1777#1845#0" expanded="false" />
+            <element signature="e#1869#1929#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1187,6 +1186,131 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="600">
           <caret line="529" column="9" selection-start-line="529" selection-start-column="9" selection-end-line="529" selection-end-column="9" />
+          <folding>
+            <element signature="e#248#314#0" expanded="false" />
+            <element signature="e#316#789#0" expanded="false" />
+            <element signature="n#!!block;n#init#0" expanded="false" />
+            <element signature="e#879#962#0" expanded="false" />
+            <element signature="e#986#1069#0" expanded="false" />
+            <element signature="e#1092#1173#0" expanded="false" />
+            <element signature="e#1179#1260#0" expanded="false" />
+            <element signature="e#1329#1366#0" expanded="false" />
+            <element signature="e#1419#1441#0" expanded="false" />
+            <element signature="e#1495#1533#0" expanded="false" />
+            <element signature="e#1586#1615#0" expanded="false" />
+            <element signature="e#1650#1687#0" expanded="false" />
+            <element signature="e#1721#1750#0" expanded="false" />
+            <element signature="e#1753#1826#0" expanded="false" />
+            <element signature="e#2250#2326#0" expanded="false" />
+            <element signature="e#2351#2463#0" expanded="false" />
+            <element signature="e#2481#2678#0" expanded="false" />
+            <element signature="e#2698#2881#0" expanded="false" />
+            <element signature="e#2895#3014#0" expanded="false" />
+            <element signature="e#3034#3078#0" expanded="false" />
+            <element signature="n#!!block;n#SyncProductRankPricess#0" expanded="false" />
+            <element signature="e#3453#3495#0" expanded="false" />
+            <element signature="e#3907#3942#0" expanded="false" />
+            <element signature="e#4257#4400#0" expanded="false" />
+            <element signature="e#4438#4663#0" expanded="false" />
+            <element signature="n#!!block;n#SyncProductRankPrice#0" expanded="false" />
+            <element signature="e#5370#5405#0" expanded="false" />
+            <element signature="e#5752#5870#0" expanded="false" />
+            <element signature="e#5908#6050#0" expanded="false" />
+            <element signature="n#!!block;n#GetFlagInfos#0" expanded="false" />
+            <element signature="e#6277#6391#0" expanded="false" />
+            <element signature="e#6397#6513#0" expanded="false" />
+            <element signature="n#!!block;n#GetFlagInfosssss#0" expanded="false" />
+            <element signature="e#6596#6709#0" expanded="false" />
+            <element signature="e#6715#6831#0" expanded="false" />
+            <element signature="n#!!block;n#SyncInfo#0" expanded="false" />
+            <element signature="e#7019#7056#0" expanded="false" />
+            <element signature="e#7237#7252#0" expanded="false" />
+            <element signature="e#7550#7592#0" expanded="false" />
+            <element signature="e#7752#7794#0" expanded="false" />
+            <element signature="e#7827#9192#0" expanded="false" />
+            <element signature="e#7859#8564#0" expanded="false" />
+            <element signature="e#7973#8560#0" expanded="false" />
+            <element signature="e#8108#8132#0" expanded="false" />
+            <element signature="e#8138#8214#0" expanded="false" />
+            <element signature="e#8219#8236#0" expanded="false" />
+            <element signature="e#8534#8555#0" expanded="false" />
+            <element signature="e#8594#9189#0" expanded="false" />
+            <element signature="e#8708#9185#0" expanded="false" />
+            <element signature="e#8843#8867#0" expanded="false" />
+            <element signature="e#8873#8949#0" expanded="false" />
+            <element signature="e#9159#9180#0" expanded="false" />
+            <element signature="e#9227#9242#0" expanded="false" />
+            <element signature="e#9303#9431#0" expanded="false" />
+            <element signature="e#10022#10064#0" expanded="false" />
+            <element signature="e#10460#10533#0" expanded="false" />
+            <element signature="e#10721#10750#0" expanded="false" />
+            <element signature="e#10989#11118#0" expanded="false" />
+            <element signature="n#!!block;n#SyncProductInfossssssss#0" expanded="false" />
+            <element signature="e#12109#12144#0" expanded="false" />
+            <element signature="e#12332#12361#0" expanded="false" />
+            <element signature="e#12600#12735#0" expanded="false" />
+            <element signature="e#12775#13043#0" expanded="false" />
+            <element signature="e#13421#13436#0" expanded="false" />
+            <element signature="e#13984#15147#0" expanded="false" />
+            <element signature="e#14098#15143#0" expanded="false" />
+            <element signature="e#14478#14499#0" expanded="false" />
+            <element signature="e#14527#15138#0" expanded="false" />
+            <element signature="e#14860#14901#0" expanded="false" />
+            <element signature="e#15083#15132#0" expanded="false" />
+            <element signature="e#15223#16283#0" expanded="false" />
+            <element signature="e#15336#16279#0" expanded="false" />
+            <element signature="e#15549#15570#0" expanded="false" />
+            <element signature="e#15598#16274#0" expanded="false" />
+            <element signature="e#15995#16036#0" expanded="false" />
+            <element signature="e#16219#16268#0" expanded="false" />
+            <element signature="e#16301#16316#0" expanded="false" />
+            <element signature="e#16345#16495#0" expanded="false" />
+            <element signature="e#16508#16719#0" expanded="false" />
+            <element signature="e#16750#16884#0" expanded="false" />
+            <element signature="e#16904#17049#0" expanded="false" />
+            <element signature="e#17064#17142#0" expanded="false" />
+            <element signature="n#!!block;n#SyncFujiStockInfo#0" expanded="false" />
+            <element signature="e#17511#17541#0" expanded="false" />
+            <element signature="e#17697#17743#0" expanded="false" />
+            <element signature="e#18233#18273#0" expanded="false" />
+            <element signature="e#18298#18428#0" expanded="false" />
+            <element signature="e#18692#18815#0" expanded="false" />
+            <element signature="e#18863#19077#0" expanded="false" />
+            <element signature="e#18867#18898#0" expanded="false" />
+            <element signature="e#19093#19109#0" expanded="false" />
+            <element signature="n#!!block;n#SyncFujiStockInfosssss#0" expanded="false" />
+            <element signature="e#19470#19504#0" expanded="false" />
+            <element signature="e#20167#20303#0" expanded="false" />
+            <element signature="e#20567#20688#0" expanded="false" />
+            <element signature="e#20736#20950#0" expanded="false" />
+            <element signature="e#20740#20771#0" expanded="false" />
+            <element signature="e#20966#20982#0" expanded="false" />
+            <element signature="n#!!block;n#CheckSyncStockInfo#0" expanded="false" />
+            <element signature="e#21253#21826#0" expanded="false" />
+            <element signature="e#21396#21524#0" expanded="false" />
+            <element signature="e#21552#21595#0" expanded="false" />
+            <element signature="e#21846#22068#0" expanded="false" />
+            <element signature="e#22176#22206#0" expanded="false" />
+            <element signature="n#!!block;n#CheckSyncStockInfosssss#0" expanded="false" />
+            <element signature="e#22463#23021#0" expanded="false" />
+            <element signature="e#22606#22732#0" expanded="false" />
+            <element signature="e#22760#22803#0" expanded="false" />
+            <element signature="e#23041#23263#0" expanded="false" />
+            <element signature="n#!!block;n#UpdateProductStockInfo#0" expanded="false" />
+            <element signature="e#23807#23822#0" expanded="false" />
+            <element signature="e#23984#24000#0" expanded="false" />
+            <element signature="e#24015#24030#0" expanded="false" />
+            <element signature="n#!!block;n#UpdateTotalStock#0" expanded="false" />
+            <element signature="e#24259#24300#0" expanded="false" />
+            <element signature="e#24348#24569#0" expanded="false" />
+            <element signature="e#24833#24865#0" expanded="false" />
+            <element signature="e#24880#24896#0" expanded="false" />
+            <element signature="e#24902#24941#0" expanded="false" />
+            <element signature="e#25076#25170#0" expanded="false" />
+            <element signature="e#25196#25358#0" expanded="false" />
+            <element signature="e#25376#25591#0" expanded="false" />
+            <element signature="e#25593#25657#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1198,16 +1322,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/lawyer.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="44" column="0" selection-start-line="44" selection-start-column="0" selection-end-line="44" selection-end-column="0" />
-          <folding>
-            <element signature="e#15#74#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/question_setting.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1215,14 +1329,6 @@
           <folding>
             <element signature="e#15#74#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/order_payment.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="41" column="1" selection-start-line="41" selection-start-column="1" selection-end-line="41" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1264,35 +1370,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/questions.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
-          <folding>
-            <element signature="n#!!block;n#init#0" expanded="false" />
-            <element signature="n#!!block;n#GetConn#0" expanded="false" />
-            <element signature="n#!!block;n#CloseConn#0" expanded="false" />
-            <element signature="n#!!block;n#GetQuestionQuery#0" expanded="false" />
-            <element signature="e#1748#1816#0" expanded="false" />
-            <element signature="e#1840#1900#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/payment_info.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+        <state relative-caret-position="456">
+          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
           <folding>
             <element signature="e#15#74#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/model/lawyer.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="7" column="5" selection-start-line="7" selection-start-column="5" selection-end-line="7" selection-end-column="5" />
+          <folding>
+            <element signature="e#15#74#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/questions.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
+          <folding>
+            <element signature="n#!!block;n#init#0" expanded="false" />
+            <element signature="n#!!block;n#GetConn#0" expanded="false" />
+            <element signature="n#!!block;n#CloseConn#0" expanded="false" />
+            <element signature="n#!!block;n#GetQuestionQuery#0" expanded="false" />
+            <element signature="e#1777#1845#0" expanded="false" />
+            <element signature="e#1869#1929#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/order_payment.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="816">
+          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/handler/question_front.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1671">
-          <caret line="442" column="8" selection-start-line="442" selection-start-column="8" selection-end-line="442" selection-end-column="8" />
+        <state relative-caret-position="759">
+          <caret line="650" column="0" selection-start-line="650" selection-start-column="0" selection-end-line="650" selection-end-column="0" />
           <folding>
             <element signature="e#2439#2725#0" expanded="false" />
             <element signature="n#!!block;n#CreateNewQuestion#0" expanded="false" />
@@ -1302,7 +1426,7 @@
             <element signature="n#!!block;n#GetQuestionCateList#0" expanded="false" />
             <element signature="e#7388#7712#0" expanded="false" />
             <element signature="n#!!block;n#AppendQuestion#0" expanded="false" />
-            <marker date="1469724737303" expanded="true" signature="10867:10993" ph="{...}" />
+            <element signature="n#!!block;n#DoAnswerQuestion#0" expanded="false" />
           </folding>
         </state>
       </provider>

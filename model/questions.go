@@ -23,7 +23,7 @@ type WechatVoiceQuestions struct {
 	AnswerName string
 	AnswerOpenId string
 	AnswerHeadImg string
-
+	IsAnswerd string  //是否已经做出回答
 	VoicePath string
 	AnswerdTime string
 

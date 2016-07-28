@@ -440,7 +440,213 @@ func PeekAvalable(ctx *macaron.Context)string{
 	response.PlayAble = true
 	ret_str,_:=json.Marshal(response)
 	return string(ret_str)
-	
 }
+
+func DoPay(ctx *macaron.Context)string{
+	//这里去看下微信支付功能
+	return ""
+}
+
+//开始回答部分
+
+//一个文件上传服务
+
+func VoiceUpLoad(ctx *macaron.Context)string{
+	//这里返回一个路径
+	return ""
+}
+
+type AnswerQuestion1 struct {
+	QuestionId string `json:"questionId"`
+}
+
+type AnswerQuestion1Response struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	QuestionInfo `json:"question"`
+}
+type QuestionInfo struct {
+	QuestionId string `json:"quesiontId"`
+	QuestionCateInfo string `json:"cateInfo"`
+	QuestionCateId string `json:"cateId"`
+	QuestionDesc string `json:"desc"`
+
+
+	AskerName string `json:"askerName"`
+	AskerId string `json:"askerId"`
+	AskerHeadImg string `json:"askerHeadImg"`
+}
+func AnswerQuestionInit(ctx *macaron.Context)string{
+	//点击回答问题  显示问题
+	body,_:=ctx.Req.Body().String()
+	req :=new(AnswerQuestion1)
+	json.Unmarshal([]byte(body),req)
+	response :=new(AnswerQuestion1Response)
+
+	//设置cookie  第一段为openId 第二段为类型 1 用户 2律师
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr==""{
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId :=strings.Split(cookieStr,"|")[0]
+	userType :=strings.Split(cookieStr,"|")[1]
+
+	log.Println(openId)
+	log.Println(userType)
+
+	question:=new(model.WechatVoiceQuestions)
+	qErr :=question.GetConn().Where("uuid = ?",req.QuestionId).Find(&question).Error
+
+	if qErr!=nil&&!strings.Contains(qErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = qErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if question.IsSolved == "1"{
+		response.Code = CODE_ERROR
+		response.Msg = "已经回答完毕 请勿重复做大"
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if question.Important =="1"&&question.AnswerOpenId!=openId{
+		response.Code = CODE_ERROR
+		response.Msg = "这个为指定问题"
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if userType=="1"{
+		response.Code = CODE_ERROR
+		response.Msg = "无权限"
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	q :=new(QuestionInfo)
+
+	q.QuestionId = question.Uuid
+	q.HeadImg = question.AskerHeadImg
+	q.QuestionCategoryId = question.CategoryId
+	q.QuestionCateName = question.Category
+	q.VoicePath = ""
+	q.QuestionTopic = question.Description
+	lawerInfo :=new(model.LawyerInfo)
+
+	lawerInfoErr :=lawerInfo.GetConn().Where("open_id = ?",openId).Find(&lawerInfo).Error
+
+	if lawerInfoErr!=nil&&!strings.Contains(lawerInfoErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = lawerInfoErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	q.LawyerId = lawerInfo.Uuid
+	q.LawyerName = lawerInfo.Name
+
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.QuestionInfo = *q
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}
+type DoAnsweQuestion struct {
+	FilPath string `json:"filePath"`
+	QuestionId string `json:"questionId"`
+
+}
+
+func DoAnswerQuestion(ctx *macaron.Context)string{
+	body,_:=ctx.Req.Body().String()
+	req :=new(DoAnsweQuestion)
+	json.Unmarshal([]byte(body),req)
+	response :=new(model.GeneralResponse)
+
+	question:=new(model.WechatVoiceQuestions)
+
+	//设置cookie  第一段为openId 第二段为类型 1 用户 2律师
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr==""{
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId :=strings.Split(cookieStr,"|")[0]
+	userType :=strings.Split(cookieStr,"|")[1]
+
+	log.Println(openId)
+	log.Println(userType)
+
+	questionErr:=question.GetConn().Where("uuid = ?",req.QuestionId).Find(&question).Error
+	if questionErr!=nil&&!strings.Contains(questionErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = questionErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if question.IsSolved == "1"{
+		response.Code = CODE_ERROR
+		response.Msg = "已经回答完毕 请勿重复做大"
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if question.Important =="1"&&question.AnswerOpenId!=openId{
+		response.Code = CODE_ERROR
+		response.Msg = "这个为指定问题"
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if userType=="1"{
+		response.Code = CODE_ERROR
+		response.Msg = "无权限"
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	lawerInfo :=new(model.LawyerInfo)
+
+	lawerInfoErr :=lawerInfo.GetConn().Where("open_id = ?",openId).Find(&lawerInfo).Error
+
+	if lawerInfoErr!=nil&&!strings.Contains(lawerInfoErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = lawerInfoErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	question.IsAnswerd = "1"
+	question.VoicePath = req.FilPath
+	question.AnswerId = lawerInfo.Uuid
+	question.AnswerOpenId = openId
+	question.AnswerName = lawerInfo.Name
+	question.AnswerHeadImg = lawerInfo.HeadImgUrl
+
+	err :=question.GetConn().Save(&question).Error
+
+	if err!=nil&&!strings.Contains(err.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}
+
+func AddPeekCount(questionId string)error{
+	quesionInfo:=new(model.WechatVoiceQuestions)
+	quesionInfoErr:=quesionInfo.GetConn().Where("uuid = ?",questionId).Find(&quesionInfo).Error
+	if quesionInfoErr!=nil{
+		return quesionInfoErr
+	}
+	quesionInfo.AnswerdCount = quesionInfo.AnswerdCount+1
+	err :=quesionInfo.GetConn().Save(&quesionInfo).Error
+	return err
+}
+
 
 

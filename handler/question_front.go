@@ -9,6 +9,7 @@ import (
 	"wechatvoice/tool/util"
 	"time"
 	"strconv"
+	"log"
 )
 
 const  (
@@ -38,6 +39,14 @@ type QuestionInfo struct {
 	VoicePath string `json:"path"`
 }
 //查询问题方法
+/**
+首页进入 开始问题搜索
+
+params
+keyWord 关键词
+categoryId 对应分类ID
+startLine endLine 分页请求数量
+*/
 func QuestionQuery(ctx *macaron.Context)string{
 	body,_ :=ctx.Req.Body().String()
 	req :=new(model.QuestionQuery)
@@ -92,7 +101,13 @@ func QuestionQuery(ctx *macaron.Context)string{
 	return string(ret_str)
 }
 //提问新的问题
+/**
+提问新的问题
 
+params
+
+
+*/
 type NewQuestionRequest struct {
 	CateId string `json:"cateId"`
 	CateName string `json:"cateName"`
@@ -199,6 +214,7 @@ func CreateNewQuestion(ctx *macaron.Context)string{
 	ret_str,_:=json.Marshal(response)
 	return string(ret_str)
 }
+//这里获取分类问题的配置选项
 type GetConfigRequest struct{
 	CateGoryId string `json:"cateId"`
 }
@@ -239,7 +255,7 @@ func GetQuestionConfig(ctx *macaron.Context)string{
 	ret_str,_:=json.Marshal(response)
 	return string(ret_str)
 }
-
+//获取分类列表
 type QuestionCateList struct {
 	Code int64 `json:"code"`
 	Msg string `json:"msg"`
@@ -277,3 +293,154 @@ func GetQuestionCateList(ctx *macaron.Context)string{
 	ret_str,_:=json.Marshal(response)
 	return string(ret_str)
 }
+
+//将问题进行追问
+type QuestionAppendRequest struct {
+	QuestionId string `json:"parentQId"`
+	CateId string `json:"cateId"`
+	CateName string `json:"cateName"`
+	AskerOpenId string `json:"askerOpenId"`
+	Description string `json:"description"`
+	QuestionType string `json:"type"`//0 直接丢出去 1 指定人提问
+	TargetOpenId string `json:"targetOpenId"`
+	Payment string `json:"payment"`
+}
+
+
+type QuestionNewResponse struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	OrderNumber string `json:"orderNumber"`
+}
+func AppendQuestion(ctx *macaron.Context)string{
+	body,_:=ctx.Req.Body().String()
+	req :=new(QuestionAppendRequest)
+	response :=new(QuestionNewResponse)
+	json.Unmarshal([]byte(body),req)
+
+
+	questionInfoOld :=new(model.WechatVoiceQuestions)
+	questionOldErr :=questionInfoOld.GetConn().Where("uuid = ?",req.QuestionId).Find(&questionInfoOld).Error
+
+	if questionOldErr.Error()!=nil&&!strings.Contains(questionOldErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = questionOldErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if questionInfoOld.IsSolved!="2"{
+		//问题没有解决 不能进行追问
+		response.Code = CODE_ERROR
+		response.Msg = "问题没有解决 不能进行追问"
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	customer :=new(model.MemberInfo)
+
+	customerErr :=customer.GetConn().Where("open_id = ?",req.AskerOpenId).Find(&customer).Error
+
+	if customerErr!=nil&&!strings.Contains(customerErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = customerErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+
+
+	questionNew :=new(model.WechatVoiceQuestions)
+
+	questionNew.Uuid = util.GenerateUuid()
+	questionNew.Category = req.CateName
+	questionNew.CategoryId  = req.CateId
+	questionNew.Description = req.Description
+	today := time.Unix(time.Now().Unix(), 0).String()[0:19]
+	questionNew.CreateTime = today
+	questionNew.CustomerId = customer.Uuid
+	questionNew.CustomerName = customer.Name
+	questionNew.CustomerOpenId = req.AskerOpenId
+	questionNew.PaymentInfo = req.Payment
+	questionNew.Important = "1"
+	questionNew.QuestionType = "1"
+	questionNew.ParentQuestionId = req.QuestionId
+	on :=util.GenerateOrderNumber()
+	questionNew.OrderNumber = on
+	questNewErr :=questionNew.GetConn().Create(&questionNew).Error
+
+	if questNewErr!=nil{
+		response.Code = CODE_ERROR
+		response.Msg = questNewErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.OrderNumber =on
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}
+
+//偷听业务
+type PeekAnswerRequest struct {
+	OrderId string `json:"orderId"`
+	CateId string `json:"cateId"`
+}
+
+/**
+偷听应该是这样用户点击 先看是否有权限去听 如果有 直接放 如果不能 调起微信支付 支付结束后 可以看
+*/
+type PeekResponse struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	PlayAble bool `json:"playAble"`
+}
+//这里需要看下微信支付业务 点击获取之后
+
+func PeekAvalable(ctx *macaron.Context)string{
+	body,_:=ctx.Req.Body().String()
+	req :=new(PeekAnswerRequest)
+	json.Unmarshal([]byte(body),req)
+	response :=new(PeekResponse)
+
+
+	//设置cookie  第一段为openId 第二段为类型 1 用户 2律师
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr==""{
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId :=strings.Split(cookieStr,"|")[0]
+	userType :=strings.Split(cookieStr,"|")[1]
+
+	log.Println(openId)
+	log.Println(userType)
+
+
+	pay :=new(model.OrderPaymentInfo)
+	payErr:=pay.GetConn().Where("question_id = ?",req.OrderId).Where("open_id = ?",openId).Find(&pay).Error
+
+	if payErr!=nil&&!strings.Contains(payErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = payErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if pay.Uuid ==""{
+		response.Code = CODE_SUCCESS
+		response.Msg = MSG_SUCCESS
+		response.PlayAble = false
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.PlayAble = true
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+	
+}
+
+

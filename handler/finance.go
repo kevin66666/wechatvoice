@@ -216,18 +216,140 @@ func GetFinanceInfoByOrderNumber(ctx *macaron.Context)string{
 type BackFinanceListRequest struct {
 	StartLine int64 `json:"startLine"`
 	EndLine int64 `json:"endLine"`
+	Name string `json:"name"`
 	//QuestionId string `json:"questionId"`
 }
 
 type BackFinanceListResponse struct{
 	Code int64 `json:"code"`
-	Msg string 
+	Msg string `json:"msg"`
+	Total int64 `json:"total"`
+	List []LawyerInfo `json:"list"`
+}
+
+type LawyerInfo struct {
+	Uuid string `json:"id"`
+	Name string `json:"name"`
+	OrderCount int64 `json:"orderCount"`
+	PhoneNumber int64 `json:"phoneNumber"`
+	NickName string `json:"nickName"`
+	HeadImgUrl string `json:"headImgUrl"`
+	OpenId string `json:"openId"`
+	Balance string `json:"balance"`
 }
 func GetFinanceBackList(ctx *macaron.Context)string{
 	body,_:=ctx.Req.Body().String()
 
 	req :=new(BackFinanceListRequest)
+	response :=new(BackFinanceListResponse)
+	unmarShallErr  :=json.Unmarshal([]byte(body),req)
 
+	if unmarShallErr!=nil{
+		response.Code = CODE_ERROR
+		response.Msg = unmarShallErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
 
-	return ""
+	list,count,err :=model.GetLayersFinanceQueryInfo(req.StartLine,req.EndLine,req.Name)
+
+	if err!=nil&&!strings.Contains(err.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	retList :=make([]LawyerInfo,0)
+	for _,k:=range list{
+		single :=new(LawyerInfo)
+		single.Uuid = k.Uuid
+		single.Name = k.Name
+		single.OrderCount = k.OrderCount
+		single.PhoneNumber = k.PhoneNumber
+		single.NickName = k.NickName
+		single.HeadImgUrl  = k.HeadImgUrl
+		balance:=k.Balance
+		single.OpenId = k.OpenId
+		balanceStr :=strconv.FormatFloat(balance,'f',2,64)
+		single.Balance = balanceStr
+		retList = append(retList,*single)
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg  ="ok"
+	response.Total = count
+	response.List = retList
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}
+type LawyerInfoReq struct {
+	StartLine int64 `json:"startLine"`
+	EndLine int64 `json:"endLine"`
+	Uuid string  `json:"openId"`
+}
+type LawyerOrderListInfo struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	Count int64 `json:"count"`
+	List []LawerOrder `json:"list"`
+}
+
+type LawerOrder struct {
+	Category string `json:"category"`
+	LawerName string `json:"name"`
+	QuetstionName string `json:"qName"`
+	CreateTime string `json:"createTime"`
+	RankInfo int64 `json:"rank"`
+	Money string `json:"money"`
+}
+
+func GetLawyerOrderlistInfo(ctx *macaron.Context)string{
+	body ,_:=ctx.Req.Body().String()
+	req:=new(LawyerInfoReq)
+	response :=new(LawyerOrderListInfo)
+
+	unmarshallErr :=json.Unmarshal([]byte(body),req)
+	if unmarshallErr!=nil{
+		response.Code = CODE_ERROR
+		response.Msg = unmarshallErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	list,count,err :=model.QueryLawyerQuestions(req.StartLine,req.EndLine,req.Uuid)
+	retList :=make([]LawerOrder,0)
+	if err!=nil&&!strings.Contains(err.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	for _,k:=range list{
+		single :=new(LawerOrder)
+		single.Category = k.Category
+		single.LawerName = k.AnswerName
+		single.QuetstionName = k.Description
+		single.CreateTime = k.CreateTime
+		single.RankInfo = k.RankInfo
+		pay :=new(model.OrderPaymentInfo)
+
+		payErr :=pay.GetConn().Where("question_id = ?",k.Uuid).Find(&pay).Error
+		if payErr!=nil&&!strings.Contains(payErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = payErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+
+		single.Money = pay.LawyerFee
+		retList = append(retList,*single)
+	}
+
+	response.Code = CODE_SUCCESS
+	response.Msg =MSG_SUCCESS
+	response.Count = count
+	response.List = retList
+	ret_str,_:=json.Marshal(response)
+	return string(retList)
+
 }

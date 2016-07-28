@@ -40,3 +40,19 @@ func (this *LawyerInfo) GetConn() *gorm.DB {
 func (this *LawyerInfo) CloseConn(db *gorm.DB) {
 	dbpool.CloseConn(db)
 }
+
+func GetLayersFinanceQueryInfo(startLine,endLine int64 ,name string)([]LawyerInfo, int64,error){
+	conn:=dbpool.OpenConn()
+	defer dbpool.CloseConn(&conn)
+	list :=make([]LawyerInfo,0)
+	var count int64
+	query :=conn.Where("uuid is not null")
+	if name!=""{
+		query = query.Where("nick_name LIKE ?","%"+name+"%").Or("name LIKE ?","%"+name+"%").Or("phone_number LIKE ?","%"+name+"%")
+	}
+	err :=query.Find(&list).Count(&count).Error
+
+	err =query.Offset(startLine - 1).Limit(endLine-startLine+1).Find(&list).Error
+
+	return list,count,err
+}

@@ -80,3 +80,5 @@ shangqu-systemmanage.exe~
 *.log
 supervisord.conf
 
+ .idea/workspace.xml
+

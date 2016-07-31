@@ -3,13 +3,16 @@ package handler
 import (
 	"encoding/json"
 
+
 	"github.com/Unknwon/macaron"
+
 	"wechatvoice/model"
 	"strings"
 	"wechatvoice/tool/util"
 	"time"
 	"strconv"
 	"log"
+
 )
 
 const  (
@@ -18,6 +21,27 @@ const  (
 	CODE_REDIRECT = 10002
 	MSG_SUCCESS = "ok"
 	RNF  = "record not found"
+	DEFAULT_DEVICE_INFO = "WEB"
+	DEFAULT_FEE_TYPE    = "CNY"
+	DEFAULT_TRADE_TYPE  = "JSAPI"
+	DEFAULT_NOTIFY_URL = "/shangqu-3rdparty/pay/decodewechatpayinfo"
+	UNIFIEDORDER_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder"
+ 	DEFAULT_PACKAGE_PRE_STR = "prepay_id="
+  	DEFAULT_SIGN_TYPE       = "MD5"
+	TICKET_SERVER_URL  = "/shangqu-3rdparty/token/jsapi_ticket?appid="
+	APPID = ""
+	APPSECRET = ""
+	MCHID = ""
+	MCHNAME = ""
+	KEY = ""
+	SERVER_IP    = "127.0.0.1"
+
+	PAY_PAGE_URL                = "orderSubmit.html"
+	AFTER_PAY_ORDER_URL         = "/shangqu-shop/afterpay/wx"
+	AFTER_PAY_JUMP_PAGE_FAILD   = "payFailed.html?"
+	AFTER_PAY_JUMP_PAGE_SUCCESS = "paySuccess.html?"
+
+	WECHAT_PREPAY_URL             = "/shangqu-3rdparty/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
 )
 
 //查询问题返回
@@ -117,13 +141,20 @@ type NewQuestionRequest struct {
 	TargetOpenId string `json:"targetOpenId"`
 	Payment string `json:"payment"`
 }
+
+type NewQuestionResponse struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	OrderNumber string `json:"orderNumber"`
+	Payment string `json:"payment"`
+}
 func CreateNewQuestion(ctx *macaron.Context)string{
 
 	body,_:=ctx.Req.Body().String()
 
 	req:=new(NewQuestionRequest)
 
-	response :=new(model.GeneralResponse)
+	response :=new(NewQuestionResponse)
 
 
 	unmarshallErr:=json.Unmarshal([]byte(body),req)
@@ -155,7 +186,7 @@ func CreateNewQuestion(ctx *macaron.Context)string{
 		return string(ret_str)
 	}
 
-
+	orderNumber :=util.GenerateOrderNumber()
 	question :=new(model.WechatVoiceQuestions)
 	question.Uuid = util.GenerateUuid()
 	question.CategoryId  = req.CateId
@@ -169,7 +200,7 @@ func CreateNewQuestion(ctx *macaron.Context)string{
 	question.CustomerOpenId = req.AskerOpenId
 	question.PaymentInfo = req.Payment
 	payInt,transferErr :=strconv.ParseInt(req.Payment,10,64)
-
+	question.OrderNumber = orderNumber
 	if transferErr!=nil&&!strings.Contains(transferErr.Error(),RNF){
 		response.Code = CODE_ERROR
 		response.Msg = transferErr.Error()
@@ -211,9 +242,36 @@ func CreateNewQuestion(ctx *macaron.Context)string{
 
 	response.Code = CODE_SUCCESS
 	response.Msg  = MSG_SUCCESS
+	response.OrderNumber = orderNumber
+	response.Payment = req.Payment
 	ret_str,_:=json.Marshal(response)
 	return string(ret_str)
 }
+// 进行支付请求
+type ReqDoPay struct {
+	OrderId string `json:"orderId"`
+	Type    string `json:"type"` // 0 余额支付   1 微信支付   2 货到付款
+}
+
+// 进行支付响应
+type RespDoPay struct {
+	Code           int64  `json:"code"`
+	Msg            string `json:"msg"`
+	Type           string `json:"type"`
+	JumpSuccessUrl string `json:"paySuccess"`
+	JumpFailedUrl  string `json:"payFailed"`
+	JumpSubmitUrl  string `json:"submitSuccess"`
+	Timestamp      int64  `json:"timestamp"`
+	NonceStr       string `json:"nonceStr"`
+	Package        string `json:"package"`
+	SignType       string `json:"signType"`
+	PaySign        string `json:"paySign"`
+	AppId          string `json:"appId"`
+	ConfigSign     string `json:"configSign"`
+}
+
+
+
 //这里获取分类问题的配置选项
 type GetConfigRequest struct{
 	CateGoryId string `json:"cateId"`

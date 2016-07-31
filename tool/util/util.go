@@ -6,6 +6,10 @@ import (
 	"strings"
 	"time"
 	"strconv"
+	"sort"
+	"crypto/md5"
+	"fmt"
+	"crypto/sha1"
 )
 
 
@@ -25,4 +29,76 @@ func GenerateOrderNumber()string{
 	return itStr
 }
 
+// 生成签名
+func GenerateSign(paramsMap map[string]string, paramsList []string, key string) string {
+	paramsStr := ""
 
+	// 首先进行字典序排序
+	sort.Strings(paramsList)
+
+	for _, param := range paramsList {
+		if paramsMap[param] != "" {
+			if paramsStr == "" {
+				paramsStr = param + "=" + paramsMap[param]
+			} else {
+				paramsStr = paramsStr + "&" + param + "=" + paramsMap[param]
+			}
+		}
+	}
+
+	if key != "" {
+		paramsStr += "&key=" + key
+	}
+
+	return strings.ToUpper(Md5(paramsStr))
+}
+
+// 生成XML串
+func GenerateXMLStr(params map[string]string) string {
+	result := "<xml>"
+
+	for k, v := range params {
+		result = result + "<" + k + "><![CDATA[" + v + "]]></" + k + ">"
+	}
+
+	result += "</xml>"
+	return result
+}
+// 对串进行md5加密
+func Md5(str string) string {
+	result := ""
+	if str == "" {
+		return result
+	}
+	b := md5.Sum([]byte(str))
+	return fmt.Sprintf("%x", b)
+}
+
+
+
+func GeneratePageSign(paramsMap map[string]string, paramsList []string) string {
+	paramsStr := ""
+
+	// 首先进行字典序排序
+	sort.Strings(paramsList)
+
+	for _, param := range paramsList {
+		if paramsStr == "" {
+			paramsStr = param + "=" + paramsMap[param]
+		} else {
+			paramsStr = paramsStr + "&" + param + "=" + paramsMap[param]
+		}
+	}
+
+	return Sha1(paramsStr)
+}
+
+// 对串进行sha1加密
+func Sha1(str string) string {
+	result := ""
+	if str == "" {
+		return result
+	}
+	b := sha1.Sum([]byte(str))
+	return fmt.Sprintf("%x", b)
+}

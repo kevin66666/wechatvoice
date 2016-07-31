@@ -17,6 +17,9 @@ import (
 	"github.com/henrylee2cn/teleport/example"
 )
 
+const (
+	UNIQUE_JSTICKET_KEY = "apib1-jsticket-"
+)
 func DoWechatPay(ctx *macaron.Context)string{
 	info := new(ReqDoPay)
 	result := new(RespDoPay)
@@ -572,7 +575,7 @@ func JsapiTicket(ctx *macaron.Context) string {
 		result.Head.Code = CODE_ERROR
 		result.Head.Msg = err.Error()
 	} else {
-		ticket, err := GetJsapiTicket(appid, token)
+		ticket,_, err := GetJsapiTicket(appid, token)
 		if err != nil {
 			log.Println("[JsapiTicket]:error when get JsapiTicket :" + err.Error())
 			result.Head.Code = CODE_ERROR
@@ -604,7 +607,7 @@ func GetAccesstoken(appid string) (string, error) {
 	wechantInfo := new(model.MsMerchantWechatInfo)
 	wechantInfo.GetConn().Where("appid = ?", appid).First(wechantInfo)
 	tokenUrl :="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+wechantInfo.AppSecret
-	// 改为通过apib1获取
+
 	resp, err := http.Get(tokenUrl)
 	if err!=nil{
 		return "",err
@@ -619,17 +622,76 @@ func GetAccesstoken(appid string) (string, error) {
 	token :=wx.AccessToken
 	return token,nil
 }
+type WXJsTicket struct {
+	Errcode   int64  `json:"errcode"`
+	Errmsg    string `json:"errmsg"`
+	Ticket    string `json:"ticket"`
+	ExpiresIn int64  `json:"expires_in"`
+}
+func GetJsapiTicket(appid, accesstoken string) (string,string,error) {
 
-func GetJsapiTicket(appid, accesstoken string) (string, error) {
-	result := ""
-	var err error
+
 
 	wechantInfo := new(model.MsMerchantWechatInfo)
 	wechantInfo.GetConn().Where("appid = ?", appid).First(wechantInfo)
 
 	//ticketType :="jsapi"
+	//token,err:=GetAccesstoken(appid)
+	jsTicket := new(WXJsTicket)
+	res,resErr :=http.Get("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + accesstoken + "&type=jsapi")
+	if resErr!=nil{
+		log.Println(resErr.Error())
+		return resErr.Error(),"",resErr
+	}
+	defer res.Body.Close()
+
+	resp ,respErr :=ioutil.ReadAll(res)
+	if respErr!=nil{
+		log.Println(respErr)
+		return respErr.Error(),"",respErr
+	}
+	json.Unmarshal(resp, jsTicket)
+
+	if jsTicket.Errcode==0{
+		return jsTicket.Ticket,"",nil
+	}else{
+		return "",jsTicket.Errmsg,nil
+	}
 
 
-	return result, err
 }
 
+
+
+// 签名config
+type WXSignConfig struct {
+	AppId     string `json:"appId"`
+	Signature string `json:"signature"`
+	NonceStr  string `json:"nonceStr"`
+	Timestamp string `json:"timestamp"`
+}
+func GetConfig(this *macaron.Context)string{
+	url :=this.Query("url")
+	token,tokenErr:=GetAccesstoken(APPID)
+	if tokenErr!=nil{
+		log.Println(tokenErr.Error())
+	}
+	ticket,_,ticketErr:=GetJsapiTicket(APPID,token)
+	if ticketErr!=nil{
+		log.Println(ticketErr.Error())
+	}
+	noncestr := util.RandomNumberLen(32)
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+
+
+	signature := util.ConfigSign(ticket, noncestr, timestamp, url)
+
+	config := new(WXSignConfig)
+	config.AppId = APPID
+	config.Signature = signature
+	config.NonceStr = noncestr
+	config.Timestamp = timestamp
+
+	ret_str,_:=json.Marshal(config)
+	return string(ret_str)
+}

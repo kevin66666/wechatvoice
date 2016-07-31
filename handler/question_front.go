@@ -255,7 +255,7 @@ func GetQuestionConfig(ctx *macaron.Context)string{
 	ret_str,_:=json.Marshal(response)
 	return string(ret_str)
 }
-//获取分类列表
+//获取分类列表1
 type QuestionCateList struct {
 	Code int64 `json:"code"`
 	Msg string `json:"msg"`

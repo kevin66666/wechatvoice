@@ -6,5 +6,5 @@ import (
 )
 
 func SetRouter(m *macaron.Macaron) {
-
+	m.Post("/pay/decodewechatpayinfo")
 }

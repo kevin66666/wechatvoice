@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e031d3d6-06ae-4c9d-80bd-2fdf97fabcae" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/handler/wx_pay.go" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/model/wechat_info.go" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/question_front.go" afterPath="$PROJECT_DIR$/handler/question_front.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tool/util/util.go" afterPath="$PROJECT_DIR$/tool/util/util.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/wx_pay.go" afterPath="$PROJECT_DIR$/handler/wx_pay.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/router/router.go" afterPath="$PROJECT_DIR$/router/router.go" />
     </list>
     <ignored path="wechatvoice.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,39 +29,139 @@
     <splitter split-orientation="horizontal" split-proportion="0.6946565">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="question_front.go" pinned="false" current-in-tab="false">
+          <file leaf-file-name="question_front.go" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/handler/question_front.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1464">
-                  <caret line="64" column="8" selection-start-line="64" selection-start-column="8" selection-end-line="64" selection-end-column="8" />
+                <state relative-caret-position="-787">
+                  <caret line="63" column="1" selection-start-line="63" selection-start-column="1" selection-end-line="63" selection-end-column="1" />
                   <folding>
-                    <element signature="e#8417#8509#0" expanded="false" />
-                    <element signature="e#8525#8601#0" expanded="false" />
+                    <element signature="e#163#1129#0" expanded="false" />
+                    <element signature="e#1167#1291#0" expanded="false" />
+                    <element signature="e#1311#1638#0" expanded="false" />
+                    <element signature="e#1648#1729#0" expanded="false" />
+                    <element signature="n#!!block;n#QuestionQuery#0" expanded="false" />
+                    <element signature="e#1954#2086#0" expanded="false" />
+                    <element signature="e#2207#2335#0" expanded="false" />
+                    <element signature="e#2399#3059#0" expanded="false" />
+                    <element signature="e#2778#2912#0" expanded="false" />
+                    <element signature="e#3238#3261#0" expanded="false" />
+                    <element signature="e#3286#3572#0" expanded="false" />
+                    <element signature="e#3599#3734#0" expanded="false" />
+                    <element signature="n#!!block;n#CreateNewQuestion#0" expanded="false" />
+                    <element signature="e#3963#4096#0" expanded="false" />
+                    <element signature="e#4254#4381#0" expanded="false" />
+                    <element signature="e#4576#4707#0" expanded="false" />
+                    <element signature="e#5387#5518#0" expanded="false" />
+                    <element signature="e#5555#6133#0" expanded="false" />
+                    <element signature="e#5582#5647#0" expanded="false" />
+                    <element signature="e#5649#6129#0" expanded="false" />
+                    <element signature="e#5883#6017#0" expanded="false" />
+                    <element signature="e#6210#6339#0" expanded="false" />
+                    <element signature="e#6553#6654#0" expanded="false" />
+                    <element signature="e#6681#7217#0" expanded="false" />
+                    <element signature="e#7259#7303#0" expanded="false" />
+                    <element signature="e#7325#7466#0" expanded="false" />
+                    <element signature="n#!!block;n#GetQuestionConfig#0" expanded="false" />
+                    <element signature="e#7687#7820#0" expanded="false" />
+                    <element signature="e#8041#8171#0" expanded="false" />
+                    <element signature="e#8407#8499#0" expanded="false" />
+                    <element signature="e#8515#8591#0" expanded="false" />
                     <element signature="n#!!block;n#GetQuestionCateList#0" expanded="false" />
-                    <element signature="e#9242#9566#0" expanded="false" />
+                    <element signature="e#8807#8934#0" expanded="false" />
+                    <element signature="e#8960#9079#0" expanded="false" />
+                    <element signature="e#9232#9556#0" expanded="false" />
+                    <element signature="e#9584#9686#0" expanded="false" />
                     <element signature="n#!!block;n#AppendQuestion#0" expanded="false" />
+                    <element signature="e#10112#10246#0" expanded="false" />
+                    <element signature="e#10281#10426#0" expanded="false" />
+                    <element signature="e#10621#10752#0" expanded="false" />
+                    <element signature="e#11474#11605#0" expanded="false" />
+                    <element signature="e#11783#11857#0" expanded="false" />
+                    <element signature="e#11859#11917#0" expanded="false" />
+                    <element signature="e#11936#12030#0" expanded="false" />
+                    <element signature="n#!!block;n#PeekAvalable#0" expanded="false" />
+                    <element signature="e#12343#12382#0" expanded="false" />
+                    <element signature="e#12711#12837#0" expanded="false" />
+                    <element signature="e#12856#13009#0" expanded="false" />
+                    <element signature="n#!!block;n#DoPay#0" expanded="false" />
+                    <element signature="e#13225#13233#0" expanded="false" />
+                    <element signature="n#!!block;n#VoiceUpLoad#0" expanded="false" />
+                    <element signature="e#13340#13389#0" expanded="false" />
+                    <element signature="e#13420#13513#0" expanded="false" />
+                    <element signature="e#13532#13813#0" expanded="false" />
+                    <element signature="n#!!block;n#AnswerQuestionInit#0" expanded="false" />
+                    <element signature="e#14133#14172#0" expanded="false" />
+                    <element signature="e#14481#14605#0" expanded="false" />
+                    <element signature="e#14635#14762#0" expanded="false" />
+                    <element signature="e#14823#14944#0" expanded="false" />
+                    <element signature="e#14963#15080#0" expanded="false" />
+                    <element signature="e#15503#15635#0" expanded="false" />
+                    <element signature="e#15865#15949#0" expanded="false" />
                     <element signature="n#!!block;n#DoAnswerQuestion#0" expanded="false" />
+                    <element signature="e#16294#16333#0" expanded="false" />
+                    <element signature="e#16618#16749#0" expanded="false" />
+                    <element signature="e#16779#16906#0" expanded="false" />
+                    <element signature="e#16967#17088#0" expanded="false" />
+                    <element signature="e#17107#17224#0" expanded="false" />
+                    <element signature="e#17415#17547#0" expanded="false" />
+                    <element signature="e#17859#17982#0" expanded="false" />
+                    <element signature="n#!!block;n#AddPeekCount#0" expanded="false" />
+                    <element signature="e#18309#18337#0" expanded="false" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="config" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/.git/config">
+          <file leaf-file-name="router.go" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/router/router.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="336">
-                  <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+                <state relative-caret-position="120">
+                  <caret line="8" column="41" selection-start-line="8" selection-start-column="41" selection-end-line="8" selection-end-column="41" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/.gitignore">
+          <file leaf-file-name="wx_pay.go" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/handler/wx_pay.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="448">
-                  <caret line="76" column="24" selection-start-line="76" selection-start-column="24" selection-end-line="76" selection-end-column="24" />
+                <state relative-caret-position="4911">
+                  <caret line="580" column="55" selection-start-line="580" selection-start-column="55" selection-end-line="580" selection-end-column="55" />
                   <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="order_list_front.go" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/handler/order_list_front.go">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="-2025">
+                  <caret line="51" column="50" selection-start-line="45" selection-start-column="8" selection-end-line="51" selection-end-column="50" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="law_catgory.go" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/model/law_catgory.go">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="141">
+                  <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="11" selection-end-column="1" />
+                  <folding>
+                    <element signature="e#15#74#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="wechat_info.go" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/model/wechat_info.go">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="1080">
+                  <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#14#72#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -136,6 +237,13 @@
       </split-second>
     </splitter>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -143,6 +251,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/.idea/workspace.xml" />
+        <option value="$PROJECT_DIR$/router/router.go" />
+        <option value="$PROJECT_DIR$/model/wechat_info.go" />
+        <option value="$PROJECT_DIR$/handler/wx_pay.go" />
+        <option value="$PROJECT_DIR$/handler/question_front.go" />
       </list>
     </option>
   </component>
@@ -247,7 +359,35 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value=".idea" />
+              <option name="myItemId" value="router" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wechatvoice" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wechatvoice" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wechatvoice" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="wechatvoice" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="handler" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -257,6 +397,9 @@
       <pane id="Scratches" />
       <pane id="PackagesPane" />
     </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultGoTemplateProperty" value="Go File" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
@@ -716,7 +859,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="31000" />
+    <option name="totallyTimeSpent" value="2114000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -726,7 +869,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32980973" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -800,27 +943,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/handler/question_front.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/handler/order_list_front.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="42" column="43" selection-start-line="42" selection-start-column="43" selection-end-line="42" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tool/util/util.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="1" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/questions.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1015,14 +1137,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/law_catgory.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="14" column="8" selection-start-line="14" selection-start-column="8" selection-end-line="14" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/commmon.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -1044,6 +1158,131 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="600">
           <caret line="529" column="9" selection-start-line="529" selection-start-column="9" selection-end-line="529" selection-end-column="9" />
+          <folding>
+            <element signature="e#248#314#0" expanded="false" />
+            <element signature="e#316#789#0" expanded="false" />
+            <element signature="n#!!block;n#init#0" expanded="false" />
+            <element signature="e#879#962#0" expanded="false" />
+            <element signature="e#986#1069#0" expanded="false" />
+            <element signature="e#1092#1173#0" expanded="false" />
+            <element signature="e#1179#1260#0" expanded="false" />
+            <element signature="e#1329#1366#0" expanded="false" />
+            <element signature="e#1419#1441#0" expanded="false" />
+            <element signature="e#1495#1533#0" expanded="false" />
+            <element signature="e#1586#1615#0" expanded="false" />
+            <element signature="e#1650#1687#0" expanded="false" />
+            <element signature="e#1721#1750#0" expanded="false" />
+            <element signature="e#1753#1826#0" expanded="false" />
+            <element signature="e#2250#2326#0" expanded="false" />
+            <element signature="e#2351#2463#0" expanded="false" />
+            <element signature="e#2481#2678#0" expanded="false" />
+            <element signature="e#2698#2881#0" expanded="false" />
+            <element signature="e#2895#3014#0" expanded="false" />
+            <element signature="e#3034#3078#0" expanded="false" />
+            <element signature="n#!!block;n#SyncProductRankPricess#0" expanded="false" />
+            <element signature="e#3453#3495#0" expanded="false" />
+            <element signature="e#3907#3942#0" expanded="false" />
+            <element signature="e#4257#4400#0" expanded="false" />
+            <element signature="e#4438#4663#0" expanded="false" />
+            <element signature="n#!!block;n#SyncProductRankPrice#0" expanded="false" />
+            <element signature="e#5370#5405#0" expanded="false" />
+            <element signature="e#5752#5870#0" expanded="false" />
+            <element signature="e#5908#6050#0" expanded="false" />
+            <element signature="n#!!block;n#GetFlagInfos#0" expanded="false" />
+            <element signature="e#6277#6391#0" expanded="false" />
+            <element signature="e#6397#6513#0" expanded="false" />
+            <element signature="n#!!block;n#GetFlagInfosssss#0" expanded="false" />
+            <element signature="e#6596#6709#0" expanded="false" />
+            <element signature="e#6715#6831#0" expanded="false" />
+            <element signature="n#!!block;n#SyncInfo#0" expanded="false" />
+            <element signature="e#7019#7056#0" expanded="false" />
+            <element signature="e#7237#7252#0" expanded="false" />
+            <element signature="e#7550#7592#0" expanded="false" />
+            <element signature="e#7752#7794#0" expanded="false" />
+            <element signature="e#7827#9192#0" expanded="false" />
+            <element signature="e#7859#8564#0" expanded="false" />
+            <element signature="e#7973#8560#0" expanded="false" />
+            <element signature="e#8108#8132#0" expanded="false" />
+            <element signature="e#8138#8214#0" expanded="false" />
+            <element signature="e#8219#8236#0" expanded="false" />
+            <element signature="e#8534#8555#0" expanded="false" />
+            <element signature="e#8594#9189#0" expanded="false" />
+            <element signature="e#8708#9185#0" expanded="false" />
+            <element signature="e#8843#8867#0" expanded="false" />
+            <element signature="e#8873#8949#0" expanded="false" />
+            <element signature="e#9159#9180#0" expanded="false" />
+            <element signature="e#9227#9242#0" expanded="false" />
+            <element signature="e#9303#9431#0" expanded="false" />
+            <element signature="e#10022#10064#0" expanded="false" />
+            <element signature="e#10460#10533#0" expanded="false" />
+            <element signature="e#10721#10750#0" expanded="false" />
+            <element signature="e#10989#11118#0" expanded="false" />
+            <element signature="n#!!block;n#SyncProductInfossssssss#0" expanded="false" />
+            <element signature="e#12109#12144#0" expanded="false" />
+            <element signature="e#12332#12361#0" expanded="false" />
+            <element signature="e#12600#12735#0" expanded="false" />
+            <element signature="e#12775#13043#0" expanded="false" />
+            <element signature="e#13421#13436#0" expanded="false" />
+            <element signature="e#13984#15147#0" expanded="false" />
+            <element signature="e#14098#15143#0" expanded="false" />
+            <element signature="e#14478#14499#0" expanded="false" />
+            <element signature="e#14527#15138#0" expanded="false" />
+            <element signature="e#14860#14901#0" expanded="false" />
+            <element signature="e#15083#15132#0" expanded="false" />
+            <element signature="e#15223#16283#0" expanded="false" />
+            <element signature="e#15336#16279#0" expanded="false" />
+            <element signature="e#15549#15570#0" expanded="false" />
+            <element signature="e#15598#16274#0" expanded="false" />
+            <element signature="e#15995#16036#0" expanded="false" />
+            <element signature="e#16219#16268#0" expanded="false" />
+            <element signature="e#16301#16316#0" expanded="false" />
+            <element signature="e#16345#16495#0" expanded="false" />
+            <element signature="e#16508#16719#0" expanded="false" />
+            <element signature="e#16750#16884#0" expanded="false" />
+            <element signature="e#16904#17049#0" expanded="false" />
+            <element signature="e#17064#17142#0" expanded="false" />
+            <element signature="n#!!block;n#SyncFujiStockInfo#0" expanded="false" />
+            <element signature="e#17511#17541#0" expanded="false" />
+            <element signature="e#17697#17743#0" expanded="false" />
+            <element signature="e#18233#18273#0" expanded="false" />
+            <element signature="e#18298#18428#0" expanded="false" />
+            <element signature="e#18692#18815#0" expanded="false" />
+            <element signature="e#18863#19077#0" expanded="false" />
+            <element signature="e#18867#18898#0" expanded="false" />
+            <element signature="e#19093#19109#0" expanded="false" />
+            <element signature="n#!!block;n#SyncFujiStockInfosssss#0" expanded="false" />
+            <element signature="e#19470#19504#0" expanded="false" />
+            <element signature="e#20167#20303#0" expanded="false" />
+            <element signature="e#20567#20688#0" expanded="false" />
+            <element signature="e#20736#20950#0" expanded="false" />
+            <element signature="e#20740#20771#0" expanded="false" />
+            <element signature="e#20966#20982#0" expanded="false" />
+            <element signature="n#!!block;n#CheckSyncStockInfo#0" expanded="false" />
+            <element signature="e#21253#21826#0" expanded="false" />
+            <element signature="e#21396#21524#0" expanded="false" />
+            <element signature="e#21552#21595#0" expanded="false" />
+            <element signature="e#21846#22068#0" expanded="false" />
+            <element signature="e#22176#22206#0" expanded="false" />
+            <element signature="n#!!block;n#CheckSyncStockInfosssss#0" expanded="false" />
+            <element signature="e#22463#23021#0" expanded="false" />
+            <element signature="e#22606#22732#0" expanded="false" />
+            <element signature="e#22760#22803#0" expanded="false" />
+            <element signature="e#23041#23263#0" expanded="false" />
+            <element signature="n#!!block;n#UpdateProductStockInfo#0" expanded="false" />
+            <element signature="e#23807#23822#0" expanded="false" />
+            <element signature="e#23984#24000#0" expanded="false" />
+            <element signature="e#24015#24030#0" expanded="false" />
+            <element signature="n#!!block;n#UpdateTotalStock#0" expanded="false" />
+            <element signature="e#24259#24300#0" expanded="false" />
+            <element signature="e#24348#24569#0" expanded="false" />
+            <element signature="e#24833#24865#0" expanded="false" />
+            <element signature="e#24880#24896#0" expanded="false" />
+            <element signature="e#24902#24941#0" expanded="false" />
+            <element signature="e#25076#25170#0" expanded="false" />
+            <element signature="e#25196#25358#0" expanded="false" />
+            <element signature="e#25376#25591#0" expanded="false" />
+            <element signature="e#25593#25657#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1062,14 +1301,6 @@
           <folding>
             <element signature="e#15#74#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/handler/order_list_front.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="51" column="50" selection-start-line="45" selection-start-column="8" selection-end-line="51" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1146,21 +1377,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/handler/question_front.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1464">
-          <caret line="64" column="8" selection-start-line="64" selection-start-column="8" selection-end-line="64" selection-end-column="8" />
-          <folding>
-            <element signature="e#8417#8509#0" expanded="false" />
-            <element signature="e#8525#8601#0" expanded="false" />
-            <element signature="n#!!block;n#GetQuestionCateList#0" expanded="false" />
-            <element signature="e#9242#9566#0" expanded="false" />
-            <element signature="n#!!block;n#AppendQuestion#0" expanded="false" />
-            <element signature="n#!!block;n#DoAnswerQuestion#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.git/config">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
@@ -1182,6 +1398,131 @@
         <state relative-caret-position="448">
           <caret line="76" column="24" selection-start-line="76" selection-start-column="24" selection-end-line="76" selection-end-column="24" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/law_catgory.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="11" selection-end-column="1" />
+          <folding>
+            <element signature="e#15#74#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/wechat_info.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1080">
+          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+          <folding>
+            <element signature="e#14#72#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/handler/order_list_front.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2025">
+          <caret line="51" column="50" selection-start-line="45" selection-start-column="8" selection-end-line="51" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/handler/wx_pay.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4911">
+          <caret line="580" column="55" selection-start-line="580" selection-start-column="55" selection-end-line="580" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/router/router.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="41" selection-start-line="8" selection-start-column="41" selection-end-line="8" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/handler/question_front.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-787">
+          <caret line="63" column="1" selection-start-line="63" selection-start-column="1" selection-end-line="63" selection-end-column="1" />
+          <folding>
+            <element signature="e#163#1129#0" expanded="false" />
+            <element signature="e#1167#1291#0" expanded="false" />
+            <element signature="e#1311#1638#0" expanded="false" />
+            <element signature="e#1648#1729#0" expanded="false" />
+            <element signature="n#!!block;n#QuestionQuery#0" expanded="false" />
+            <element signature="e#1954#2086#0" expanded="false" />
+            <element signature="e#2207#2335#0" expanded="false" />
+            <element signature="e#2399#3059#0" expanded="false" />
+            <element signature="e#2778#2912#0" expanded="false" />
+            <element signature="e#3238#3261#0" expanded="false" />
+            <element signature="e#3286#3572#0" expanded="false" />
+            <element signature="e#3599#3734#0" expanded="false" />
+            <element signature="n#!!block;n#CreateNewQuestion#0" expanded="false" />
+            <element signature="e#3963#4096#0" expanded="false" />
+            <element signature="e#4254#4381#0" expanded="false" />
+            <element signature="e#4576#4707#0" expanded="false" />
+            <element signature="e#5387#5518#0" expanded="false" />
+            <element signature="e#5555#6133#0" expanded="false" />
+            <element signature="e#5582#5647#0" expanded="false" />
+            <element signature="e#5649#6129#0" expanded="false" />
+            <element signature="e#5883#6017#0" expanded="false" />
+            <element signature="e#6210#6339#0" expanded="false" />
+            <element signature="e#6553#6654#0" expanded="false" />
+            <element signature="e#6681#7217#0" expanded="false" />
+            <element signature="e#7259#7303#0" expanded="false" />
+            <element signature="e#7325#7466#0" expanded="false" />
+            <element signature="n#!!block;n#GetQuestionConfig#0" expanded="false" />
+            <element signature="e#7687#7820#0" expanded="false" />
+            <element signature="e#8041#8171#0" expanded="false" />
+            <element signature="e#8407#8499#0" expanded="false" />
+            <element signature="e#8515#8591#0" expanded="false" />
+            <element signature="n#!!block;n#GetQuestionCateList#0" expanded="false" />
+            <element signature="e#8807#8934#0" expanded="false" />
+            <element signature="e#8960#9079#0" expanded="false" />
+            <element signature="e#9232#9556#0" expanded="false" />
+            <element signature="e#9584#9686#0" expanded="false" />
+            <element signature="n#!!block;n#AppendQuestion#0" expanded="false" />
+            <element signature="e#10112#10246#0" expanded="false" />
+            <element signature="e#10281#10426#0" expanded="false" />
+            <element signature="e#10621#10752#0" expanded="false" />
+            <element signature="e#11474#11605#0" expanded="false" />
+            <element signature="e#11783#11857#0" expanded="false" />
+            <element signature="e#11859#11917#0" expanded="false" />
+            <element signature="e#11936#12030#0" expanded="false" />
+            <element signature="n#!!block;n#PeekAvalable#0" expanded="false" />
+            <element signature="e#12343#12382#0" expanded="false" />
+            <element signature="e#12711#12837#0" expanded="false" />
+            <element signature="e#12856#13009#0" expanded="false" />
+            <element signature="n#!!block;n#DoPay#0" expanded="false" />
+            <element signature="e#13225#13233#0" expanded="false" />
+            <element signature="n#!!block;n#VoiceUpLoad#0" expanded="false" />
+            <element signature="e#13340#13389#0" expanded="false" />
+            <element signature="e#13420#13513#0" expanded="false" />
+            <element signature="e#13532#13813#0" expanded="false" />
+            <element signature="n#!!block;n#AnswerQuestionInit#0" expanded="false" />
+            <element signature="e#14133#14172#0" expanded="false" />
+            <element signature="e#14481#14605#0" expanded="false" />
+            <element signature="e#14635#14762#0" expanded="false" />
+            <element signature="e#14823#14944#0" expanded="false" />
+            <element signature="e#14963#15080#0" expanded="false" />
+            <element signature="e#15503#15635#0" expanded="false" />
+            <element signature="e#15865#15949#0" expanded="false" />
+            <element signature="n#!!block;n#DoAnswerQuestion#0" expanded="false" />
+            <element signature="e#16294#16333#0" expanded="false" />
+            <element signature="e#16618#16749#0" expanded="false" />
+            <element signature="e#16779#16906#0" expanded="false" />
+            <element signature="e#16967#17088#0" expanded="false" />
+            <element signature="e#17107#17224#0" expanded="false" />
+            <element signature="e#17415#17547#0" expanded="false" />
+            <element signature="e#17859#17982#0" expanded="false" />
+            <element signature="n#!!block;n#AddPeekCount#0" expanded="false" />
+            <element signature="e#18309#18337#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -14,6 +14,7 @@ import (
 	"bytes"
 	"log"
 	"github.com/Unknwon/macaron"
+	"github.com/henrylee2cn/teleport/example"
 )
 
 func DoWechatPay(ctx *macaron.Context)string{
@@ -366,7 +367,269 @@ func UnifiedOrder(ctx *macaron.Context)string{
 	resByte, _ := json.Marshal(result)
 	return string(resByte)
 }
-
-func DecodeWechatPayInfo(ctx *macaron.Context)string{
-	return ""
+// 支付成功通知返回结构体
+type AfterPayResp struct {
+	Head struct {
+		     Code int64  `json:"code"`
+		     Msg  string `json:"msg"`
+	     } `json:"head"`
+	Body struct {
+		     ReturnCode     string   `json:"return_code"`
+		     ReturnMsg      string   `json:"return _msg"`
+		     AppId          string   `json:"appid"`
+		     MchId          string   `json:"mch_id"`
+		     DeviceInfo     string   `json:"device_info"`
+		     ResultCode     string   `json:"result_code"`
+		     ErrCode        string   `json:"err_code"`
+		     ErrCodeDes     string   `json:"err_code_des"`
+		     OpenId         string   `json:"openid"`
+		     TradeType      string   `json:"trade_type"`
+		     BankType       string   `json:"bank_type"`
+		     TotalFee       int64    `json:"total_fee"`
+		     FeeType        string   `json:"fee_type"`
+		     CashFee        int64    `json:"cash_fee"`
+		     CashFeeType    string   `json:"cash_fee_type"`
+		     CouponFee      int64    `json:"coupon_fee"`
+		     CouponCount    int64    `json:"coupon_count"`
+		     CouponIds      []string `json:"coupon_ids"`
+		     CouponFees     []string `json:"coupon_fees"`
+		     TransactionId  string   `json:"transaction_id"`
+		     OutTradeNo     string   `json:"out_trade_no"`
+		     Attach         string   `json:"attach"`
+		     TimeEnd        string   `json:"time_end"`
+		     ReturnToWechat string   `json:"returnToWechat"`
+	     } `json:"body"`
 }
+
+// 解析完微信推送信息后应该返回给微信的结构体
+type AfterPayRespToWechat struct {
+	ReturnCode string `xml:"return_code"`
+	ReturnMsg  string `xml:"return_msg"`
+}
+
+func DecodeWechatPayInfo(ctx *macaron.Context) string {
+	result := new(AfterPayResp)
+	resultToWechat := new(AfterPayRespToWechat)
+
+	// 读取请求体
+	bodyByte, err := ioutil.ReadAll(ctx.Req.Body().ReadCloser())
+	body := string(bodyByte)
+	if err != nil {
+		log.Println("[DecodeWechatPayInfo]:error when reade request body:" + err.Error())
+		result.Head.Code = CODE_ERROR
+		result.Head.Msg = "读取请求体错误!"
+		resultToWechat.ReturnCode = "FAIL"
+		resultToWechat.ReturnMsg = "参数格式校验错误" // 这里随便写一个原因,因为是自己的问题  - - |||
+	} else {
+		wechatRespMap := make(map[string]string, 0)
+		wechatRespList := make([]string, 0)
+
+		// 读取微信返回内容
+		inputReader := strings.NewReader(body)
+		decoder := xml.NewDecoder(inputReader)
+		var t xml.Token
+		var err error
+		name := ""
+		for t, err = decoder.Token(); err == nil; t, err = decoder.Token() {
+			switch token := t.(type) {
+
+			// 处理元素开始（标签）
+			case xml.StartElement:
+				name = token.Name.Local
+				if name != "xml" && name != "sign" {
+					// 不是开始标签,将属性加入list中
+					// 总标签(xml)和签名标签(sign)不参与签名计算
+					wechatRespList = append(wechatRespList, name)
+				}
+
+			// 处理元素结束（标签）
+			case xml.EndElement:
+
+			// 处理字符数据（这里就是元素的文本）
+			case xml.CharData:
+				// 将数据存入对应的map
+				content := string([]byte(token))
+				if strings.TrimSpace(content) != "" {
+					fmt.Println(name, ",", content)
+					wechatRespMap[name] = content
+				}
+			default:
+			}
+		}
+
+		//key := models.GetMerchantPayKey(wechatRespMap["appid"])
+
+		// 对微信返回数据进行签名
+		sign := util.GenerateSign(wechatRespMap, wechatRespList, KEY)
+		if sign == wechatRespMap["sign"] {
+		} else {
+			log.Println("==================订单号" + wechatRespMap["out_trade_no"] + "验签失败!!!!!====================")
+		}
+		result.Head.Code = CODE_SUCCESS
+		result.Head.Msg = "SUCCESS"
+		result.Body.ReturnCode = wechatRespMap["return_code"]
+		result.Body.ResultCode = wechatRespMap["return_msg"]
+		result.Body.AppId = wechatRespMap["appid"]
+		result.Body.MchId = wechatRespMap["mch_id"]
+		result.Body.ReturnCode = wechatRespMap["result_code"]
+		result.Body.OpenId = wechatRespMap["openid"]
+		result.Body.TradeType = wechatRespMap["trade_type"]
+		result.Body.BankType = wechatRespMap["bank_type"]
+		result.Body.TransactionId = wechatRespMap["transaction_id"]
+		result.Body.OutTradeNo = wechatRespMap["out_trade_no"]
+		result.Body.Attach = wechatRespMap["attach"]
+		result.Body.TimeEnd = wechatRespMap["time_end"]
+
+		totalFee, _ := strconv.ParseInt(wechatRespMap["total_fee"], 10, 64)
+		cashFee, _ := strconv.ParseInt(wechatRespMap["cash_fee"], 10, 64)
+		result.Body.TotalFee = totalFee
+		result.Body.CashFee = cashFee
+
+		result.Body.DeviceInfo = wechatRespMap["device_info"]
+		result.Body.ErrCode = wechatRespMap["err_code"]
+		result.Body.ErrCodeDes = wechatRespMap["err_code_des"]
+
+		if wechatRespMap["coupon_fee"] != "" {
+			couponFee, _ := strconv.ParseInt(wechatRespMap["coupon_fee"], 10, 64)
+			result.Body.CouponFee = couponFee
+		}
+
+		if wechatRespMap["coupon_count"] != "" {
+			couponCount, _ := strconv.ParseInt(wechatRespMap["coupon_count"], 10, 64)
+			result.Body.CouponCount = couponCount
+		}
+
+		result.Body.FeeType = wechatRespMap["fee_type"]
+		if wechatRespMap["fee_type"] == "" {
+			result.Body.FeeType = DEFAULT_FEE_TYPE
+		}
+
+		result.Body.CashFeeType = wechatRespMap["cash_fee_type"]
+		if wechatRespMap["cash_fee_type"] == "" {
+			result.Body.CashFeeType = DEFAULT_FEE_TYPE
+		}
+
+		couponIdList := make([]string, 0)
+		couponFeeList := make([]string, 0)
+		// 循环wechatRespMap 筛选是否存在优惠券或立减优惠信息
+		for k, _ := range wechatRespMap {
+			if strings.Index(k, "coupon_id_") != -1 {
+				// 存在
+				count := strings.Trim(k, "coupon_id_")
+				couponFeeList = append(couponFeeList, wechatRespMap["coupon_fee_"+count])
+				couponIdList = append(couponIdList, wechatRespMap["coupon_id_"+count])
+			}
+		}
+		result.Body.CouponFees = couponFeeList
+		result.Body.CouponIds = couponIdList
+
+		resultToWechat.ReturnCode = "SUCCESS"
+		resultToWechat.ReturnMsg = "OK"
+
+	}
+
+	msgToWechat, _ := xml.Marshal(resultToWechat)
+	result.Body.ReturnToWechat = string(msgToWechat)
+	resBytes, _ := json.Marshal(result)
+	return string(resBytes)
+}
+
+// 获取JSAPI_TICKET返回值
+type RespJsapiTicket struct {
+	Head struct {
+		     Code int64  `json:"code"`
+		     Msg  string `json:"msg"`
+	     } `json:"head"`
+	Body struct {
+		     Ticket string `json:"jsapiTicket"`
+	     } `json:"body"`
+}
+
+/**
+ * 获取JSAPI_TICKET
+ * @Version 0.0.1
+ * @Author  郭越洋
+ * @Date    2015-12-18
+ * @RequestType GET
+ *
+ * @param   appid(必填)											// 公众账号ID
+ * @return
+ * {
+ * 	"head":{
+ * 		"code":200,
+ * 		"msg":"success",
+ * 	},
+ * 	"body":{
+ *  	"jsapiTicket":"XXXXXXXXXX",
+ * 	}
+ * }
+ */
+func JsapiTicket(ctx *macaron.Context) string {
+	appid := ctx.Query("appid")
+	result := new(RespJsapiTicket)
+	token, err := GetAccesstoken(appid)
+	if err != nil {
+		result.Head.Code = CODE_ERROR
+		result.Head.Msg = err.Error()
+	} else {
+		ticket, err := GetJsapiTicket(appid, token)
+		if err != nil {
+			log.Println("[JsapiTicket]:error when get JsapiTicket :" + err.Error())
+			result.Head.Code = CODE_ERROR
+			result.Head.Msg = err.Error()
+		} else {
+			result.Head.Code = CODE_SUCCESS
+			result.Head.Msg = "success"
+			result.Body.Ticket = ticket
+		}
+	}
+	resByte, _ := json.Marshal(result)
+	return string(resByte)
+}
+
+type TokenResp struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	Token string `json:"token"`
+}
+type WXResponse struct {
+	AccessToken string `json:"access_token"`
+	ExpiresIn   int64  `json:"expires_in"`
+}
+
+
+func GetAccesstoken(appid string) (string, error) {
+	var err error
+
+	wechantInfo := new(model.MsMerchantWechatInfo)
+	wechantInfo.GetConn().Where("appid = ?", appid).First(wechantInfo)
+	tokenUrl :="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+wechantInfo.AppSecret
+	// 改为通过apib1获取
+	resp, err := http.Get(tokenUrl)
+	if err!=nil{
+		return "",err
+	}
+	res ,err1:=ioutil.ReadAll(resp)
+	if err1!=nil{
+		return "",err1
+	}
+	defer resp.Body.Close()
+	wx :=new(WXResponse)
+	json.Unmarshal(res,wx)
+	token :=wx.AccessToken
+	return token,nil
+}
+
+func GetJsapiTicket(appid, accesstoken string) (string, error) {
+	result := ""
+	var err error
+
+	wechantInfo := new(model.MsMerchantWechatInfo)
+	wechantInfo.GetConn().Where("appid = ?", appid).First(wechantInfo)
+
+	//ticketType :="jsapi"
+
+
+	return result, err
+}
+

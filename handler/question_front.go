@@ -24,7 +24,7 @@ const  (
 	DEFAULT_DEVICE_INFO = "WEB"
 	DEFAULT_FEE_TYPE    = "CNY"
 	DEFAULT_TRADE_TYPE  = "JSAPI"
-	DEFAULT_NOTIFY_URL = "/shangqu-3rdparty/pay/decodewechatpayinfo"
+	DEFAULT_NOTIFY_URL = "/wechatvoice/pay/decodewechatpayinfo"
 	UNIFIEDORDER_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder"
  	DEFAULT_PACKAGE_PRE_STR = "prepay_id="
   	DEFAULT_SIGN_TYPE       = "MD5"
@@ -41,7 +41,7 @@ const  (
 	AFTER_PAY_JUMP_PAGE_FAILD   = "payFailed.html?"
 	AFTER_PAY_JUMP_PAGE_SUCCESS = "paySuccess.html?"
 
-	WECHAT_PREPAY_URL             = "/shangqu-3rdparty/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
+	WECHAT_PREPAY_URL             = "/wechatvoice/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
 )
 
 //查询问题返回

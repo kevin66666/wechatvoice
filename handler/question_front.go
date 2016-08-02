@@ -114,7 +114,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		single.HeadImg = lawyer.HeadImgUrl
 		single.VoicePath = k.VoicePath
 		single.QuestionCateName = k.Category
-		retList = append(single, *single)
+		retList = append(retList, *single)
 	}
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
@@ -380,7 +380,7 @@ func AppendQuestion(ctx *macaron.Context) string {
 	questionInfoOld := new(model.WechatVoiceQuestions)
 	questionOldErr := questionInfoOld.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfoOld).Error
 
-	if questionOldErr.Error() != nil && !strings.Contains(questionOldErr.Error(), RNF) {
+	if questionOldErr != nil && !strings.Contains(questionOldErr.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = questionOldErr.Error()
 		ret_str, _ := json.Marshal(response)
@@ -508,7 +508,7 @@ func DoPay(ctx *macaron.Context) string {
 
 func VoiceUpLoad(ctx *macaron.Context) string {
 	//这里返回一个路径
-
+	return ""
 }
 
 type AnswerQuestion1 struct {
@@ -516,11 +516,11 @@ type AnswerQuestion1 struct {
 }
 
 type AnswerQuestion1Response struct {
-	Code         int64  `json:"code"`
-	Msg          string `json:"msg"`
-	QuestionInfo `json:"question"`
+	Code           int64  `json:"code"`
+	Msg            string `json:"msg"`
+	QuestionInfoss `json:"question"`
 }
-type QuestionInfo struct {
+type QuestionInfoss struct {
 	QuestionId       string `json:"quesiontId"`
 	QuestionCateInfo string `json:"cateInfo"`
 	QuestionCateId   string `json:"cateId"`
@@ -529,6 +529,8 @@ type QuestionInfo struct {
 	AskerName    string `json:"askerName"`
 	AskerId      string `json:"askerId"`
 	AskerHeadImg string `json:"askerHeadImg"`
+	LawyerId     string `json:"lawyerId"`
+	LawerName    string `json:"name"`
 }
 
 func AnswerQuestionInit(ctx *macaron.Context) string {
@@ -580,14 +582,23 @@ func AnswerQuestionInit(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 
-	q := new(QuestionInfo)
+	q := new(QuestionInfoss)
 
-	q.QuestionId = question.Uuid
-	q.HeadImg = question.AskerHeadImg
-	q.QuestionCategoryId = question.CategoryId
-	q.QuestionCateName = question.Category
-	q.VoicePath = ""
-	q.QuestionTopic = question.Description
+	// q.QuestionId = question.Uuid
+	// q.HeadImg = question.AskerHeadImg
+	// q.QuestionCategoryId = question.CategoryId
+	// q.QuestionCateName = question.Category
+	// q.VoicePath = ""
+	// q.QuestionTopic = question.Description
+	q.QuestionDesc = question.Uuid
+	q.AskerHeadImg = question.AskerHeadImg
+	q.QuestionCateId = question.CategoryId
+	q.QuestionCateInfo = question.Category
+	q.QuestionDesc = question.Description
+
+	q.AskerName = question.CustomerName
+	q.AskerId = question.CustomerId
+
 	lawerInfo := new(model.LawyerInfo)
 
 	lawerInfoErr := lawerInfo.GetConn().Where("open_id = ?", openId).Find(&lawerInfo).Error
@@ -599,11 +610,11 @@ func AnswerQuestionInit(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 	q.LawyerId = lawerInfo.Uuid
-	q.LawyerName = lawerInfo.Name
+	q.LawerName = lawerInfo.Name
 
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
-	response.QuestionInfo = *q
+	response.QuestionInfoss = *q
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
@@ -704,4 +715,3 @@ func AddPeekCount(questionId string) error {
 }
 
 //这里需要加入各种统计信息
-

@@ -97,7 +97,7 @@ func QueryUserQuestions(userOpenId string, status []string, startLine, endLine i
 	return list, count, err
 }
 
-func QueryLawyerQuestions(userOpenId string, startLine int64, endLine int64) ([]WechatVoiceQuestions, int64, error) {
+func QueryLawyerQuestions(startLine int64, endLine int64, userOpenId string) ([]WechatVoiceQuestions, int64, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)

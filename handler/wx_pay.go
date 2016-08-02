@@ -66,9 +66,11 @@ func DoWechatPay(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(result)
 			return string(ret_str)
 		}
+
 		price := order.PaymentInfo
-		priceF := strconv.FormatFloat(price, 'f', 2, 64)
-		return doWxPay(info.OrderId, "1", priceF)
+		priceF, _ := strconv.ParseFloat(price, 64)
+		//priceF := strconv.FormatFloat(price, 'f', 2, 64)
+		return doWxPay(info.OrderId, 1, priceF)
 	}
 	resByte, _ := json.Marshal(finalResult)
 	return string(resByte)
@@ -609,7 +611,7 @@ func GetAccesstoken(appid string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	res, err1 := ioutil.ReadAll(resp)
+	res, err1 := ioutil.ReadAll(resp.Body)
 	if err1 != nil {
 		return "", err1
 	}

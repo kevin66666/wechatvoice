@@ -1,6 +1,7 @@
 package dbpool
 
 import (
+	"log"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -33,7 +34,7 @@ func init() {
 		old_db, err = gorm.Open("mysql", "root:llobw123**8@tcp(123.56.11.116:6033)/wechat?charset=utf8mb4&parseTime=True&loc=Local")
 	}
 	if err != nil {
-		log.Error("when connect to mysql:" + err.Error())
+		log.Println("when connect to mysql:" + err.Error())
 		return
 	}
 	//设置数据库名称单数

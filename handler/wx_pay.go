@@ -1,23 +1,23 @@
 package handler
 
 import (
-	"io/ioutil"
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
+	"github.com/Unknwon/macaron"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strconv"
 	"strings"
+	"time"
 	"wechatvoice/model"
 	"wechatvoice/tool/util"
-	"strconv"
-	"fmt"
-	"net/http"
-	"time"
-	"bytes"
-	"log"
-	"github.com/Unknwon/macaron"
-	"github.com/henrylee2cn/teleport/example"
+	// "github.com/henrylee2cn/teleport/example"
 )
 
-func DoWechatPay(ctx *macaron.Context)string{
+func DoWechatPay(ctx *macaron.Context) string {
 	info := new(ReqDoPay)
 	result := new(RespDoPay)
 
@@ -28,22 +28,22 @@ func DoWechatPay(ctx *macaron.Context)string{
 
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 
-	if cookieStr==""{
+	if cookieStr == "" {
 		//这里直接调取util重新过一次绿叶 获取openId 等信息
 	}
-	openId :=strings.Split(cookieStr,"|")[0]
-	userType :=strings.Split(cookieStr,"|")[1]
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
 
 	log.Println(openId)
 	log.Println(userType)
 
-	memberInfo :=new(model.MemberInfo)
-	memberErr :=memberInfo.GetConn().Where("open_id = ?",openId).Find(&memberInfo).Error
+	memberInfo := new(model.MemberInfo)
+	memberErr := memberInfo.GetConn().Where("open_id = ?", openId).Find(&memberInfo).Error
 
-	if memberErr!=nil&&!strings.Contains(memberErr.Error(),RNF){
+	if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
 		result.Code = CODE_ERROR
 		result.Msg = memberErr.Error()
-		ret_str,_:=json.Marshal(result)
+		ret_str, _ := json.Marshal(result)
 		return string(ret_str)
 	}
 
@@ -55,41 +55,41 @@ func DoWechatPay(ctx *macaron.Context)string{
 		log.Println("[errorInfo]: error when unmarshal request body")
 		result.Code = CODE_ERROR
 		result.Msg = "json解析异常"
-	}else{
-		order :=new(model.WechatVoiceQuestions)
+	} else {
+		order := new(model.WechatVoiceQuestions)
 
-		orderErr :=order.GetConn().Where("order_number = ?",info.OrderId).Find(&order).Error
+		orderErr := order.GetConn().Where("order_number = ?", info.OrderId).Find(&order).Error
 
-		if orderErr!=nil&&!strings.Contains(orderErr.Error(),RNF){
+		if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
 			result.Code = CODE_ERROR
 			result.Msg = orderErr.Error()
-			ret_str,_:=json.Marshal(result)
+			ret_str, _ := json.Marshal(result)
 			return string(ret_str)
 		}
-		price :=order.PaymentInfo
-		priceF :=strconv.FormatFloat(price,'f',2,64)
-		return doWxPay(info.OrderId,"1",priceF)
+		price := order.PaymentInfo
+		priceF := strconv.FormatFloat(price, 'f', 2, 64)
+		return doWxPay(info.OrderId, "1", priceF)
 	}
 	resByte, _ := json.Marshal(finalResult)
 	return string(resByte)
 }
 
-func doWxPay(orderId string ,payType,price float64)string{
+func doWxPay(orderId string, payType, price float64) string {
 	result := make(map[string]interface{}, 0)
 	head := make(map[string]interface{}, 0)
 	body := make(map[string]interface{}, 0)
 	result["head"] = head
 	result["body"] = body
-	orderInfo :=new(model.WechatVoiceQuestions)
+	orderInfo := new(model.WechatVoiceQuestions)
 
-	orderInfoErr :=orderInfo.GetConn().Where("order_number = ?",orderId).Find(&orderInfo).Error
-	if orderInfoErr!=nil&&!strings.Contains(orderInfoErr.Error(),RNF){
+	orderInfoErr := orderInfo.GetConn().Where("order_number = ?", orderId).Find(&orderInfo).Error
+	if orderInfoErr != nil && !strings.Contains(orderInfoErr.Error(), RNF) {
 		head["code"] = CODE_ERROR
 		head["msg"] = "支付信息初始化失败!"
 	}
 	priceInt := int64(price)
 	//WECHAT_PREPAY_URL             = "/shangqu-3rdparty/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
-	url := fmt.Sprintf(WECHAT_PREPAY_URL,APPID, MCHID, MCHNAME, orderId, priceInt, SERVER_IP, KEY, orderInfo.CustomerOpenId, PAY_PAGE_URL, AFTER_PAY_ORDER_URL)
+	url := fmt.Sprintf(WECHAT_PREPAY_URL, APPID, MCHID, MCHNAME, orderId, priceInt, SERVER_IP, KEY, orderInfo.CustomerOpenId, PAY_PAGE_URL, AFTER_PAY_ORDER_URL)
 
 	res, err := http.Get(url)
 	if err != nil {
@@ -137,20 +137,20 @@ func doWxPay(orderId string ,payType,price float64)string{
 // 预支付返回结构体
 type UnifiedOrderResp struct {
 	Head struct {
-		     Code int64  `json:"code"`
-		     Msg  string `json:"msg"`
-	     } `json:"head"`
+		Code int64  `json:"code"`
+		Msg  string `json:"msg"`
+	} `json:"head"`
 	Body struct {
-		     AppId      string `json:"appId"`
-		     PrepayId   string `json:"prepayId"`
-		     CodeUrl    string `json:"codeUrl"`
-		     TimeStamp  string `json:"timestamp"`
-		     NonceStr   string `json:"nonceStr"`
-		     Package    string `json:"package"`
-		     SignType   string `json:"MD5"`
-		     PaySign    string `json:"paySign"`
-		     ConfigSign string `json:"configSign"`
-	     } `json:"body"`
+		AppId      string `json:"appId"`
+		PrepayId   string `json:"prepayId"`
+		CodeUrl    string `json:"codeUrl"`
+		TimeStamp  string `json:"timestamp"`
+		NonceStr   string `json:"nonceStr"`
+		Package    string `json:"package"`
+		SignType   string `json:"MD5"`
+		PaySign    string `json:"paySign"`
+		ConfigSign string `json:"configSign"`
+	} `json:"body"`
 }
 
 // 微信预支付推送结构体
@@ -171,16 +171,16 @@ type WechatRespUnifiedOrder struct {
 }
 type TicketServerResp struct {
 	Head struct {
-		     Code int64  `json:"code"`
-		     Msg  string `json:"msg"`
-	     } `json:"head"`
+		Code int64  `json:"code"`
+		Msg  string `json:"msg"`
+	} `json:"head"`
 	Body struct {
-		     Ticket      string `json:"jsapiTicket"`
-		     Accesstoken string `json:"accesstoken"`
-	     } `json:"body"`
+		Ticket      string `json:"jsapiTicket"`
+		Accesstoken string `json:"accesstoken"`
+	} `json:"body"`
 }
 
-func UnifiedOrder(ctx *macaron.Context)string{
+func UnifiedOrder(ctx *macaron.Context) string {
 	result := new(UnifiedOrderResp)
 	paramsMap := make(map[string]string, 0)
 	paramsList := []string{"appid", "mch_id", "body", "out_trade_no", "total_fee", "spbill_create_ip", "device_info", "nonce_str", "fee_type", "time_start", "notify_url", "trade_type"}
@@ -276,11 +276,11 @@ func UnifiedOrder(ctx *macaron.Context)string{
 		} else {
 			HTTPResult, err := ioutil.ReadAll(res.Body)
 			defer res.Body.Close()
-			if err!=nil{
+			if err != nil {
 				log.Println("[UnifiedOrder]:error when read responce body:" + err.Error())
 				result.Head.Code = CODE_ERROR
 				result.Head.Msg = "读取返回体错误!"
-			}else{
+			} else {
 				// 开始签名前端页面发起支付所用参数
 				var wechatResult WechatRespUnifiedOrder
 				err := xml.Unmarshal(HTTPResult, &wechatResult)
@@ -298,7 +298,7 @@ func UnifiedOrder(ctx *macaron.Context)string{
 					log.Println("[UnifiedOrder]:" + string(HTTPResult))
 					result.Head.Code = CODE_ERROR
 					result.Head.Msg = "errCode:" + wechatResult.ErrCode + "errMsg:" + wechatResult.ErrCodeDes
-				} else{
+				} else {
 					prepayMap := make(map[string]string, 0)
 					prepayList := []string{"appId", "timeStamp", "nonceStr", "package", "signType"}
 
@@ -367,38 +367,39 @@ func UnifiedOrder(ctx *macaron.Context)string{
 	resByte, _ := json.Marshal(result)
 	return string(resByte)
 }
+
 // 支付成功通知返回结构体
 type AfterPayResp struct {
 	Head struct {
-		     Code int64  `json:"code"`
-		     Msg  string `json:"msg"`
-	     } `json:"head"`
+		Code int64  `json:"code"`
+		Msg  string `json:"msg"`
+	} `json:"head"`
 	Body struct {
-		     ReturnCode     string   `json:"return_code"`
-		     ReturnMsg      string   `json:"return _msg"`
-		     AppId          string   `json:"appid"`
-		     MchId          string   `json:"mch_id"`
-		     DeviceInfo     string   `json:"device_info"`
-		     ResultCode     string   `json:"result_code"`
-		     ErrCode        string   `json:"err_code"`
-		     ErrCodeDes     string   `json:"err_code_des"`
-		     OpenId         string   `json:"openid"`
-		     TradeType      string   `json:"trade_type"`
-		     BankType       string   `json:"bank_type"`
-		     TotalFee       int64    `json:"total_fee"`
-		     FeeType        string   `json:"fee_type"`
-		     CashFee        int64    `json:"cash_fee"`
-		     CashFeeType    string   `json:"cash_fee_type"`
-		     CouponFee      int64    `json:"coupon_fee"`
-		     CouponCount    int64    `json:"coupon_count"`
-		     CouponIds      []string `json:"coupon_ids"`
-		     CouponFees     []string `json:"coupon_fees"`
-		     TransactionId  string   `json:"transaction_id"`
-		     OutTradeNo     string   `json:"out_trade_no"`
-		     Attach         string   `json:"attach"`
-		     TimeEnd        string   `json:"time_end"`
-		     ReturnToWechat string   `json:"returnToWechat"`
-	     } `json:"body"`
+		ReturnCode     string   `json:"return_code"`
+		ReturnMsg      string   `json:"return _msg"`
+		AppId          string   `json:"appid"`
+		MchId          string   `json:"mch_id"`
+		DeviceInfo     string   `json:"device_info"`
+		ResultCode     string   `json:"result_code"`
+		ErrCode        string   `json:"err_code"`
+		ErrCodeDes     string   `json:"err_code_des"`
+		OpenId         string   `json:"openid"`
+		TradeType      string   `json:"trade_type"`
+		BankType       string   `json:"bank_type"`
+		TotalFee       int64    `json:"total_fee"`
+		FeeType        string   `json:"fee_type"`
+		CashFee        int64    `json:"cash_fee"`
+		CashFeeType    string   `json:"cash_fee_type"`
+		CouponFee      int64    `json:"coupon_fee"`
+		CouponCount    int64    `json:"coupon_count"`
+		CouponIds      []string `json:"coupon_ids"`
+		CouponFees     []string `json:"coupon_fees"`
+		TransactionId  string   `json:"transaction_id"`
+		OutTradeNo     string   `json:"out_trade_no"`
+		Attach         string   `json:"attach"`
+		TimeEnd        string   `json:"time_end"`
+		ReturnToWechat string   `json:"returnToWechat"`
+	} `json:"body"`
 }
 
 // 解析完微信推送信息后应该返回给微信的结构体
@@ -537,12 +538,12 @@ func DecodeWechatPayInfo(ctx *macaron.Context) string {
 // 获取JSAPI_TICKET返回值
 type RespJsapiTicket struct {
 	Head struct {
-		     Code int64  `json:"code"`
-		     Msg  string `json:"msg"`
-	     } `json:"head"`
+		Code int64  `json:"code"`
+		Msg  string `json:"msg"`
+	} `json:"head"`
 	Body struct {
-		     Ticket string `json:"jsapiTicket"`
-	     } `json:"body"`
+		Ticket string `json:"jsapiTicket"`
+	} `json:"body"`
 }
 
 /**
@@ -588,8 +589,8 @@ func JsapiTicket(ctx *macaron.Context) string {
 }
 
 type TokenResp struct {
-	Code int64 `json:"code"`
-	Msg string `json:"msg"`
+	Code  int64  `json:"code"`
+	Msg   string `json:"msg"`
 	Token string `json:"token"`
 }
 type WXResponse struct {
@@ -597,27 +598,26 @@ type WXResponse struct {
 	ExpiresIn   int64  `json:"expires_in"`
 }
 
-
 func GetAccesstoken(appid string) (string, error) {
 	var err error
 
 	wechantInfo := new(model.MsMerchantWechatInfo)
 	wechantInfo.GetConn().Where("appid = ?", appid).First(wechantInfo)
-	tokenUrl :="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+wechantInfo.AppSecret
+	tokenUrl := "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appid + "&secret=" + wechantInfo.AppSecret
 	// 改为通过apib1获取
 	resp, err := http.Get(tokenUrl)
-	if err!=nil{
-		return "",err
+	if err != nil {
+		return "", err
 	}
-	res ,err1:=ioutil.ReadAll(resp)
-	if err1!=nil{
-		return "",err1
+	res, err1 := ioutil.ReadAll(resp)
+	if err1 != nil {
+		return "", err1
 	}
 	defer resp.Body.Close()
-	wx :=new(WXResponse)
-	json.Unmarshal(res,wx)
-	token :=wx.AccessToken
-	return token,nil
+	wx := new(WXResponse)
+	json.Unmarshal(res, wx)
+	token := wx.AccessToken
+	return token, nil
 }
 
 func GetJsapiTicket(appid, accesstoken string) (string, error) {
@@ -629,7 +629,5 @@ func GetJsapiTicket(appid, accesstoken string) (string, error) {
 
 	//ticketType :="jsapi"
 
-
 	return result, err
 }
-

@@ -508,7 +508,7 @@ func DoPay(ctx *macaron.Context) string {
 
 func VoiceUpLoad(ctx *macaron.Context) string {
 	//这里返回一个路径
-	return ""
+
 }
 
 type AnswerQuestion1 struct {

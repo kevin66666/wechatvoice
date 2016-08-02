@@ -128,7 +128,7 @@ func QueryBadAnswers(statusList []string, startLine, endLine int64) ([]WechatVoi
 	l1 := make([]WechatVoiceQuestions, 0)
 	var err error
 	var count int64
-	err = conn.Where("category_id in (?)", catList).Where("is_solved =?", "1").Where("rank_info in (?)", statusList).Find(&l1).Count(&count).Error
-	err = conn.Where("category_id in (?)", catList).Where("is_solved =?", "1").Where("rank_info in (?)", statusList).Offset(startLine - 1).Offset(endLine - startLine + 1).Find(&l1).Count(&count).Error
+	err = conn.Where("category_id in (?)", statusList).Where("is_solved =?", "1").Where("rank_info in (?)", statusList).Find(&l1).Count(&count).Error
+	err = conn.Where("category_id in (?)", statusList).Where("is_solved =?", "1").Where("rank_info in (?)", statusList).Offset(startLine - 1).Offset(endLine - startLine + 1).Find(&l1).Count(&count).Error
 	return list, count, err
 }

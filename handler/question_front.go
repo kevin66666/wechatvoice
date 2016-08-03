@@ -132,6 +132,61 @@ params
 
 
 */
+
+type ListInitReq struct {
+	StartLine int64 `json:"startNum"`
+	EndLine   int64 `json:"endNum"`
+}
+
+func QuestionListInit(ctx *macaron.Context) string {
+	body, _ := ctx.Req.Body().String()
+	req := new(ListInitReq)
+	response := new(QuestionQueryResponse)
+	unmarshallErr := json.Unmarshal([]byte(body), req)
+	if unmarshallErr != nil {
+		response.Code = CODE_ERROR
+		response.Msg = MSG_SUCCESS
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	list, count, err := model.GetQueryList(req.StartLine, req.EndLine)
+
+	if err != nil && !strings.Contains(err.Error(), "record not found") {
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	retList := make([]QuestionInfo, 0)
+	for _, k := range list {
+		single := new(QuestionInfo)
+		single.QuestionId = k.Uuid
+		single.QuestionCategoryId = k.CategoryId
+		single.QuestionTopic = k.Category
+		single.LawyerId = k.AnswerId
+		single.LawyerName = k.AnswerName
+		lawyer := new(model.LawyerInfo)
+		lawyerErr := lawyer.GetConn().Where("uuid = ?", k.AnswerId).Find(&lawyer).Error
+		if lawyerErr != nil && !strings.Contains(lawyerErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = lawyerErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		single.HeadImg = lawyer.HeadImgUrl
+		single.VoicePath = k.VoicePath
+		single.QuestionCateName = k.Category
+		retList = append(retList, *single)
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.List = retList
+	response.Total = count
+	ret_str, _ := json.Marshal(response)
+	return string(ret_str)
+}
+
 type NewQuestionRequest struct {
 	CateId       string `json:"cateId"`
 	CateName     string `json:"cateName"`

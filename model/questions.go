@@ -58,10 +58,10 @@ func (this *WechatVoiceQuestions) CloseConn(db *gorm.DB) {
 }
 
 type QuestionQuery struct {
-	KeyWord    string `json:"keyWord"`
+	KeyWord    string `json:"keyWords"`
 	CategoryId string `json:"categoryId"`
-	StartLine  int64  `json:"startLine"`
-	EndLine    int64  `json:"endLine"`
+	StartLine  int64  `json:"startNum"`
+	EndLine    int64  `json:"endNum"`
 }
 
 func GetQuestionQuery(req QuestionQuery) ([]WechatVoiceQuestions, int64, error) {
@@ -82,6 +82,19 @@ func GetQuestionQuery(req QuestionQuery) ([]WechatVoiceQuestions, int64, error) 
 	query = query.Order("rank_info asc")
 	err = query.Find(&list1).Count(&count).Error
 	err = query.Offset(req.StartLine - 1).Limit(req.EndLine - req.StartLine + 1).Find(&list).Error
+	return list, count, err
+}
+
+func GetQueryList(startLine, endLine int64) ([]WechatVoiceQuestions, int64, error) {
+	conn := dbpool.OpenConn()
+	defer dbpool.CloseConn(&conn)
+	var count int64
+	list := make([]WechatVoiceQuestions, 0)
+	list1 := make([]WechatVoiceQuestions, 0)
+
+	err := conn.Where("is_solved = 1").Order("id desc").Offset(startLine - 1).Limit(endLine - startLine).Find(&list).Error
+	err = conn.Where("is_solved = 1").Order("id desc").Find(&list1).Count(&count).Error
+
 	return list, count, err
 }
 

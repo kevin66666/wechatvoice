@@ -1,0 +1,112 @@
+/*todo:vertical-align:
+   1==> vertical-vert
+   2==> top-Tp / middle-Md /  bottom-Bm
+*/
+.wboll-vertTp{vertical-align:top;}
+.wboll-vertMd{vertical-align:middle;}
+.wboll-vertBm{vertical-align:bottom;}
+
+/*float*/
+.floatLt{float:left;}
+.floatRt{float:right;}
+/*folat end*/
+
+/*todo:display
+  none-N/block - B / inline-block - Inb / inherit - Inh / table-cell - TabCell */
+.disNe{display: none !important;}
+.disBk{display: block;}
+.disInb{display: inline-block;}
+.disInh{display: inherit;}/*继承父元素的 display 属性*/
+.disTabCell{display: table-cell;}
+
+/* todo:title
+  11/12/14/16/18/20
+*/
+.wboll-T1 {font-size:20px;}
+.wboll-T2 {font-size:18px;}
+.wboll-T3 {font-size:16px;}
+.wboll-T4 {font-size:14px;}
+.wboll-T5 {font-size:13px;}
+.wboll-T6 {font-size:12px;}
+.wboll-T7 {font-size:11px;}
+
+/* todo:space
+   1==> 5-xs/8-ms/10-md/12-mg/20-lg
+   2==> padding-Pad / margin-Mag
+   3==> top-Tp/right-Rt/bottom-Bm/left-Lt
+   4==> center-Ct/middle-Md
+ */
+.wbollPad-md{padding:12px;}
+.wbollMag-md{margin:12px;}
+.magMinusTp-md{margin-top:-12px;}
+.magMinusLt-md{margin-left:-12px;}
+.magMinusRt-md{margin-right:-12px;}
+.magMinusTrl-md{
+  margin-top:-12px;
+  margin-left:-12px;
+  margin-right:-12px;
+}
+.magRt-8{margin-right:8px;}
+.magLt-8{margin-left:8px;}
+/* -<<<<<<<<<<<<<<<<<- */
+.padding-md{padding:12px;}
+.margin-md{margin:12px;}
+.margin-horizontal-md{margin-left:12px;margin-right:12px;}
+.margin-vertical-md{margin-top:12px;margin-bottom:12px;}
+.margin-minus-t-md{margin-top:-12px;}
+.margin-minus-r-md{margin-right:-12px;}
+.margin-minus-d-md{margin-bottom:-12px;}
+.margin-minus-l-md{margin-left:-12px;}
+.margin-minus-md{
+  margin-top:-12px;
+  margin-right:-12px;
+  margin-left:-12px;
+}
+.margin-horizontal-minus-md{margin-left:-12px;margin-right:-12px;}
+.margin-vertical-minus-md{margin-top:-12px;margin-bottom:-12px;}
+/* space end*/
+/*todo:color*/
+.clr-black{color:#000;}
+.clr-gray-lg{color:#2d2d2d;}
+.clr-gray-md{color:#7d7d7d;}
+.clr-gray-xs{color:#bbb;}
+/*color end */
+/*bg-color*/
+.bgcolor-gray-xxs{background-color:#f0f0f0;}
+/* todo: 待定义颜色 .bgcolor-gray-xs{background-color:;} */
+.bgcolor-gray-md{background-color:#d7d7d7;}
+/*bg-color end*/
+/*width*/
+.width-fixed-4{width:40px;}
+.width-fixed-6{width:60px;}
+.width-md{width:50%;}
+.width-lg{width:100%;}
+/*width end*/
+
+/* ===== ----- +++++  public end  +++++ ----- ===== */
+
+.wboll-med,.wboll-medBody{
+  overflow: hidden;
+  zoom:1;
+}
+.wboll-med{padding:12px;border:1px solid #ddd;background:#fff;}
+.wboll-medBox,.wboll-medBody{
+  display: table-cell;
+  padding:0 8px 0 0;
+}
+.wboll-medBody{
+  width:99%;
+}
+.wboll-medTitle{
+  font-size:12px;
+  color:#2d2d2d;
+}
+.wboll-medDesc {
+  font-size: 11px;
+  color: #bcbcbc;
+}
+.wboll-medOther{
+  font-size:11px;
+  color:#ff5400;
+
+}

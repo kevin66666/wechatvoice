@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/Unknwon/macaron"
-	"wechatvoice/model"
 	"strings"
+	"wechatvoice/model"
 	"wechatvoice/tool/util"
 	//"time"
 	//"strconv"
@@ -13,157 +13,158 @@ import (
 )
 
 type GeneralResponse struct {
-	Code int64 `json:"code"`
-	Msg string `json:"msg"`
+	Code int64  `json:"code"`
+	Msg  string `json:"msg"`
 }
 type AddCateRequest struct {
 	CateName string `json:"name"`
 }
-func CreateCateList(ctx *macaron.Context)string{
-	body,_:=ctx.Req.Body().String()
 
-	req :=new(AddCateRequest)
-	response :=new(GeneralResponse)
-	json.Unmarshal([]byte(body),req)
+func CreateCateList(ctx *macaron.Context) string {
+	body, _ := ctx.Req.Body().String()
 
-	uuid :=util.GenerateUuid()
+	req := new(AddCateRequest)
+	response := new(GeneralResponse)
+	json.Unmarshal([]byte(body), req)
 
-	cate :=new(model.LawCatgory)
+	uuid := util.GenerateUuid()
+
+	cate := new(model.LawCatgory)
 
 	cate.Uuid = uuid
 	cate.CategoryName = req.CateName
 
-	err :=cate.GetConn().Create(&cate).Error
+	err := cate.GetConn().Create(&cate).Error
 
-	if err!=nil{
+	if err != nil {
 		response.Code = CODE_ERROR
 		response.Msg = err.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
-	ret_str,_:=json.Marshal(response)
+	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
 
 type SettingListReq struct {
 	StartLine int64 `json:"startLine"`
-	EndLine int64 `json:"endLine"`
+	EndLine   int64 `json:"endLine"`
 }
 
-type SettingListResponse struct{
-	Code int64 `json:"code"`
-	Msg string `json:"msg"`
+type SettingListResponse struct {
+	Code int64     `json:"code"`
+	Msg  string    `json:"msg"`
 	List []Setting `json:"list"`
 }
 
 type Setting struct {
-	SettingId string `json:"settingId"`
-	CateId string `json:"cateId"`
-	CateName string `json:"cateName"`
-	AmountInt string `json:"amount"`
-	LawyerPercent string `json:"lawerP"`
+	SettingId        string `json:"settingId"`
+	CateId           string `json:"cateId"`
+	CateName         string `json:"cateName"`
+	AmountInt        string `json:"amount"`
+	LawyerPercent    string `json:"lawerP"`
 	RedPacketPercent string `json:"redPacket"`
 }
-func GetQuestionSettingList(ctx *macaron.Context)string{
-	body,_:=ctx.Req.Body().String()
 
-	req :=new(SettingListReq)
+func GetQuestionSettingList(ctx *macaron.Context) string {
 
-	response :=new(SettingListResponse)
+	req := new(SettingListReq)
 
-	list:=make([]Setting,0)
+	response := new(SettingListResponse)
 
-	retList,err :=model.GetSettingList(req.StartLine,req.EndLine)
+	list := make([]Setting, 0)
 
-	if err!=nil&&!strings.Contains(err.Error(),RNF){
+	retList, err := model.GetSettingList(req.StartLine, req.EndLine)
+
+	if err != nil && !strings.Contains(err.Error(), RNF) {
 		response.Code = CODE_ERROR
-		response.Msg  = err.Error()
-		ret_str,_:=json.Marshal(response)
+		response.Msg = err.Error()
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
-	for _,k:=range retList{
-		single :=new(Setting)
+	for _, k := range retList {
+		single := new(Setting)
 		single.SettingId = k.Uuid
-		single.CateName  = k.CateGoryName
+		single.CateName = k.CateGoryName
 		single.CateId = k.CategoryId
 		single.AmountInt = k.PayAmount
-		single.LawyerPercent  = k.LawyerFeePercent
-		single.RedPacketPercent  = k.UserRedPacketPercent
-		list = append(list,*k)
+		single.LawyerPercent = k.LawyerFeePercent
+		single.RedPacketPercent = k.UserRedPacketPercent
+		list = append(list, *single)
 	}
 
 	response.Code = CODE_SUCCESS
-	response.Msg  = "ok"
-	ret_str,_:=json.Marshal(response)
+	response.Msg = "ok"
+	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
 
-
-type IdRequest struct{
+type IdRequest struct {
 	SettingId string `json:"settingId"`
 }
 
-type SingleResponse struct{
-	Code int64 `json:"code"`
-	Msg string `json:"msg"`
+type SingleResponse struct {
+	Code    int64  `json:"code"`
+	Msg     string `json:"msg"`
 	Setting `json:"setting"`
 }
-func GetQuestionSettingsById(ctx *macaron.Context)string{
-	body,_:=ctx.Req.Body().String()
 
-	req :=new(IdRequest)
+func GetQuestionSettingsById(ctx *macaron.Context) string {
+	body, _ := ctx.Req.Body().String()
 
-	json.Unmarshal([]byte(body),req)
+	req := new(IdRequest)
 
-	response :=new(SingleResponse)
+	json.Unmarshal([]byte(body), req)
 
-	k :=new(model.WechatVoiceQuestionSettings)
+	response := new(SingleResponse)
 
-	settingErr:=setting.GetConn().Where("uuid = ?",req.SettingId).Find(&setting).Error
+	setting := new(model.WechatVoiceQuestionSettings)
 
-	if settingErr!=nil&&!strings.Contains(settingErr.Error(),RNF){
+	settingErr := setting.GetConn().Where("uuid = ?", req.SettingId).Find(&setting).Error
+
+	if settingErr != nil && !strings.Contains(settingErr.Error(), RNF) {
 		response.Code = CODE_ERROR
-		response.Msg  = settingErr.Error()
-		ret_str,_:=json.Marshal(response)
+		response.Msg = settingErr.Error()
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
-	single :=new(Setting)
+	single := new(Setting)
 
-	single.SettingId = k.Uuid
-	single.CateName  = k.CateGoryName
-	single.CateId = k.CategoryId
-	single.AmountInt = k.PayAmount
-	single.LawyerPercent  = k.LawyerFeePercent
-	single.RedPacketPercent  = k.UserRedPacketPercent
+	single.SettingId = setting.Uuid
+	single.CateName = setting.CateGoryName
+	single.CateId = setting.CategoryId
+	single.AmountInt = setting.PayAmount
+	single.LawyerPercent = setting.LawyerFeePercent
+	single.RedPacketPercent = setting.UserRedPacketPercent
 
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
 	response.Setting = *single
-	ret_str,_:=json.Marshal(response)
+	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
 
-func EditWechatVoiceQuestionSettings(ctx *macaron.Context)string{
-	req :=new(Setting)
+func EditWechatVoiceQuestionSettings(ctx *macaron.Context) string {
+	req := new(Setting)
 
-	response :=new(GeneralResponse)
+	response := new(GeneralResponse)
 
-	body,_:=ctx.Req.Body().String()
-	json.Unmarshal([]byte(body),req)
+	body, _ := ctx.Req.Body().String()
+	json.Unmarshal([]byte(body), req)
 
-	setting :=new(model.WechatVoiceQuestionSettings)
+	setting := new(model.WechatVoiceQuestionSettings)
 
-	err :=setting.GetConn().Where("uuid = ?",req.SettingId).Find(&setting).Error
+	err := setting.GetConn().Where("uuid = ?", req.SettingId).Find(&setting).Error
 
-	if err!=nil&&!strings.Contains(err.Error(),RNF){
+	if err != nil && !strings.Contains(err.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = err.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
@@ -171,20 +172,20 @@ func EditWechatVoiceQuestionSettings(ctx *macaron.Context)string{
 	setting.CategoryId = req.CateId
 	setting.CateGoryName = req.CateName
 	setting.PayAmount = req.AmountInt
-	amtInt,_:=strconv.ParseInt(req.AmountInt,10,64)
-	setting.PayAmountInt =  amtInt
-	setting.UserRedPacketPercent   =req.RedPacketPercent
+	amtInt, _ := strconv.ParseInt(req.AmountInt, 10, 64)
+	setting.PayAmountInt = amtInt
+	setting.UserRedPacketPercent = req.RedPacketPercent
 
 	err = setting.GetConn().Save(&setting).Error
 
-	if err!=nil&&!strings.Contains(err.Error(),RNF){
+	if err != nil && !strings.Contains(err.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = err.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
-	ret_str,_:=json.Marshal(response)
+	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }

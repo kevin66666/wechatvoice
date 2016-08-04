@@ -1,0 +1,36 @@
+.mainNav a {
+  display: block;
+  margin: 0 auto;
+  text-decoration:none;
+}
+.mainNav a img.dispN{display:none;}
+.mainNav-ybord {
+  border: solid 1px #eeeeee;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.mainNav-nbord {
+  padding-top: 10px;
+}
+
+.nav-img-70 {
+  width: 40%;
+}
+
+.nav-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.nav-img-circle {
+  border-radius: 50%;
+}
+
+.nav-title {
+  text-align: center;
+  font-size:13px;
+  padding-top: 8px;
+  padding-bottom: 12px;
+}

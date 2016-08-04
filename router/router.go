@@ -2,9 +2,9 @@ package router
 
 import (
 	"github.com/Unknwon/macaron"
-	// c "wechatvoice/handler"
+	c "wechatvoice/handler"
 )
 
 func SetRouter(m *macaron.Macaron) {
-	m.Post("/pay/decodewechatpayinfo")
+	m.Post("/pay/decodewechatpayinfo", c.CreateNewQuestion)
 }

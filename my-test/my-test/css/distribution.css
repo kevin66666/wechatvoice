@@ -1,0 +1,104 @@
+/*publik*/
+*{font-family: 'Microsoft Yahei', "Open Sans", Arial, sans-serif}
+.border-bottom{border-bottom:1px solid #555}
+.border-radius-0{ border-radius: 0;}
+/* float*/
+.float-left{ float:left;}
+.float-right{ float:right;}
+
+/*position*/
+.position-relative {position:relative}
+.position-absolute {position:absolute}
+.position-fixed {position:fixed}
+
+/*css3-flex*/
+.dp-flex { display: flex; align-items: center}
+.flex-1 { flex:1;}
+.flex-2 { flex:2;}
+.flex-3 { flex:3;}
+.flex-7 { flex:7;}
+.flex-10 { flex:10;}
+
+/* btn 固定 */
+.btn-fixed{width:92%; margin-left: 4%; position: absolute;bottom:15px;}
+.btn-a{width:92%; margin-bottom:15px;}
+/*-----------------------------------*/
+
+/*apply*/
+.applyShowFlow{text-align: center;height:28%;}
+.applyForm,.applyDown{height: 70%; margin-top: 3%;}
+
+/*流程图box*/
+.flowNumBox{position:relative; top:-15px;}
+/*流程图num*/
+.circleNum{
+  width:30px;
+  height:30px;
+  line-height: 30px;
+  margin:0 auto 10px auto;
+}
+
+/*验证码 VerCode*/
+.VerCode{overflow:auto}
+.VerCodeInpt{width:66%; float:left;}
+.VerCodeBtn{float:right;}
+
+/*二维码 Qr code*/
+.QrcodeBox{width:40%;margin:0 auto;
+  text-align:center}
+
+/*选择商品 label*/
+.productLabel {width:100% !important;}
+#content-chooseGood-apply label{width:100% !important;}
+.unit-checkbox input[type="checkbox"]{margin-left:0px; !important}
+.input-textarea{word-wrap: break-word;
+  word-break: normal;}
+
+/*   ---================  vivian end  ======= --------------*/
+/*   ---================  llf start  ======= --------------*/
+.price-box{ padding: 30px 0; text-align: center;}
+.price-circle{ border-radius:50%; width: 90px; height: 90px; margin: 15px auto 0; background-color: rgba(62,194,237,0.7);}
+
+.img-width-20{ width:20px;}
+.input-height{height:64px !important;}
+
+.text-align-left{text-align:left;}
+
+.bottom-15{bottom:15px;}
+/*smallshopmanage*/
+.glyph-list-pd{padding-bottom:13px;}
+
+/*nextagentlist 图片大小*/
+.image-64{width:64px;}
+
+/*applycommission2*/
+.border-none{border:none;}
+.padding-left-12{padding-left:12px;}
+
+/*下级代理数*/
+.line-height-90{line-height: 90px;}
+
+/* 登陆页面*/
+.logo{width:100px;margin:40px auto 0;  }
+.text-decoration{text-decoration:underline;}
+.input-width-63{width:63%; float:left;}
+/*添加账号*/
+.chose-radio{
+  background:url(../img/public/dian.png) 10px center no-repeat;
+  display: block;
+  padding-left:12%;
+  background-size:10%;
+}
+.chose-radio:focus,.chose-radio:hover,.chose-radio:active{
+  background:url(../img/public/blueDian.png) 10px center no-repeat;
+  display: block;
+  padding-left:12%;
+  background-size:10%;
+}
+.chose-radio > span > img{
+  width:100%;
+}
+.content-xs > .nav-tabs{border-bottom: none}
+ 
+ 
+ 

@@ -59,6 +59,7 @@ type QuestionInfo struct {
 	LawyerId           string `json:"lawyerId"`
 	HeadImg            string `json:"headImg"`
 	VoicePath          string `json:"path"`
+	IsSolved string `json:"isSolved"`
 }
 
 //查询问题方法
@@ -774,7 +775,7 @@ type SingleQuestionInfo struct {
 	Msg          string `json:"msg"`
 	QuestionInfo `json:"questionInfo"`
 }
-
+//根据ID获取问题详情
 func GetQuestionInfoById(ctx *macaron.Context) string {
 	qId := ctx.Query("id")
 	questionInfo := new(model.WechatVoiceQuestions)
@@ -789,4 +790,101 @@ func GetQuestionInfoById(ctx *macaron.Context) string {
 	var single QuestionInfo
 	single.HeadImg = questionInfo.AskerHeadImg
 	single.QuestionId = questionInfo.Uuid
+	single.QuestionTopic = questionInfo.Description
+	single.LawyerId = questionInfo.AnswerId
+	single.LawyerName = questionInfo.AnswerName
+	single.QuestionCategoryId = questionInfo.CategoryId
+	single.QuestionCateName =  questionInfo.Category
+	single.IsSolved = questionInfo.IsSolved
+
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.QuestionInfo = single
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}
+//做出评价
+type RankAnswerReq struct {
+	QuestionId string `json:"questionId"`
+	RankInfo int64 `json:"rank"`
+}
+func RankTheAnswer(ctx *macaron.Context)string{
+	body,_:=ctx.Req.Body().String()
+	req :=new(RankAnswerReq)
+	response :=new(model.GeneralResponse)
+	json.Unmarshal([]byte(body),req)
+	questionInfo :=new(model.WechatVoiceQuestions)
+
+	questionInfoErr :=questionInfo.GetConn().Where("uuid = ?",req.QuestionId).Find(&questionInfo).Error
+	if questionInfoErr!=nil&&!strings.Contains(questionInfoErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = questionInfoErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	questionInfo.IsRanked = "1"
+	r :=strconv.FormatInt(req.RankInfo,10)
+	questionInfo.RankInfo = r
+
+	errUpdate :=questionInfo.GetConn().Save(&questionInfo).Error
+	if errUpdate!=nil{
+		response.Code = CODE_ERROR
+		response.Msg = errUpdate.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	lId :=questionInfo.AnswerId
+	rankLog :=new(model.RankInfoLogs)
+	logUuid :=util.GenerateUuid()
+	rankLog.Uuid = logUuid
+	rankLog.QuestionId = questionInfo.Uuid
+	rankLog.LawyerId =lId
+	rankLog.LawyerName = questionInfo.AnswerName
+	rankLog.AskerName = questionInfo.CustomerName
+	rankLog.AskerId = questionInfo.CustomerId
+	rankLog.RankInfo = r
+	today := time.Unix(time.Now().Unix(), 0).String()[0:19]
+	rankLog.RankTime= today
+	rankLog.RankPerson = "0"
+	err :=rankLog.GetConn().Create(&rankLog).Error
+	if err!=nil{
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	lInfo :=new(model.LawyerInfo)
+	linfoErr :=lInfo.GetConn().Where("uuid = ?",lId).Find(&lInfo).Error
+	if linfoErr!=nil&&!strings.Contains(linfoErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = linfoErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	switch req.RankInfo {
+	case 1:
+		lInfo.RankLast = lInfo.RankLast +1
+	case 2:
+		lInfo.RankFouth = lInfo.RankFouth+1
+	case 3:
+		lInfo.RankThird = lInfo.RankThird+1
+	case 4:
+		lInfo.RankSecond = lInfo.RankSecond+1
+	case 5:
+		lInfo.RankFirst = lInfo.RankFirst+1
+	}
+	lInfoUErr :=lInfo.GetConn().Save(&lInfo).Error
+
+	if lInfoUErr!=nil{
+		response.Code = CODE_ERROR
+		response.Msg = lInfoUErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
 }

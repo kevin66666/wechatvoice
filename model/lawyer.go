@@ -25,6 +25,12 @@ type LawyerInfo struct {
 	FirstCategory string //lawcatgoryID FK
 	SecondCategory string //lawcatgoryID FK
 	ThridCategory string //lawcatgoryID FK
+
+	RankFirst int64
+	RankSecond int64
+	RankThird int64
+	RankFouth int64
+	RankLast int64
 }
 
 func init() {

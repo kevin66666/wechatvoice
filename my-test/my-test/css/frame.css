@@ -1,0 +1,24 @@
+/*comFrame style*/
+.portal{padding:12px;  }
+.portal .row{padding:0; }
+.portal .row{margin:0 -12px 0 -12px; }
+.portal > .media{padding:0;margin:0; }
+.portal .col-xs-12{padding:0 12px 0 12px; }
+.portal a:hover,.portal a:active,.portal a:focus{text-decoration:none; }
+.portal a:focus{color:#000;}
+.portal .col-xs-6{padding:0 6px 0 6px; margin-bottom:12px;}
+.portal .col-xs-12 .row .col-xs-1,portal .col-xs-12 .row .col-xs-3,portal .col-xs-12 .row .col-xs-7{
+	padding:0 !important;}
+.portal .col-xs-12 .row{padding-left:6px; padding-right: 6px;}
+/*comFrame style end*/
+
+/*navFrame style*/
+
+.portal .col-xs-12 .row > .navUnit-box {padding:0;margin:0; }
+.portal > .row >.col-xs-12 > .navUnit-item{padding:0 20px;}
+/*navFrame style end*/
+
+/*productDesc*/
+.prodDesc .col-xs-12{padding:0; }
+
+/*商品详情页面 加载更多*/

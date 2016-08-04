@@ -1,0 +1,30 @@
+{
+	"code":10000,
+	"msg":"ok",
+	"list":[
+		{
+			"laywerId":"100",
+			"question":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"name":"张三",
+			"selfIntr":"律师",
+			"pic":"img/a9.png",
+			"answer":"###"
+		},
+		{
+			"laywerId":"101",
+			"question":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"name":"李四",
+			"selfIntr":"律师",
+			"pic":"img/a9.png",
+			"answer":"###"
+		},
+		{
+			"laywerId":"102",
+			"question":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"name":"王五",
+			"selfIntr":"律师",
+			"pic":"img/a9.png",
+			"answer":"###"
+		}
+	]
+}

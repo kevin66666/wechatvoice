@@ -769,4 +769,24 @@ func AddPeekCount(questionId string) error {
 	return err
 }
 
-//这里需要加入各种统计信息
+type SingleQuestionInfo struct {
+	Code         int64  `json:"code"`
+	Msg          string `json:"msg"`
+	QuestionInfo `json:"questionInfo"`
+}
+
+func GetQuestionInfoById(ctx *macaron.Context) string {
+	qId := ctx.Query("id")
+	questionInfo := new(model.WechatVoiceQuestions)
+	response := new(SingleQuestionInfo)
+	qErr := questionInfo.GetConn().Where("uuid = ?", qId).Find(&questionInfo).Error
+	if qErr != nil && !strings.Contains(qErr.Error(), "record not found") {
+		response.Code = CODE_ERROR
+		response.Msg = qErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	var single QuestionInfo
+	single.HeadImg = questionInfo.AskerHeadImg
+	single.QuestionId = questionInfo.Uuid
+}

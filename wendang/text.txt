@@ -1,0 +1,151 @@
+1 创建问题分类接口
+    URL:/wechatvoice/back/addsetting
+    POST
+    参数
+            {
+                "name":"离婚诉讼"
+            }
+
+    返回值   {
+                "code":10000,
+                "msg":"ok"
+            }
+2 获取问题分类接口
+    URL:/wechatvoice/back/getcatelist
+    POST
+    参数
+            {
+                "startLine":1,
+                "endLine":10
+            }
+    返回值
+            {
+                "code":10000,
+                "msg":"ok",
+                "list":[
+                    {
+                        "cateId":"xxxxx",
+                        "cateName":"xxxxx"
+                    }
+                ]
+
+            }
+3 删除问题分类接口
+    URL:/wechatvoice/back/deletecate
+    POST
+    参数
+            {
+                "cateId":"xxxxxx"
+            }
+    返回值
+            {
+                "code":10000,
+                "msg":"ok"
+            }
+4 编辑问题分类接口
+    URL:/wechatvoice/back/editcate
+    POST
+    参数
+            {
+                "cateId":"xxxx",
+                "cateName":"xxxx"
+            }
+    返回值
+                 {
+                     "code":10000,
+                     "msg":"ok"
+                 }
+     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+1 获取支付配置列表接口
+    URL :/wechatvoice/back/questionsettinglist
+    POST
+    参数
+               {
+                   "startLine":1,
+                   "endLine":10
+               }
+       返回值
+               {
+                   "code":10000,
+                   "msg":"ok",
+                   "list":[
+                       {
+                           "cateId":"xxxxx", //分类ID
+                           "cateName":"xxxxx"， //分类名称
+                           "settingId":"xxx", //配置ID
+                           "amount":"", //订单需要支付多少钱
+                           "lawerP":"",//律师可从中抽取的百分比
+                           "redPacket":"" //用户可抽取红包的百分比
+                       }
+                   ]
+
+               }
+  2 编辑支付配置接口
+  URL :/wechatvoice/back/getsettingbyid
+  POST
+  参数
+                {
+                    "settingId":"xxxxxx"
+                }
+     返回值
+                  {
+                      "code":10000,
+                      "msg":"ok",
+                      "setting":
+                          {
+                              "cateId":"xxxxx", //分类ID
+                              "cateName":"xxxxx"， //分类名称
+                              "settingId":"xxx", //配置ID
+                              "amount":"", //订单需要支付多少钱
+                              "lawerP":"",//律师可从中抽取的百分比
+                              "redPacket":"" //用户可抽取红包的百分比
+                          }
+
+                  }
+  3 删除支付配置接口
+  URL :/wechatvoice/back/deletesetting
+   POST
+    参数
+                  {
+                      "settingId":"xxxxxx"
+                  }
+       返回值
+                    {
+                        "code":10000,
+                        "msg":"ok"
+                    }
+
+
+  4 编辑支付配置接口
+  URL:/wechatvoice/back/editsetting
+  POST
+  参数
+    {
+                                "cateId":"xxxxx", //分类ID
+                                "cateName":"xxxxx"， //分类名称
+                                "settingId":"xxx", //配置ID
+                                "amount":"", //订单需要支付多少钱
+                                "lawerP":"",//律师可从中抽取的百分比
+                                "redPacket":"" //用户可抽取红包的百分比
+     }
+      返回值
+                      {
+                          "code":10000,
+                          "msg":"ok"
+                      }
+  5 添加支付配置接口
+  URL:/wechatvoice/back/addsetting
+  POST
+  参数
+   {
+                                  "cateId":"xxxxx", //分类ID
+                                  "cateName":"xxxxx"， //分类名称
+                                  "amount":"", //订单需要支付多少钱
+                                  "lawerP":"",//律师可从中抽取的百分比
+                                  "redPacket":"" //用户可抽取红包的百分比
+       }
+        返回值
+                        {
+                            "code":10000,
+                            "msg":"ok"
+                        }

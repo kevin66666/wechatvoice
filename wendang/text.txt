@@ -3,7 +3,7 @@
     POST
     参数
             {
-                "name":"离婚诉讼"
+                "name":"离婚诉讼"//这里传入名称即可
             }
 
     返回值   {
@@ -13,6 +13,7 @@
 2 获取问题分类接口
     URL:/wechatvoice/back/getcatelist
     POST
+    根据请求的分页数据 返回对应的分类信息的数组
     参数
             {
                 "startLine":1,
@@ -24,8 +25,8 @@
                 "msg":"ok",
                 "list":[
                     {
-                        "cateId":"xxxxx",
-                        "cateName":"xxxxx"
+                        "cateId":"xxxxx", //分类ID
+                        "cateName":"xxxxx" //分类名称
                     }
                 ]
 
@@ -35,7 +36,7 @@
     POST
     参数
             {
-                "cateId":"xxxxxx"
+                "cateId":"xxxxxx" //请求需要删除的分类ID
             }
     返回值
             {
@@ -47,14 +48,16 @@
     POST
     参数
             {
-                "cateId":"xxxx",
-                "cateName":"xxxx"
+                "cateId":"xxxx", //编辑的分类ID 从LIST获取
+                "cateName":"xxxx" //新的名称
             }
     返回值
                  {
                      "code":10000,
                      "msg":"ok"
                  }
+     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 1 获取支付配置列表接口
     URL :/wechatvoice/back/questionsettinglist
@@ -149,3 +152,80 @@
                             "code":10000,
                             "msg":"ok"
                         }
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   后台问题列表获取
+   URL: /wechatvoice/back/getquestionlist
+   POST
+   参数
+    {
+                   "startLine":1,
+                   "endLine":10
+               }
+    返回
+     {
+                       "code":10000,
+                       "msg":"ok",
+                       "list":[
+                           {
+                               "questionId":"xxxxx", //问题ID
+                               "questionName":"xxxxx"， //问题名称
+                               "questionCateId":"xxx", //问题所属分类ID
+                               "cateName":"", //分类名称
+                               "lawyerName":"", //律师名称
+                               "lawyerId":"" , //律师ID
+                               "lOpenId":"", //律师OPENID
+                               "lHead":"", //律师头像
+                               "headImg":"", //
+                               "path":"path",//音频文件路径
+                               "askerName":"", //提问者名称
+                               "askerOpenId"：“askerOpenId”//提问者OPENID,
+                               "askerHead":""//提问者的头像
+                           }
+                       ]
+
+                   }
+
+     后台获取单个列表
+     URL :/wechatvoice/back/getquestionbyid
+     POST
+     参数
+     {
+        "questionId":"xxx"
+     }
+
+     返回值
+     {
+        "code":10000,
+        "msg":"xxxx",
+        "question":{
+         "questionId":"xxxxx",
+                                       "questionName":"xxxxx"，
+                                       "questionCateId":"xxx",
+                                       "cateName":"",
+                                       "lawyerName":"",
+                                       "lawyerId":"" ,
+                                       "lOpenId":"",
+                                       "lHead":"",
+                                       "headImg":"",
+                                       "path":"path",
+                                       "askerName":"",
+                                       "askerOpenId"：“askerOpenId”
+        }
+     }
+
+    后台重新评分
+    URL :/wechatvoice/back/editquestion
+    POST
+    {
+        "questionId","xxx" //ID从LIST获取
+        "stars":"5", //打分的分数
+        "status":"1"//这个先直接传1给后台
+    }
+
+     返回值
+                            {
+                                "code":10000,
+                                "msg":"ok"
+                            }

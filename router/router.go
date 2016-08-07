@@ -17,4 +17,9 @@ func SetRouter(m *macaron.Macaron) {
 	m.Post("/back/deletesetting",c.DeleteQuestionSettingsById)
 	m.Post("/back/editsetting",c.EditWechatVoiceQuestionSettings)
 	m.Post("/back/addsetting",c.AddQuestionSetting)
+
+	m.Post("/back/getquestionlist",c.GetBadAnswerList)
+	m.Post("/back/getquestionbyid",c.GetAnswerInfoById)
+	m.Post("/back/editquestion",c.ReEvaluatBadAnswers)
+
 }

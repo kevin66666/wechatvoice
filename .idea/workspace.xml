@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e031d3d6-06ae-4c9d-80bd-2fdf97fabcae" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/wendang/text.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/question_back.go" afterPath="$PROJECT_DIR$/handler/question_back.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/category.go" afterPath="$PROJECT_DIR$/model/category.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/order_list_back.go" afterPath="$PROJECT_DIR$/handler/order_list_back.go" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/router/router.go" afterPath="$PROJECT_DIR$/router/router.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wendang/text.txt" afterPath="$PROJECT_DIR$/wendang/text.txt" />
     </list>
     <ignored path="wechatvoice.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -32,7 +30,7 @@
           <file leaf-file-name="question_back.go" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/handler/question_back.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="533">
+                <state relative-caret-position="1469">
                   <caret line="337" column="23" selection-start-line="337" selection-start-column="5" selection-end-line="337" selection-end-column="23" />
                   <folding>
                     <element signature="e#132#140#0" expanded="false" />
@@ -71,21 +69,37 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="text.txt" pinned="false" current-in-tab="false">
+          <file leaf-file-name="order_list_back.go" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/handler/order_list_back.go">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="286">
+                  <caret line="95" column="39" selection-start-line="95" selection-start-column="33" selection-end-line="95" selection-end-column="39" />
+                  <folding>
+                    <element signature="e#107#132#0" expanded="false" />
+                    <element signature="e#1287#1423#0" expanded="false" />
+                    <element signature="e#1679#1805#0" expanded="false" />
+                    <element signature="e#3042#3168#0" expanded="false" />
+                    <element signature="e#3302#3428#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="text.txt" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/wendang/text.txt">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="437">
-                  <caret line="136" column="34" selection-start-line="136" selection-start-column="18" selection-end-line="136" selection-end-column="34" />
+                <state relative-caret-position="605">
+                  <caret line="223" column="32" selection-start-line="223" selection-start-column="32" selection-end-line="223" selection-end-column="32" />
                   <folding />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="router.go" pinned="false" current-in-tab="true">
+          <file leaf-file-name="router.go" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/router/router.go">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="360">
-                  <caret line="18" column="54" selection-start-line="18" selection-start-column="54" selection-end-line="18" selection-end-column="54" />
+                <state relative-caret-position="456">
+                  <caret line="22" column="34" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="34" />
                   <folding />
                 </state>
               </provider>
@@ -95,7 +109,7 @@
       </split-first>
       <split-second>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="questions.go" pinned="false" current-in-tab="false">
+          <file leaf-file-name="questions.go" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/model/questions.go">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="480">
@@ -117,7 +131,7 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="category.go" pinned="false" current-in-tab="true">
+          <file leaf-file-name="category.go" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/model/category.go">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="600">
@@ -206,9 +220,10 @@
         <option value="$PROJECT_DIR$/model/rank_logs.go" />
         <option value="$PROJECT_DIR$/handler/question_front.go" />
         <option value="$PROJECT_DIR$/model/category.go" />
-        <option value="$PROJECT_DIR$/wendang/text.txt" />
         <option value="$PROJECT_DIR$/handler/question_back.go" />
+        <option value="$PROJECT_DIR$/handler/order_list_back.go" />
         <option value="$PROJECT_DIR$/router/router.go" />
+        <option value="$PROJECT_DIR$/wendang/text.txt" />
       </list>
     </option>
   </component>
@@ -859,12 +874,12 @@
       <option name="presentableId" value="Default" />
       <updated>1470324009068</updated>
       <workItem from="1470324015401" duration="2964000" />
-      <workItem from="1470583452818" duration="3585000" />
+      <workItem from="1470583452818" duration="4633000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16456000" />
+    <option name="totallyTimeSpent" value="17504000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -946,8 +961,14 @@
           <line>327</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/handler/order_list_back.go</url>
+          <line>14</line>
+          <properties />
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="10" />
+      <option name="time" value="11" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1208,14 +1229,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/questions.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/payment_info.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="384">
@@ -1337,14 +1350,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/handler/order_list_back.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="864">
-          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/lawyer.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
@@ -1363,17 +1368,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/wendang/text.txt">
+    <entry file="file://$PROJECT_DIR$/model/questions.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="136" column="34" selection-start-line="136" selection-start-column="18" selection-end-line="136" selection-end-column="34" />
+        <state relative-caret-position="480">
+          <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/handler/question_back.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="533">
+        <state relative-caret-position="1469">
           <caret line="337" column="23" selection-start-line="337" selection-start-column="5" selection-end-line="337" selection-end-column="23" />
           <folding>
             <element signature="e#132#140#0" expanded="false" />
@@ -1413,8 +1418,30 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/router/router.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="18" column="54" selection-start-line="18" selection-start-column="54" selection-end-line="18" selection-end-column="54" />
+        <state relative-caret-position="456">
+          <caret line="22" column="34" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/handler/order_list_back.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="95" column="39" selection-start-line="95" selection-start-column="33" selection-end-line="95" selection-end-column="39" />
+          <folding>
+            <element signature="e#107#132#0" expanded="false" />
+            <element signature="e#1287#1423#0" expanded="false" />
+            <element signature="e#1679#1805#0" expanded="false" />
+            <element signature="e#3042#3168#0" expanded="false" />
+            <element signature="e#3302#3428#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/wendang/text.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="605">
+          <caret line="223" column="32" selection-start-line="223" selection-start-column="32" selection-end-line="223" selection-end-column="32" />
           <folding />
         </state>
       </provider>

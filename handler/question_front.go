@@ -11,6 +11,7 @@ import (
 	"time"
 	"wechatvoice/model"
 	"wechatvoice/tool/util"
+	"fmt"
 )
 
 const (
@@ -189,7 +190,7 @@ func QuestionListInit(ctx *macaron.Context) string {
 }
 
 type NewQuestionRequest struct {
-	CateId       string `json:"cateId"`
+	CateId       string `json:"categoryId"`
 	CateName     string `json:"cateName"`
 	AskerOpenId  string `json:"askerOpenId"`
 	Description  string `json:"description"`
@@ -329,7 +330,7 @@ type RespDoPay struct {
 
 //这里获取分类问题的配置选项
 type GetConfigRequest struct {
-	CateGoryId string `json:"cateId"`
+	CateGoryId string `json:"categoryId"`
 }
 
 type QuestionConfig struct {
@@ -378,8 +379,8 @@ type QuestionCateList struct {
 }
 
 type CateInfo struct {
-	CateName string `json:"cateName"`
-	CateId   string `json:"cateId"`
+	CateName string `json:"categoryName"`
+	CateId   string `json:"categoryId"`
 }
 
 func GetQuestionCateList(ctx *macaron.Context) string {
@@ -387,7 +388,7 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 
 	list := make([]CateInfo, 0)
 
-	cateList, cateErr := model.GetCateList()
+	cateList,_, cateErr := model.GetCateList()
 
 	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
 		response.Code = CODE_ERROR
@@ -951,6 +952,28 @@ func CheckAnswerIsLocked(ctx *macaron.Context)string{
 		return string(ret_str)
 	}
 
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}
+
+func CreatePvInfo(ctx *macaron.Context)string{
+	body, _ := ctx.Req.Body().String()
+	req := new(CheckIsLocked)
+
+	json.Unmarshal([]byte(body),req)
+	questionInfo :=new(model.WechatVoiceQuestions)
+	response :=new(model.GeneralResponse)
+	questionInfoErr :=questionInfo.GetConn().Where("uuid = ?",req.QuestionId).Find(&questionInfo).Error
+	if questionInfoErr!=nil&&!strings.Contains(questionInfoErr.Error(),RNF){
+		fmt.Println(questionInfoErr.Error())
+	}
+	questionInfo.Pv = questionInfo.Pv+1
+	err :=questionInfo.GetConn().Save(&questionInfo).Error
+	if err!=nil&&!strings.Contains(err.Error(),RNF){
+		fmt.Println(err.Error())
+	}
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
 	ret_str,_:=json.Marshal(response)

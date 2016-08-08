@@ -667,6 +667,26 @@ func AnswerQuestionInit(ctx *macaron.Context) string {
 	}
 	q.LawyerId = lawerInfo.Uuid
 	q.LawerName = lawerInfo.Name
+	//在这里锁住
+	lock :=new(model.AnswerLockInfo)
+	/*lockErr:=lock.GetConn().Where("question_id = ?",question.Uuid).Find(&lock).Error
+	if lockErr!=nil&&!strings.Contains(lockErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = lockErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}*/
+	lock.Uuid = util.GenerateUuid()
+	lock.QuestionId = question.Uuid
+	lock.OpenIdFirst = openId
+	lock.LockedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+	err:=lock.GetConn().Create(&lock)
+	if err!=nil{
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
 
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
@@ -883,6 +903,54 @@ func RankTheAnswer(ctx *macaron.Context)string{
 		ret_str,_:=json.Marshal(response)
 		return string(ret_str)
 	}
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}
+
+//检查问题是否被锁
+type CheckIsLocked struct {
+	QuestionId string `json:"questionId"`
+}
+func CheckAnswerIsLocked(ctx *macaron.Context)string{
+	body, _ := ctx.Req.Body().String()
+	req := new(CheckIsLocked)
+
+	json.Unmarshal([]byte(body),req)
+
+	questionInfo :=new(model.WechatVoiceQuestions)
+	response :=new(model.GeneralResponse)
+
+	questionInfoErr :=questionInfo.GetConn().Where("uuid = ?",req.QuestionId).Find(&questionInfo).Error
+	if questionInfoErr!=nil&&!strings.Contains(questionInfoErr.Error(),RNF){
+		response.Msg = questionInfoErr.Error()
+		response.Code = CODE_ERROR
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if questionInfo.IsSolved=="1"{
+		response.Msg = "问题已被解答"
+		response.Code = CODE_ERROR
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	list,err :=model.GetLockListById(req.QuestionId)
+	if err!=nil&&!strings.Contains(err.Error(),RNF){
+		response.Msg = err.Error()
+		response.Code = CODE_ERROR
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if len(list)2{
+		response.Code = CODE_ERROR
+		response.Msg = "当前人数过多"
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
 	ret_str,_:=json.Marshal(response)

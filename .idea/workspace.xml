@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e031d3d6-06ae-4c9d-80bd-2fdf97fabcae" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/order_list_back.go" afterPath="$PROJECT_DIR$/handler/order_list_back.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/router/router.go" afterPath="$PROJECT_DIR$/router/router.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wendang/text.txt" afterPath="$PROJECT_DIR$/wendang/text.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/model/answer_lock.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/question_front.go" afterPath="$PROJECT_DIR$/handler/question_front.go" />
     </list>
     <ignored path="wechatvoice.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,172 +24,103 @@
     <favorites_list name="wechatvoice" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.77451557">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="question_back.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/handler/question_back.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1469">
-                  <caret line="337" column="23" selection-start-line="337" selection-start-column="5" selection-end-line="337" selection-end-column="23" />
-                  <folding>
-                    <element signature="e#132#140#0" expanded="false" />
-                    <element signature="e#189#252#0" expanded="false" />
-                    <element signature="e#273#314#0" expanded="false" />
-                    <element signature="n#!!block;n#CreateCateList#0" expanded="false" />
-                    <element signature="e#676#802#0" expanded="false" />
-                    <element signature="e#946#1024#0" expanded="false" />
-                    <element signature="e#1048#1168#0" expanded="false" />
-                    <element signature="e#1186#1262#0" expanded="false" />
-                    <element signature="n#!!block;n#GetCateList#0" expanded="false" />
-                    <element signature="e#1454#1577#0" expanded="false" />
-                    <element signature="e#1724#1848#0" expanded="false" />
-                    <element signature="e#1871#1992#0" expanded="false" />
-                    <element signature="e#2181#2222#0" expanded="false" />
-                    <element signature="n#!!block;n#DeleteCateInfo#0" expanded="false" />
-                    <element signature="e#2561#2688#0" expanded="false" />
-                    <element signature="e#2833#2909#0" expanded="false" />
-                    <element signature="n#!!block;n#EditCateInfo#0" expanded="false" />
-                    <element signature="e#3244#3371#0" expanded="false" />
-                    <element signature="e#3507#3634#0" expanded="false" />
-                    <element signature="e#3775#3855#0" expanded="false" />
-                    <element signature="e#3882#3981#0" expanded="false" />
-                    <element signature="e#3996#4260#0" expanded="false" />
-                    <element signature="n#!!block;n#GetQuestionSettingList#0" expanded="false" />
-                    <element signature="e#4540#4666#0" expanded="false" />
-                    <element signature="e#4695#4977#0" expanded="false" />
-                    <element signature="e#5110#5157#0" expanded="false" />
-                    <element signature="e#5179#5274#0" expanded="false" />
-                    <element signature="n#!!block;n#GetQuestionSettingsById#0" expanded="false" />
-                    <element signature="e#5675#5808#0" expanded="false" />
-                    <element signature="n#!!block;n#DeleteQuestionSettingsById#0" expanded="false" />
-                    <element signature="e#7791#7920#0" expanded="false" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="order_list_back.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/handler/order_list_back.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="286">
-                  <caret line="95" column="39" selection-start-line="95" selection-start-column="33" selection-end-line="95" selection-end-column="39" />
-                  <folding>
-                    <element signature="e#107#132#0" expanded="false" />
-                    <element signature="e#1287#1423#0" expanded="false" />
-                    <element signature="e#1679#1805#0" expanded="false" />
-                    <element signature="e#3042#3168#0" expanded="false" />
-                    <element signature="e#3302#3428#0" expanded="false" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="text.txt" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/wendang/text.txt">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="605">
-                  <caret line="223" column="32" selection-start-line="223" selection-start-column="32" selection-end-line="223" selection-end-column="32" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="router.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/router/router.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="456">
-                  <caret line="22" column="34" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="34" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="questions.go" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/model/questions.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="480">
-                  <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="lawyer.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/model/lawyer.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="264">
-                  <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
-                  <folding>
-                    <element signature="e#15#74#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="category.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/model/category.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="600">
-                  <caret line="28" column="16" selection-start-line="28" selection-start-column="5" selection-end-line="28" selection-end-column="16" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="question_setting.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/model/question_setting.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="264">
-                  <caret line="14" column="20" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
-                  <folding>
-                    <element signature="e#15#74#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="order_payment.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/model/order_payment.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="816">
-                  <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="rank_logs.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/model/rank_logs.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="600">
-                  <caret line="28" column="1" selection-start-line="28" selection-start-column="1" selection-end-line="28" selection-end-column="1" />
-                  <folding>
-                    <element signature="e#15#74#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="payment_info.go" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/model/payment_info.go">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="384">
-                  <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
-                  <folding>
-                    <element signature="e#15#74#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="answer_lock.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/answer_lock.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="749">
+              <caret line="32" column="20" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="20" />
+              <folding>
+                <element signature="e#16#75#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="question_front.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/handler/question_front.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1920">
+              <caret line="685" column="34" selection-start-line="685" selection-start-column="34" selection-end-line="685" selection-end-column="34" />
+              <folding>
+                <element signature="e#161#1302#0" expanded="false" />
+                <element signature="e#1340#1494#0" expanded="false" />
+                <element signature="e#1514#1928#0" expanded="false" />
+                <element signature="e#2256#2390#0" expanded="false" />
+                <element signature="e#2520#2651#0" expanded="false" />
+                <element signature="e#2722#3397#0" expanded="false" />
+                <element signature="e#3111#3248#0" expanded="false" />
+                <element signature="e#3621#3699#0" expanded="false" />
+                <element signature="n#!!block;n#QuestionListInit#0" expanded="false" />
+                <element signature="e#3932#4058#0" expanded="false" />
+                <element signature="e#4198#4324#0" expanded="false" />
+                <element signature="e#4385#5060#0" expanded="false" />
+                <element signature="e#4774#4911#0" expanded="false" />
+                <element signature="e#5257#5561#0" expanded="false" />
+                <element signature="e#5588#5743#0" expanded="false" />
+                <element signature="e#5986#6122#0" expanded="false" />
+                <element signature="e#6291#6421#0" expanded="false" />
+                <element signature="e#6625#6759#0" expanded="false" />
+                <element signature="e#7450#7584#0" expanded="false" />
+                <element signature="e#7621#8213#0" expanded="false" />
+                <element signature="e#7648#7714#0" expanded="false" />
+                <element signature="e#7716#8209#0" expanded="false" />
+                <element signature="e#7960#8097#0" expanded="false" />
+                <element signature="e#8294#8426#0" expanded="false" />
+                <element signature="e#8643#8744#0" expanded="false" />
+                <element signature="e#8771#9307#0" expanded="false" />
+                <element signature="e#9347#9392#0" expanded="false" />
+                <element signature="e#9414#9573#0" expanded="false" />
+                <element signature="n#!!block;n#GetQuestionConfig#0" expanded="false" />
+                <element signature="e#9807#9943#0" expanded="false" />
+                <element signature="e#10174#10307#0" expanded="false" />
+                <element signature="e#10546#10648#0" expanded="false" />
+                <element signature="e#10664#10742#0" expanded="false" />
+                <element signature="n#!!block;n#GetQuestionCateList#0" expanded="false" />
+                <element signature="e#10971#11101#0" expanded="false" />
+                <element signature="e#11131#11252#0" expanded="false" />
+                <element signature="e#11407#11751#0" expanded="false" />
+                <element signature="e#11778#11896#0" expanded="false" />
+                <element signature="n#!!block;n#AppendQuestion#0" expanded="false" />
+                <element signature="e#12331#12468#0" expanded="false" />
+                <element signature="e#12506#12654#0" expanded="false" />
+                <element signature="e#12858#12992#0" expanded="false" />
+                <element signature="e#13717#13851#0" expanded="false" />
+                <element signature="e#14033#14108#0" expanded="false" />
+                <element signature="e#14187#14293#0" expanded="false" />
+                <element signature="n#!!block;n#PeekAvalable#0" expanded="false" />
+                <element signature="e#14617#14656#0" expanded="false" />
+                <element signature="e#14999#15128#0" expanded="false" />
+                <element signature="e#15149#15305#0" expanded="false" />
+                <element signature="n#!!block;n#DoPay#0" expanded="false" />
+                <element signature="n#!!block;n#VoiceUpLoad#0" expanded="false" />
+                <element signature="e#15643#15692#0" expanded="false" />
+                <element signature="e#15723#15840#0" expanded="false" />
+                <element signature="e#15861#16235#0" expanded="false" />
+                <element signature="e#16567#16606#0" expanded="false" />
+                <element signature="e#16929#17056#0" expanded="false" />
+                <element signature="e#17087#17217#0" expanded="false" />
+                <element signature="e#17284#17408#0" expanded="false" />
+                <element signature="e#17430#17550#0" expanded="false" />
+                <element signature="e#18266#18401#0" expanded="false" />
+                <element signature="e#19279#19365#0" expanded="false" />
+                <element signature="e#19723#19762#0" expanded="false" />
+                <element signature="e#20060#20194#0" expanded="false" />
+                <element signature="e#20225#20355#0" expanded="false" />
+                <element signature="e#20422#20546#0" expanded="false" />
+                <element signature="e#20568#20688#0" expanded="false" />
+                <element signature="e#20888#21023#0" expanded="false" />
+                <element signature="e#21342#21468#0" expanded="false" />
+                <element signature="n#!!block;n#AddPeekCount#0" expanded="false" />
+                <element signature="e#21808#21836#0" expanded="false" />
+                <element signature="e#21988#22103#0" expanded="false" />
+                <element signature="n#!!block;n#RankTheAnswer#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -218,12 +149,13 @@
         <option value="$PROJECT_DIR$/model/lawyer_rank_count" />
         <option value="$PROJECT_DIR$/model/lawyer.go" />
         <option value="$PROJECT_DIR$/model/rank_logs.go" />
-        <option value="$PROJECT_DIR$/handler/question_front.go" />
         <option value="$PROJECT_DIR$/model/category.go" />
         <option value="$PROJECT_DIR$/handler/question_back.go" />
         <option value="$PROJECT_DIR$/handler/order_list_back.go" />
         <option value="$PROJECT_DIR$/router/router.go" />
         <option value="$PROJECT_DIR$/wendang/text.txt" />
+        <option value="$PROJECT_DIR$/model/answer_lock.go" />
+        <option value="$PROJECT_DIR$/handler/question_front.go" />
       </list>
     </option>
   </component>
@@ -265,6 +197,7 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -391,7 +324,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -875,11 +807,12 @@
       <updated>1470324009068</updated>
       <workItem from="1470324015401" duration="2964000" />
       <workItem from="1470583452818" duration="4633000" />
+      <workItem from="1470666969714" duration="1868000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="17504000" />
+    <option name="totallyTimeSpent" value="19372000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -901,8 +834,8 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -964,7 +897,6 @@
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/handler/order_list_back.go</url>
           <line>14</line>
-          <properties />
           <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
@@ -977,13 +909,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tool/util/util.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="1" selection-start-line="0" selection-start-column="1" selection-end-line="0" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/questions.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1142,9 +1067,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="141">
           <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="11" selection-end-column="1" />
-          <folding>
-            <element signature="e#15#74#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1188,6 +1110,93 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/model/lawyer_rank_count" />
+    <entry file="file://$PROJECT_DIR$/model/member.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="485">
+          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="39" selection-end-column="1" />
+          <folding>
+            <element signature="e#15#74#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/questions.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/handler/question_back.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2064">
+          <caret line="337" column="23" selection-start-line="337" selection-start-column="5" selection-end-line="337" selection-end-column="23" />
+          <folding>
+            <element signature="e#189#252#0" expanded="false" />
+            <element signature="e#273#314#0" expanded="false" />
+            <element signature="n#!!block;n#CreateCateList#0" expanded="false" />
+            <element signature="e#676#802#0" expanded="false" />
+            <element signature="e#946#1024#0" expanded="false" />
+            <element signature="e#1048#1168#0" expanded="false" />
+            <element signature="e#1186#1262#0" expanded="false" />
+            <element signature="n#!!block;n#GetCateList#0" expanded="false" />
+            <element signature="e#1454#1577#0" expanded="false" />
+            <element signature="e#1724#1848#0" expanded="false" />
+            <element signature="e#1871#1992#0" expanded="false" />
+            <element signature="e#2181#2222#0" expanded="false" />
+            <element signature="n#!!block;n#DeleteCateInfo#0" expanded="false" />
+            <element signature="e#2561#2688#0" expanded="false" />
+            <element signature="e#2833#2909#0" expanded="false" />
+            <element signature="n#!!block;n#EditCateInfo#0" expanded="false" />
+            <element signature="e#3244#3371#0" expanded="false" />
+            <element signature="e#3507#3634#0" expanded="false" />
+            <element signature="e#3775#3855#0" expanded="false" />
+            <element signature="e#3882#3981#0" expanded="false" />
+            <element signature="e#3996#4260#0" expanded="false" />
+            <element signature="n#!!block;n#GetQuestionSettingList#0" expanded="false" />
+            <element signature="e#4540#4666#0" expanded="false" />
+            <element signature="e#4695#4977#0" expanded="false" />
+            <element signature="e#5110#5157#0" expanded="false" />
+            <element signature="e#5179#5274#0" expanded="false" />
+            <element signature="n#!!block;n#GetQuestionSettingsById#0" expanded="false" />
+            <element signature="e#5675#5808#0" expanded="false" />
+            <element signature="n#!!block;n#DeleteQuestionSettingsById#0" expanded="false" />
+            <element signature="e#7791#7920#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/router/router.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="22" column="34" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/wendang/text.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="188" column="0" selection-start-line="188" selection-start-column="0" selection-end-line="188" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/handler/order_list_back.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="95" column="39" selection-start-line="95" selection-start-column="33" selection-end-line="95" selection-end-column="39" />
+          <folding>
+            <element signature="e#1287#1423#0" expanded="false" />
+            <element signature="e#1679#1805#0" expanded="false" />
+            <element signature="e#3042#3168#0" expanded="false" />
+            <element signature="e#3302#3428#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/handler/order_list_front.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="96">
@@ -1218,33 +1227,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/lawyer_rank_count" />
-    <entry file="file://$PROJECT_DIR$/model/member.go">
+    <entry file="file://$PROJECT_DIR$/model/lawyer.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
-          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="39" selection-end-column="1" />
+        <state relative-caret-position="264">
+          <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
+          <folding>
+            <element signature="e#15#74#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/question_setting.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="14" column="20" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
           <folding>
             <element signature="e#15#74#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/payment_info.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
-          <folding>
-            <element signature="e#15#74#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/rank_logs.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="28" column="1" selection-start-line="28" selection-start-column="1" selection-end-line="28" selection-end-column="1" />
-          <folding>
-            <element signature="e#15#74#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1257,25 +1255,54 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/question_setting.go">
+    <entry file="file://$PROJECT_DIR$/model/rank_logs.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="14" column="20" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
+        <state relative-caret-position="663">
+          <caret line="28" column="1" selection-start-line="28" selection-start-column="1" selection-end-line="28" selection-end-column="1" />
+          <folding>
+            <element signature="e#15#74#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/payment_info.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
           <folding>
             <element signature="e#15#74#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/model/category.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="548">
+          <caret line="26" column="1" selection-start-line="14" selection-start-column="0" selection-end-line="26" selection-end-column="1" />
+          <folding>
+            <element signature="e#15#74#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/answer_lock.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="749">
+          <caret line="32" column="20" selection-start-line="32" selection-start-column="5" selection-end-line="32" selection-end-column="20" />
+          <folding>
+            <element signature="e#16#75#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/handler/question_front.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3184">
-          <caret line="888" column="30" selection-start-line="888" selection-start-column="30" selection-end-line="888" selection-end-column="30" />
+        <state relative-caret-position="-1920">
+          <caret line="685" column="34" selection-start-line="685" selection-start-column="34" selection-end-line="685" selection-end-column="34" />
           <folding>
             <element signature="e#161#1302#0" expanded="false" />
             <element signature="e#1340#1494#0" expanded="false" />
             <element signature="e#1514#1928#0" expanded="false" />
-            <element signature="n#!!block;n#QuestionQuery#0" expanded="false" />
             <element signature="e#2256#2390#0" expanded="false" />
             <element signature="e#2520#2651#0" expanded="false" />
             <element signature="e#2722#3397#0" expanded="false" />
@@ -1327,122 +1354,25 @@
             <element signature="e#15643#15692#0" expanded="false" />
             <element signature="e#15723#15840#0" expanded="false" />
             <element signature="e#15861#16235#0" expanded="false" />
-            <element signature="n#!!block;n#AnswerQuestionInit#0" expanded="false" />
             <element signature="e#16567#16606#0" expanded="false" />
             <element signature="e#16929#17056#0" expanded="false" />
             <element signature="e#17087#17217#0" expanded="false" />
             <element signature="e#17284#17408#0" expanded="false" />
             <element signature="e#17430#17550#0" expanded="false" />
             <element signature="e#18266#18401#0" expanded="false" />
-            <element signature="e#18636#18722#0" expanded="false" />
-            <element signature="n#!!block;n#DoAnswerQuestion#0" expanded="false" />
-            <element signature="e#19080#19119#0" expanded="false" />
-            <element signature="e#19417#19551#0" expanded="false" />
-            <element signature="e#19582#19712#0" expanded="false" />
-            <element signature="e#19779#19903#0" expanded="false" />
-            <element signature="e#19925#20045#0" expanded="false" />
-            <element signature="e#20245#20380#0" expanded="false" />
-            <element signature="e#20699#20825#0" expanded="false" />
+            <element signature="e#19279#19365#0" expanded="false" />
+            <element signature="e#19723#19762#0" expanded="false" />
+            <element signature="e#20060#20194#0" expanded="false" />
+            <element signature="e#20225#20355#0" expanded="false" />
+            <element signature="e#20422#20546#0" expanded="false" />
+            <element signature="e#20568#20688#0" expanded="false" />
+            <element signature="e#20888#21023#0" expanded="false" />
+            <element signature="e#21342#21468#0" expanded="false" />
             <element signature="n#!!block;n#AddPeekCount#0" expanded="false" />
-            <element signature="e#21165#21193#0" expanded="false" />
-            <element signature="e#21345#21460#0" expanded="false" />
+            <element signature="e#21808#21836#0" expanded="false" />
+            <element signature="e#21988#22103#0" expanded="false" />
+            <element signature="n#!!block;n#RankTheAnswer#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/lawyer.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
-          <folding>
-            <element signature="e#15#74#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/category.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="28" column="16" selection-start-line="28" selection-start-column="5" selection-end-line="28" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/questions.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="23" column="25" selection-start-line="23" selection-start-column="25" selection-end-line="23" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/handler/question_back.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1469">
-          <caret line="337" column="23" selection-start-line="337" selection-start-column="5" selection-end-line="337" selection-end-column="23" />
-          <folding>
-            <element signature="e#132#140#0" expanded="false" />
-            <element signature="e#189#252#0" expanded="false" />
-            <element signature="e#273#314#0" expanded="false" />
-            <element signature="n#!!block;n#CreateCateList#0" expanded="false" />
-            <element signature="e#676#802#0" expanded="false" />
-            <element signature="e#946#1024#0" expanded="false" />
-            <element signature="e#1048#1168#0" expanded="false" />
-            <element signature="e#1186#1262#0" expanded="false" />
-            <element signature="n#!!block;n#GetCateList#0" expanded="false" />
-            <element signature="e#1454#1577#0" expanded="false" />
-            <element signature="e#1724#1848#0" expanded="false" />
-            <element signature="e#1871#1992#0" expanded="false" />
-            <element signature="e#2181#2222#0" expanded="false" />
-            <element signature="n#!!block;n#DeleteCateInfo#0" expanded="false" />
-            <element signature="e#2561#2688#0" expanded="false" />
-            <element signature="e#2833#2909#0" expanded="false" />
-            <element signature="n#!!block;n#EditCateInfo#0" expanded="false" />
-            <element signature="e#3244#3371#0" expanded="false" />
-            <element signature="e#3507#3634#0" expanded="false" />
-            <element signature="e#3775#3855#0" expanded="false" />
-            <element signature="e#3882#3981#0" expanded="false" />
-            <element signature="e#3996#4260#0" expanded="false" />
-            <element signature="n#!!block;n#GetQuestionSettingList#0" expanded="false" />
-            <element signature="e#4540#4666#0" expanded="false" />
-            <element signature="e#4695#4977#0" expanded="false" />
-            <element signature="e#5110#5157#0" expanded="false" />
-            <element signature="e#5179#5274#0" expanded="false" />
-            <element signature="n#!!block;n#GetQuestionSettingsById#0" expanded="false" />
-            <element signature="e#5675#5808#0" expanded="false" />
-            <element signature="n#!!block;n#DeleteQuestionSettingsById#0" expanded="false" />
-            <element signature="e#7791#7920#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/router/router.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="456">
-          <caret line="22" column="34" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/handler/order_list_back.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="95" column="39" selection-start-line="95" selection-start-column="33" selection-end-line="95" selection-end-column="39" />
-          <folding>
-            <element signature="e#107#132#0" expanded="false" />
-            <element signature="e#1287#1423#0" expanded="false" />
-            <element signature="e#1679#1805#0" expanded="false" />
-            <element signature="e#3042#3168#0" expanded="false" />
-            <element signature="e#3302#3428#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/wendang/text.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="605">
-          <caret line="223" column="32" selection-start-line="223" selection-start-column="32" selection-end-line="223" selection-end-column="32" />
-          <folding />
         </state>
       </provider>
     </entry>

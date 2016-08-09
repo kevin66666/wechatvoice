@@ -131,3 +131,43 @@ func ReEvaluatBadAnswers(ctx *macaron.Context) string {
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
+
+type AnsweReq struct {
+	QuestionId string `json:"questionId"`
+}
+type SingleResponse  struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	QuestionInfoBack `json:"question"`
+}
+func GetAnswerInfoById(ctx *macaron.Context)string{
+	response :=new(SingleResponse)
+	req :=new(AnsweReq)
+	body,_:=ctx.Req.Body().String()
+	json.Unmarshal([]byte(body),req)
+	k :=new(model.WechatVoiceQuestions)
+	err :=k.GetConn().Where("uuid = ?",req.QuestionId).Find(&k).Error
+	if err!=nil&&!strings.Contains(err.Error(),RNF){
+		response.Code =CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	var single QuestionInfoBack
+	single.QuestionId = k.Uuid
+	single.QuestionTopic = k.Description
+	single.QuestionCategoryId = k.CategoryId
+	single.QuestionCateName = k.Category
+	single.LawyerName = k.AnswerName
+	single.LawyerOpenId = k.AnswerOpenId
+	single.LawyerId = k.AnswerId
+	single.LawyerHeadImg = k.AnswerHeadImg
+	single.VoicePath = k.VoicePath
+	single.AskerName = k.CustomerName
+	single.AskerOpenId = k.CustomerOpenId
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.QuestionInfoBack  = single
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}

@@ -170,3 +170,60 @@ func GetOrderList(ctx *macaron.Context) string {
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
+type OrderDetailInfo struct {
+	QuestionId string `json:"questionId"`
+}
+type OrderDetailResponse struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	OrderInfo `json:"orderInfo"`
+}
+func GetOrderDetailById(ctx *macaron.Context)string{
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" {
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+
+	log.Println("=========>>>>>>,用户OPENID 为", openId)
+	log.Println("=========>>>>>>,用户类型为", userType)
+
+	req :=new(OrderDetailInfo)
+	body, _ := ctx.Req.Body().String()
+	json.Unmarshal([]byte(body),req)
+	response :=new(OrderDetailResponse)
+
+	k :=new(model.WechatVoiceQuestions)
+	quesionInfoErr:=k.GetConn().Where("uuid = ?",req.QuestionId).Find(&k).Error
+
+	if quesionInfoErr!=nil&&!strings.Contains(quesionInfoErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = quesionInfoErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	var single OrderInfo
+	single.OrderId = k.Uuid
+	single.Destription = k.Description
+	single.AskerName = k.CustomerName
+	single.AskerOpenId = k.CustomerOpenId
+	single.AskerHeadImg = k.AskerHeadImg
+	if k.IsSolved == "2" {
+		single.LawyerId = k.AnswerId
+		single.LawyerName = k.AnswerName
+		single.LawyerHeadImg = k.AnswerHeadImg
+		single.LawyerOpenId = k.AnswerOpenId
+		single.VoicePath = k.VoicePath
+		rank := k.RankInfo
+		rankInt, _ := strconv.ParseInt(rank, 10, 64)
+		single.RankInfo = rankInt
+		single.Pv = k.Pv
+		single.QuestionType = k.Category
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.OrderInfo = single
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}

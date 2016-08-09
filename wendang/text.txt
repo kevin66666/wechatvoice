@@ -1,0 +1,231 @@
+1 创建问题分类接口
+    URL:/wechatvoice/back/addsetting
+    POST
+    参数
+            {
+                "name":"离婚诉讼"//这里传入名称即可
+            }
+
+    返回值   {
+                "code":10000,
+                "msg":"ok"
+            }
+2 获取问题分类接口
+    URL:/wechatvoice/back/getcatelist
+    POST
+    根据请求的分页数据 返回对应的分类信息的数组
+    参数
+            {
+                "startLine":1,
+                "endLine":10
+            }
+    返回值
+            {
+                "code":10000,
+                "msg":"ok",
+                "list":[
+                    {
+                        "cateId":"xxxxx", //分类ID
+                        "cateName":"xxxxx" //分类名称
+                    }
+                ]
+
+            }
+3 删除问题分类接口
+    URL:/wechatvoice/back/deletecate
+    POST
+    参数
+            {
+                "cateId":"xxxxxx" //请求需要删除的分类ID
+            }
+    返回值
+            {
+                "code":10000,
+                "msg":"ok"
+            }
+4 编辑问题分类接口
+    URL:/wechatvoice/back/editcate
+    POST
+    参数
+            {
+                "cateId":"xxxx", //编辑的分类ID 从LIST获取
+                "cateName":"xxxx" //新的名称
+            }
+    返回值
+                 {
+                     "code":10000,
+                     "msg":"ok"
+                 }
+     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+1 获取支付配置列表接口
+    URL :/wechatvoice/back/questionsettinglist
+    POST
+    参数
+               {
+                   "startLine":1,
+                   "endLine":10
+               }
+       返回值
+               {
+                   "code":10000,
+                   "msg":"ok",
+                   "list":[
+                       {
+                           "cateId":"xxxxx", //分类ID
+                           "cateName":"xxxxx"， //分类名称
+                           "settingId":"xxx", //配置ID
+                           "amount":"", //订单需要支付多少钱
+                           "lawerP":"",//律师可从中抽取的百分比
+                           "redPacket":"" //用户可抽取红包的百分比
+                       }
+                   ]
+
+               }
+  2 编辑支付配置接口
+  URL :/wechatvoice/back/getsettingbyid
+  POST
+  参数
+                {
+                    "settingId":"xxxxxx"
+                }
+     返回值
+                  {
+                      "code":10000,
+                      "msg":"ok",
+                      "setting":
+                          {
+                              "cateId":"xxxxx", //分类ID
+                              "cateName":"xxxxx"， //分类名称
+                              "settingId":"xxx", //配置ID
+                              "amount":"", //订单需要支付多少钱
+                              "lawerP":"",//律师可从中抽取的百分比
+                              "redPacket":"" //用户可抽取红包的百分比
+                          }
+
+                  }
+  3 删除支付配置接口
+  URL :/wechatvoice/back/deletesetting
+   POST
+    参数
+                  {
+                      "settingId":"xxxxxx"
+                  }
+       返回值
+                    {
+                        "code":10000,
+                        "msg":"ok"
+                    }
+
+
+  4 编辑支付配置接口
+  URL:/wechatvoice/back/editsetting
+  POST
+  参数
+    {
+                                "cateId":"xxxxx", //分类ID
+                                "cateName":"xxxxx"， //分类名称
+                                "settingId":"xxx", //配置ID
+                                "amount":"", //订单需要支付多少钱
+                                "lawerP":"",//律师可从中抽取的百分比
+                                "redPacket":"" //用户可抽取红包的百分比
+     }
+      返回值
+                      {
+                          "code":10000,
+                          "msg":"ok"
+                      }
+  5 添加支付配置接口
+  URL:/wechatvoice/back/addsetting
+  POST
+  参数
+   {
+                                  "cateId":"xxxxx", //分类ID
+                                  "cateName":"xxxxx"， //分类名称
+                                  "amount":"", //订单需要支付多少钱
+                                  "lawerP":"",//律师可从中抽取的百分比
+                                  "redPacket":"" //用户可抽取红包的百分比
+       }
+        返回值
+                        {
+                            "code":10000,
+                            "msg":"ok"
+                        }
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   后台问题列表获取
+   URL: /wechatvoice/back/getquestionlist
+   POST
+   参数
+    {
+                   "startLine":1,
+                   "endLine":10
+               }
+    返回
+     {
+                       "code":10000,
+                       "msg":"ok",
+                       "list":[
+                           {
+                               "questionId":"xxxxx", //问题ID
+                               "questionName":"xxxxx"， //问题名称
+                               "questionCateId":"xxx", //问题所属分类ID
+                               "cateName":"", //分类名称
+                               "lawyerName":"", //律师名称
+                               "lawyerId":"" , //律师ID
+                               "lOpenId":"", //律师OPENID
+                               "lHead":"", //律师头像
+                               "headImg":"", //
+                               "path":"path",//音频文件路径
+                               "askerName":"", //提问者名称
+                               "askerOpenId"：“askerOpenId”//提问者OPENID,
+                               "askerHead":""//提问者的头像
+                           }
+                       ]
+
+                   }
+
+     后台获取单个列表
+     URL :/wechatvoice/back/getquestionbyid
+     POST
+     参数
+     {
+        "questionId":"xxx"
+     }
+
+     返回值
+     {
+        "code":10000,
+        "msg":"xxxx",
+        "question":{
+         "questionId":"xxxxx",
+                                       "questionName":"xxxxx"，
+                                       "questionCateId":"xxx",
+                                       "cateName":"",
+                                       "lawyerName":"",
+                                       "lawyerId":"" ,
+                                       "lOpenId":"",
+                                       "lHead":"",
+                                       "headImg":"",
+                                       "path":"path",
+                                       "askerName":"",
+                                       "askerOpenId"：“askerOpenId”
+        }
+     }
+
+    后台重新评分
+    URL :/wechatvoice/back/editquestion
+    POST
+    {
+        "questionId","xxx" //ID从LIST获取
+        "stars":"5", //打分的分数
+        "status":"1"//这个先直接传1给后台
+    }
+
+     返回值
+                            {
+                                "code":10000,
+                                "msg":"ok"
+                            }

@@ -10,6 +10,8 @@ import (
 	"crypto/md5"
 	"fmt"
 	"crypto/sha1"
+	mr "math/rand"
+
 )
 
 
@@ -101,4 +103,24 @@ func Sha1(str string) string {
 	}
 	b := sha1.Sum([]byte(str))
 	return fmt.Sprintf("%x", b)
+}
+
+func RandomNumberLen(length int) string {
+	var chars = "abcdefghijklmnopqrstuvwxyz0123456789"
+	r := mr.New(mr.NewSource(time.Now().UnixNano()))
+	var str = ""
+	for i := 0; i < length; i++ {
+		number := r.Intn(length)
+		str += string(chars[number])
+	}
+	return str
+}
+
+func ConfigSign(jsapiTicket, nonceStr, timestamp, url string) string {
+	str := "jsapi_ticket=" + jsapiTicket + "&noncestr=" + nonceStr + "&timestamp=" + timestamp + "&url=" + url
+	fmt.Println("string1=", str)
+
+	h := sha1.New()
+	h.Write([]byte(str))
+	return fmt.Sprintf("%x", h.Sum(nil))
 }

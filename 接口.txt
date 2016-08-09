@@ -1,0 +1,241 @@
+前台部分
+
+    1 微信获取access_token
+    2 微信获取jsApiTicker
+    3 获取用户基本信息接口   用户基本信息 接口  获取用户头像  OPENID 昵称等  并且以cookie的形式存在于客户端
+    3 微信支付接口设置 
+    4 wxConfig设置    调起微信录音接口 
+
+
+
+后台部分
+	之后以文档形式提供出来    
+语音提问
+
+	json   ====》》》
+
+	=====》》》》json
+
+
+
+        1 问题类型管理
+
+           问题类型  价格    以及 律师  平台  用户的分润比例的设置接口
+
+           出现低分问题  后台进行 重新评分判定的 列表接口 
+
+
+
+需要提供的
+
+
+数据库连接
+
+
+MP平台的表结构等 
+
+
+
+部署问题  源码OR二进制文件   需要去配置服务器环境
+
+NGINX配置
+
+
+服务器信息  IP： 60.205.4.26    pwd：18522279381-zjy 
+
+数据库信息:
+
+		用户 root 
+		连接串 localhost  
+		密码  7de2cd9b31
+
+
+330102038@qq.com
+===============================================================
+lawyer 律师表
+===============================================================
+lawyerID      律师ID uuid   
+lawyerName  律师姓名 string
+ | lawyerPhone  律师手机号 string 
+  | lawyerCertificateNo  证件 string
+   | groupPhoto                     
+    | singlePhoto                          
+    | selProvince 
+    | selCity 
+    | lawFirm       
+    | goodAtBusiness      //擅长领域  category名字 +,  以逗号分隔的字符串
+    | lawyerOutcomeScale  //  胜负比例
+    | lawyerLevel  //
+    | description  //描述
+    | userID      // userInfo  OPENID FK
+    | createBy  //创建人
+    | createDate           //创建时间
+    | updateBy 
+    | updateDate          
+    | lawyerState | //律师 状态
+
+===============================================================
+billinfo START ======>>>>>
+===============================================================
+
+
+     billID  int64
+     | lawyerID          userinfo OpenId FK
+     | billCause  	       //缴费 string
+     | fullValueMoney  //订单费用  单位 分 float64  
+     | billMoney  //N/A
+     | billMoneySum //N/A
+     | transaction_id   //微信流水号      
+     | createBy  //用户OPENID
+     | createDate          
+     | updateBy 
+     | updateDate    
+===============================================================
+billinfo END ======>>>>>
+===============================================================
+
+===============================================================
+consultrecord START ======>>>>>咨询记录 暂时未启用
+===============================================================
+consultRecordID 
+customerID
+consultRecordContent
+createBy
+createDate
+updateBy
+updateDate
+===============================================================
+consultrecord END =======>>>>>>
+===============================================================
+
+
+===============================================================
+consultrecorddetail START =========>>>>>
+===============================================================
+consultRecordDetailID //uuid string
+consultRecordID //N/A
+consultQuestion //问题 string
+consultAnswer //回答
+openID //用户OPENID
+createBy
+createDate
+updateBy
+updateDate
+===============================================================
+consultrecorddetail END ==========>>>
+===============================================================
+
+
+===============================================================
+customer==========>>> 客户表
+===============================================================
+customerID//string uuid 
+customerName//客户姓名
+customerPwd //密码
+customerPhone//手机号
+selProvince //省份 山西
+selCity //城市
+createBy
+createDate
+updateBy
+updateDate
+===============================================================
+customer==========>>>
+===============================================================
+
+
+===============================================================
+orderinfo==========>>>
+===============================================================
+orderID // PK uuid 
+orderCode //  订单号 
+customerID //客户ID FK
+systemQuotation// 订单报价
+transactionPrice// 暂未启用
+amountPaid// 付费信息
+lawyerID//  lawyer  ID FK
+consultType //咨询类型 cateId
+payment // 支付方式 string
+orderState //订单 待匹配   待支付 已付款
+accountName // 
+accountBank
+bankAccount
+questionAndAnswer //问题和答案的汇总  txt
+createBy
+createDate
+updateBy
+updateDate
+===============================================================
+orderinfo==========>>>
+===============================================================
+
+===============================================================
+pricemaintain 暂时没用
+===============================================================
+priceMaintainID
+businessType
+serviceName
+resultSummary
+price
+createBy
+createDate
+updateDate
+updateBy
+===============================================================
+pricemaintain
+===============================================================
+===============================================================
+quotation 报价表
+===============================================================
+quotationID
+finalQuotation
+orderID
+lawyerID
+createBy
+createDate
+updateDate
+updateBy
+===============================================================
+quotation
+===============================================================
+
+===============================================================
+role 
+===============================================================
+roleID
+roleName
+roleDescription
+===============================================================
+role
+===============================================================
+===============================================================
+rolemodule
+===============================================================
+roleModuleID
+moduleID
+roleID
+flag
+===============================================================
+rolemodule
+===============================================================
+===============================================================
+userinfo
+===============================================================
+userID string uuid
+userName 律师的用户名密码  后台绑定用
+openID //
+userPwd 律师的用户名密码  后台绑定用 
+realName //真实姓名
+userEmail
+userAddress
+userPhone
+userPassFlag //暂未用上
+userState // 暂未用上 
+createBy
+updateBy
+createDate
+updateDate
+===============================================================
+userinfo
+===============================================================
+

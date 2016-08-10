@@ -145,3 +145,11 @@ func QueryBadAnswers(statusList []string, startLine, endLine int64) ([]WechatVoi
 	err = conn.Where("category_id in (?)", statusList).Where("is_solved =?", "1").Where("rank_info in (?)", statusList).Offset(startLine - 1).Offset(endLine - startLine + 1).Find(&l1).Count(&count).Error
 	return list, count, err
 }
+
+func GetChildAnsers(questionId string)([]WechatVoiceQuestions,error){
+	conn := dbpool.OpenConn()
+	defer dbpool.CloseConn(&conn)
+	list := make([]WechatVoiceQuestions, 0)
+	err :=conn.Where("parent_question_id = ?",questionId).Find(&list).Error
+	return list,err
+}

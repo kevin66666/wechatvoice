@@ -12,6 +12,7 @@ import (
 	"time"
 	"wechatvoice/model"
 	"wechatvoice/tool/util"
+	"github.com/henrylee2cn/teleport/example"
 )
 
 const (
@@ -76,37 +77,15 @@ type AddInfos struct {
 }
 
 //查询问题方法
-/**
-首页进入 开始问题搜索
-/**
-			"orderId":"xxxx",//问题ID
-			"laywerId":"100", //律师ID
-			"question":"这是",//问题名字
-			"name":"张三",//律师名字
-			"selfIntr":"律师", //擅长类型
-			"pic":"img/a9.png",//律师头像
-			"answer":"###",//录音连接
-			"typeId":"100",//类型ID
-			"typeName":"婚姻类型",
-			"typePrice":"1",//类型价格
-			"star":5, //5星
-			"isPay":false,
-			"addNum":2, //追问次数
-			"isShow":false, //折叠展开  默认全部false
-			"addInfo":[
-				{
-					"question":"这是追问",
-					"orderId":"xxxxxx"
-					"answer":"###"
-				},
-				{
-					"question":"这是追问",
-					"answer":"###"
-				}
-			]
-		}
-*/
+
 func QuestionQuery(ctx *macaron.Context) string {
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" {
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId,userType)
 	body, _ := ctx.Req.Body().String()
 	req := new(model.QuestionQuery)
 
@@ -151,39 +130,55 @@ func QuestionQuery(ctx *macaron.Context) string {
 		single.TypeId = k.CategoryId
 		single.TypeName = k.Category
 		cateInfo := new(model.WechatVoiceQuestionSettings)
-		cateErr := cateInfo.GetConn().Where("category_id = ?", k.CategoryId)
+		cateErr := cateInfo.GetConn().Where("category_id = ?", k.CategoryId).Find(&cateInfo).Error
+		if cateErr!=nil{
+			response.Code = CODE_ERROR
+			response.Msg = cateErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
 		single.TypePrice = cateInfo.PayAmount
 		single.Star = k.RankInfo
-	}
-	/**
-	type QuestionInfo struct {
-		OrderId string `json:"orderId"`
-		LaywerId string  `json:"laywerId"`
-		Question string `json:"question"`
-		Name string `json:"name"`
-		SelfIntr string `json:"selfIntr"`
-		LawerPic string `json:"pic"`
-		Answer string `json:"answer"`
-		TypeId string `json:"typeId"`
-		TypeName string `json:"typeName"`
-		TypePrice string `json:"typePrice"`
-		Star int64 `json:"star"`
-		IsPay bool `json:"isPay"`
-		AddNum int64 `json:"addNum"`
-		IsShow bool `json:"isShow"`
-		AddInfo  []AddInfos `json:""`
+		payment:=new(model.WechatVoicePaymentInfo)
+		payErr:=payment.GetConn().Where("question_id = ?",k.Uuid).Where("open_id = ?",openId).Find(&payment).Error
+
+		if payErr!=nil&&!strings.Contains(payErr.Error(),RNF){
+			response.Code= CODE_ERROR
+			response.Msg = payErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		var payAble bool
+		if payment.Uuid!=""{
+			//说明有支付记录
+			payAble = true
+		}else{
+			payAble = false
+		}
+		single.IsPay = payAble
+		childList,childErr :=model.GetChildAnsers(k.Uuid)
+		if childErr!=nil&&!strings.Contains(childErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = childErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		single.AddNum = len(childList)
+		single.IsShow = false
+		addInfo:=make([]AddInfos,0)
+		if len(childList)>0{
+			for _,v:=range childList {
+				singleChild := new(AddInfos)
+				singleChild.OrderId =v.Uuid
+				singleChild.QuestionInfo = v.Description
+				singleChild.Answer = v.VoicePath
+				addInfo = append(addInfo,*singleChild)
+			}
+		}
+		single.AddInfo = addInfo
+		retList = append(retList,*single)
 	}
 
-	type AddInfos struct{
-		QuestionInfo  string`json:"question"`
-		OrderId string `json:"orderId"`
-		Answer string `json:"answer"`
-	}
-	*/
-	// for _, k := range questionList {
-	// 	single := new(QuestionInfo)
-
-	// }
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
 	response.List = retList
@@ -201,59 +196,7 @@ params
 
 */
 
-// type ListInitReq struct {
-// 	StartLine int64 `json:"startNum"`
-// 	EndLine   int64 `json:"endNum"`
-// }
 
-// func QuestionListInit(ctx *macaron.Context) string {
-// 	body, _ := ctx.Req.Body().String()
-// 	req := new(ListInitReq)
-// 	response := new(QuestionQueryResponse)
-// 	unmarshallErr := json.Unmarshal([]byte(body), req)
-// 	if unmarshallErr != nil {
-// 		response.Code = CODE_ERROR
-// 		response.Msg = MSG_SUCCESS
-// 		ret_str, _ := json.Marshal(response)
-// 		return string(ret_str)
-// 	}
-
-// 	list, count, err := model.GetQueryList(req.StartLine, req.EndLine)
-
-// 	if err != nil && !strings.Contains(err.Error(), "record not found") {
-// 		response.Code = CODE_ERROR
-// 		response.Msg = err.Error()
-// 		ret_str, _ := json.Marshal(response)
-// 		return string(ret_str)
-// 	}
-// 	retList := make([]QuestionInfo, 0)
-// 	for _, k := range list {
-// 		single := new(QuestionInfo)
-// 		single.QuestionId = k.Uuid
-// 		single.QuestionCategoryId = k.CategoryId
-// 		single.QuestionTopic = k.Category
-// 		single.LawyerId = k.AnswerId
-// 		single.LawyerName = k.AnswerName
-// 		lawyer := new(model.LawyerInfo)
-// 		lawyerErr := lawyer.GetConn().Where("uuid = ?", k.AnswerId).Find(&lawyer).Error
-// 		if lawyerErr != nil && !strings.Contains(lawyerErr.Error(), RNF) {
-// 			response.Code = CODE_ERROR
-// 			response.Msg = lawyerErr.Error()
-// 			ret_str, _ := json.Marshal(response)
-// 			return string(ret_str)
-// 		}
-// 		single.HeadImg = lawyer.HeadImgUrl
-// 		single.VoicePath = k.VoicePath
-// 		single.QuestionCateName = k.Category
-// 		retList = append(retList, *single)
-// 	}
-// 	response.Code = CODE_SUCCESS
-// 	response.Msg = MSG_SUCCESS
-// 	response.List = retList
-// 	response.Total = count
-// 	ret_str, _ := json.Marshal(response)
-// 	return string(ret_str)
-// }
 
 type NewQuestionRequest struct {
 	CateId       string `json:"categoryId"`
@@ -445,8 +388,9 @@ type QuestionCateList struct {
 }
 
 type CateInfo struct {
-	CateName string `json:"categoryName"`
-	CateId   string `json:"categoryId"`
+	CateName string `json:"typeId"`
+	CateId   string `json:"typeName"`
+	CatePaymentInfo string `json:"typePrice"`
 }
 
 func GetQuestionCateList(ctx *macaron.Context) string {
@@ -467,6 +411,15 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 		single := new(CateInfo)
 		single.CateId = k.Uuid
 		single.CateName = k.CategoryName
+		price :=new(model.WechatVoiceQuestionSettings)
+		priceErr :=price.GetConn().Where("category_id = ?",k.Uuid).Find(&price).Error
+		if priceErr!=nil&&!strings.Contains(priceErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = priceErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		single.CatePaymentInfo = price.PayAmount
 		list = append(list, *single)
 	}
 

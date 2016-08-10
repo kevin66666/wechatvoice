@@ -227,3 +227,201 @@ func GetOrderDetailById(ctx *macaron.Context)string{
 	ret_str,_:=json.Marshal(response)
 	return string(ret_str)
 }
+type LawyerOrderListReq struct {
+	StartNum int64 `json:"startNum"`
+	EndNum int64 `json:"endNum"`
+	OrderType string `json:"orderType"`
+}
+type LawyerOrderListResponse struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	List []LawOrder `json:"list"`
+}
+
+type LawOrder struct {
+	OrderId string `json:"orderId"`
+	Status string `json:"status"`
+	Content string `json:"content"`
+	Type string `json:"type"`
+	Time string `json:"time"`
+	Price int64 `json:"price"`
+	Answer string `json:"answer"`
+}
+func GetLayerOrderList(ctx *macaron.Context)string{
+	//设置cookie  第一段为openId 第二段为类型 1 用户 2律师
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" {
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+
+	log.Println("=========>>>>>>,用户OPENID 为", openId)
+	log.Println("=========>>>>>>,用户类型为", userType)
+
+	body, _ := ctx.Req.Body().String()
+
+	req := new(OrderListFrontRequest)
+
+	response := new(OrderListResponse)
+
+	marshallErr := json.Unmarshal([]byte(body), req)
+
+	if marshallErr != nil {
+		response.Code = CODE_ERROR
+		response.Msg = marshallErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	//这里要区分下
+	list :=make([]model.WechatVoiceQuestions,0)
+	var err error
+	lawyer :=new(model.LawyerInfo)
+	lawyerErr :=lawyer.GetConn().Where("open_id = ?",openId).Find(&lawyer).Error
+	if lawyerErr!=nil&&!strings.Contains(lawyerErr.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = lawyerErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	switch req.OrderStatus {
+	case "0":
+		//带解答
+		list,err = model.GetLawyerQs(lawyer.FirstCategory,req.OrderStatus,req.StartLine,req.EndLine)
+		if err!=nil&&!strings.Contains(err.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = err.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		if len(list)!=(req.EndLine - req.StartLine +1){
+			a :=req.EndLine -len(list)
+			list1,list1Err:=model.GetNotSpectial(lawyer.FirstCategory,req.OrderStatus,req.StartLine,a)
+			if list1Err!=nil&&!strings.Contains(list1Err.Error(),RNF){
+				response.Code = CODE_ERROR
+				response.Msg = list1Err.Error()
+				ret_str,_:=json.Marshal(response)
+				return string(ret_str)
+			}
+			for _,k:=range list1{
+				list = append(list,k)
+			}
+		}
+	case "1":
+		list,_,err = model.QueryLawyerQuestions(req.StartLine,req.EndLine,openId)
+	}
+	retList :=make([]LawOrder,0)
+	for _,k:=range list{
+		single :=new(LawOrder)
+		single.OrderId= k.Uuid
+		single.Status = k.IsSolved
+		single.Content = k.Description
+		single.Type = k.Category
+		single.Time = k.CreateTime
+		single.Price = k.PaymentInfo
+		single.Answer = k.VoicePath
+		/**
+		OrderId string `json:"orderId"`
+	Status string `json:"status"`
+	Content string `json:"content"`
+	Type string `json:"type"`
+	Time string `json:"time"`
+	Price int64 `json:"price"`
+	Answer string `json:"answer"`
+		*/
+		retList = append(retList,*single)
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.List = retList
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}
+type MemberRequest struct {
+	StartNum int64 `json:"startNum"`
+	EndNum int64 `json:"endNum"`
+	OrderType string `json:"orderType"`
+}
+
+type MemberListReponse struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	List []MemberOrder `json:"list"`
+}
+type MemberOrder struct {
+	OrderId string `json:"orderId"`
+	Status string `json:"status"`
+	Content string `json:"content"`
+	Type string `json:"type"`
+	TypeId string `json:"typeId"`
+	Time string `json:"time"`
+	Price int64 `json:"price"`
+	AddNum int64 `json:"addNum"`
+	Answer string `json:"answer"`
+	CanEval bool `json:"canEval"`
+}
+func GetMemberOrderList(ctx *macaron.Context)string{
+	//设置cookie  第一段为openId 第二段为类型 1 用户 2律师
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" {
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+
+	log.Println("=========>>>>>>,用户OPENID 为", openId)
+	log.Println("=========>>>>>>,用户类型为", userType)
+
+	body, _ := ctx.Req.Body().String()
+
+	req := new(MemberRequest)
+
+	response := new(MemberListReponse)
+
+	marshallErr := json.Unmarshal([]byte(body), req)
+
+	if marshallErr != nil {
+		response.Code = CODE_ERROR
+		response.Msg = marshallErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	list,err:=model.GetCustomerInfo(openId,req.OrderType,req.StartNum,req.EndNum)
+	if err!=nil&&!strings.Contains(err.Error(),RNF){
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+
+	retList:=make([]MemberOrder,0)
+	for _,k:=range list{
+		single :=new(MemberOrder)
+		single.OrderId = k.Uuid
+		single.Status= k.IsSolved
+		single.Content = k.Description
+		single.TypeId = k.CategoryId
+		single.Type = k.Category
+		single.Time = k.CreateTime
+		single.Answer = k.VoicePath
+		single.AddNum = k.AppenQuestionTime
+		single.Price = k.PaymentInfo
+		var a bool
+		if k.IsRanked =="1"{
+			a = false
+		}else {
+			a = true
+		}
+		single.CanEval = a
+		retList = append(retList,*single)
+	}
+	response.Code = CODE_ERROR
+	response.Msg = "ok"
+	response.List = retList
+	ret_str,_:=json.Marshal(response)
+	return string(ret_str)
+}
+
+func EvalAnswers(ctx *macaron.Context)string{
+
+}

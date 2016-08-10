@@ -21,7 +21,7 @@ type MediaId struct {
 func GetWechatVoiceInfoFromWechatServer(ctx *macaron.Context) string {
 	response := new(model.GeneralResponse)
 
-	token, _ := GetAccesstoken(APPID)
+	token := "GetAccesstoken(APPID)"
 	body1, _ := ctx.Req.Body().String()
 
 	req := new(MediaId)

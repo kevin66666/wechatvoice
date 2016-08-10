@@ -53,82 +53,84 @@ func CreateCateList(ctx *macaron.Context) string {
 
 type CateLisReq struct {
 	StartLine int64 `json:"startLine"`
-	EndLine int64 `json:"endLine"`
+	EndLine   int64 `json:"endLine"`
 }
 
 type CateListResponse struct {
-	Code int64 `json:"code"`
-	Msg string `json:"msg"`
-	List CateDetail `json:"list"`
-	Count int64 `json:"count"`
+	Code  int64        `json:"code"`
+	Msg   string       `json:"msg"`
+	List  []CateDetail `json:"list"`
+	Count int64        `json:"count"`
 }
 
 type CateDetail struct {
-	CateId string `json:"cateId"`
+	CateId   string `json:"cateId"`
 	CateName string `json:"cateName"`
 }
 
-func GetCateList(ctx *macaron.Context)string{
-	body,_:=ctx.Req.Body().String()
-	req :=new(CateLisReq)
+func GetCateList(ctx *macaron.Context) string {
+	body, _ := ctx.Req.Body().String()
+	req := new(CateLisReq)
 
-	response :=new(CateListResponse)
+	response := new(CateListResponse)
 
-	err :=json.Unmarshal([]byte(body),req)
-	if err!=nil{
+	err := json.Unmarshal([]byte(body), req)
+	if err != nil {
 		response.Code = CODE_ERROR
 		response.Msg = err.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
-	list :=make([]CateDetail,0)
+	list := make([]CateDetail, 0)
 
-	lists,count,errs :=model.GetCateList(req.StartLine,req.EndLine)
-	if errs!=nil&&!strings.Contains(errs.Error(),RNF){
+	lists, count, errs := model.GetCateList(req.StartLine, req.EndLine)
+	if errs != nil && !strings.Contains(errs.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = errs.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
-	for _,k:=range lists{
-		single :=new(CateDetail)
+	for _, k := range lists {
+		single := new(CateDetail)
 		single.CateId = k.Uuid
 		single.CateName = k.CategoryName
-		list=  append(list,&single)
+		list = append(list, *single)
 	}
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
 	response.Count = count
 	response.List = list
-	ret_str,_:=json.Marshal(response)
+	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
+
 //删除分类
 
 type DeleteReq struct {
 	CateId string `json:"cateId"`
 }
-func DeleteCateInfo(ctx *macaron.Context)string{
-	body,_:=ctx.Req.Body().String()
-	req :=new(DeleteReq)
 
-	json.Unmarshal([]byte(body),req)
+func DeleteCateInfo(ctx *macaron.Context) string {
+	body, _ := ctx.Req.Body().String()
+	req := new(DeleteReq)
 
-	response :=new(model.GeneralResponse)
+	json.Unmarshal([]byte(body), req)
 
-	cate:=new(model.Category)
-	cateErr :=cate.GetConn().Where("uuid = ?",req.CateId).Delete(&cate).Error
-	if cateErr!=nil&&!strings.Contains(cateErr.Error(),RNF){
+	response := new(model.GeneralResponse)
+
+	cate := new(model.Category)
+	cateErr := cate.GetConn().Where("uuid = ?", req.CateId).Delete(&cate).Error
+	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = cateErr.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
-	ret_str,_:=json.Marshal(response)
+	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
 
@@ -136,37 +138,37 @@ func DeleteCateInfo(ctx *macaron.Context)string{
 
 type EditCate struct {
 	CateName string `json:"cateName"`
-	CateId string `json:"cateId"`
+	CateId   string `json:"cateId"`
 }
 
-func EditCateInfo(ctx *macaron.Context)string{
-	body,_:=ctx.Req.Body().String()
-	req :=new(EditCate)
+func EditCateInfo(ctx *macaron.Context) string {
+	body, _ := ctx.Req.Body().String()
+	req := new(EditCate)
 
-	json.Unmarshal([]byte(body),req)
+	json.Unmarshal([]byte(body), req)
 
-	response :=new(model.GeneralResponse)
+	response := new(model.GeneralResponse)
 
-	cate:=new(model.Category)
-	cateErr :=cate.GetConn().Where("uuid = ?",req.CateId).Find(&cate).Error
-	if cateErr!=nil&&!strings.Contains(cateErr.Error(),RNF){
+	cate := new(model.Category)
+	cateErr := cate.GetConn().Where("uuid = ?", req.CateId).Find(&cate).Error
+	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = cateErr.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
 	cate.CategoryName = req.CateName
 	cateErr = cate.GetConn().Save(&cate).Error
-	if cateErr!=nil&&!strings.Contains(cateErr.Error(),RNF){
+	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = cateErr.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
-	ret_str,_:=json.Marshal(response)
+	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
 
@@ -228,7 +230,7 @@ type IdRequest struct {
 	SettingId string `json:"settingId"`
 }
 
-type SingleResponse struct {
+type SingleResponses struct {
 	Code    int64  `json:"code"`
 	Msg     string `json:"msg"`
 	Setting `json:"setting"`
@@ -241,7 +243,7 @@ func GetQuestionSettingsById(ctx *macaron.Context) string {
 
 	json.Unmarshal([]byte(body), req)
 
-	response := new(SingleResponse)
+	response := new(SingleResponses)
 
 	setting := new(model.WechatVoiceQuestionSettings)
 
@@ -312,22 +314,22 @@ func EditWechatVoiceQuestionSettings(ctx *macaron.Context) string {
 }
 
 //删除对应信息
-func DeleteQuestionSettingsById(ctx *macaron.Context)string{
+func DeleteQuestionSettingsById(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
 
 	req := new(IdRequest)
 
 	json.Unmarshal([]byte(body), req)
 
-	response :=new(model.GeneralResponse)
+	response := new(model.GeneralResponse)
 
-	setting:=new(model.WechatVoiceQuestionSettings)
-	settingErr :=setting.GetConn().Where("uuid = ?",req.SettingId).Delete(&setting).Error
+	setting := new(model.WechatVoiceQuestionSettings)
+	settingErr := setting.GetConn().Where("uuid = ?", req.SettingId).Delete(&setting).Error
 
-	if settingErr!=nil&&!strings.Contains(settingErr.Error(),RNF){
-		response.Code =CODE_ERROR
+	if settingErr != nil && !strings.Contains(settingErr.Error(), RNF) {
+		response.Code = CODE_ERROR
 		response.Msg = settingErr.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 	response.Code = CODE_SUCCESS
@@ -335,7 +337,7 @@ func DeleteQuestionSettingsById(ctx *macaron.Context)string{
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
-func AddQuestionSetting(ctx *macaron.Context)string{
+func AddQuestionSetting(ctx *macaron.Context) string {
 	req := new(Setting)
 
 	response := new(GeneralResponse)
@@ -345,7 +347,7 @@ func AddQuestionSetting(ctx *macaron.Context)string{
 
 	setting := new(model.WechatVoiceQuestionSettings)
 	setting.Uuid = util.GenerateUuid()
-	setting.CategoryId=req.CateId
+	setting.CategoryId = req.CateId
 	setting.CateGoryName = req.CateName
 	setting.LawyerFeePercent = req.LawyerPercent
 	setting.CategoryId = req.CateId
@@ -355,11 +357,11 @@ func AddQuestionSetting(ctx *macaron.Context)string{
 	setting.PayAmountInt = amtInt
 	setting.UserRedPacketPercent = req.RedPacketPercent
 
-	err :=setting.GetConn().Create(&setting).Error
-	if err!=nil{
+	err := setting.GetConn().Create(&setting).Error
+	if err != nil {
 		response.Code = CODE_ERROR
 		response.Msg = err.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 	response.Code = CODE_SUCCESS

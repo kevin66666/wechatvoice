@@ -146,32 +146,34 @@ func QueryBadAnswers(statusList []string, startLine, endLine int64) ([]WechatVoi
 	return list, count, err
 }
 
-func GetChildAnsers(questionId string)([]WechatVoiceQuestions,error){
+func GetChildAnsers(questionId string) ([]WechatVoiceQuestions, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err :=conn.Where("parent_question_id = ?",questionId).Find(&list).Error
-	return list,err
+	err := conn.Where("parent_question_id = ?", questionId).Find(&list).Error
+	return list, err
 }
-func GetLawyerQs(cateId,status string,startLine,endLien int64)([]WechatVoiceQuestions,error){
+func GetLawyerQs(cateId, status string, startLine, endLien int64) ([]WechatVoiceQuestions, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err :=conn.Where("category_id = ?",cateId).Where("status=?",status).Offset(startLine-1).Limit(endLien-startLine+1).Find(&list).Order("important").Find(&list).Error
-	return list,err
+	err := conn.Where("category_id = ?", cateId).Where("is_solved = ?", status).Offset(startLine - 1).Limit(endLien - startLine + 1).Find(&list).Order("important").Find(&list).Error
+	return list, err
 }
 
-func GetNotSpectial(cateId,status string,start,end int64)([]WechatVoiceQuestions,error){
+func GetNotSpectial(cateId, status string, start, end int64) ([]WechatVoiceQuestions, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err :=conn.Where("category_id is not ?",cateId).Where("status = ?",status).Offset(start-1).Limit(end-start+1).Find(&list).Error
-	return list,err
+	str := make([]string, 0)
+	str = append(str, cateId)
+	err := conn.Where("category_id  not in (?)", str).Where("is_solved = ?", status).Offset(start - 1).Limit(end - start + 1).Find(&list).Error
+	return list, err
 }
-func GetCustomerInfo(openId,status string,start,end int64)([]WechatVoiceQuestions,error){
+func GetCustomerInfo(openId, status string, start, end int64) ([]WechatVoiceQuestions, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err :=conn.Where("customer_open_id = ?",openId).Where("status = ?",status).Offset(start-1).Limit(end-start+1).Find(&list).Error
-	return list,err
+	err := conn.Where("customer_open_id = ?", openId).Where("is_solved = ?", status).Offset(start - 1).Limit(end - start + 1).Find(&list).Error
+	return list, err
 }

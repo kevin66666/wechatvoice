@@ -9,9 +9,9 @@ var OrderDetail=React.createClass({
 		var orderId=location.search?location.search.slice(1).split('=')[1]:'';
 		var data={orderId:orderId}
 		$.ajax({
-			url:'json/orderDetail.json',
-			type:'GET',
-			// data:JSON.stringify(data),
+			url:'http://localhost:8000/ucenter/orderdetail',
+			type:'POST',
+			 data:JSON.stringify(data),
 			dataType:'json',
 			success:function(data){
 				if(data.code===10000){

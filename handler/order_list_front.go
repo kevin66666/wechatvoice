@@ -173,7 +173,7 @@ func GetOrderList(ctx *macaron.Context) string {
 }
 
 type OrderDetailInfo struct {
-	QuestionId string `json:"questionId"`
+	QuestionId string `json:"orderId"`
 }
 type OrderDetailResponse struct {
 	Code      int64  `json:"code"`
@@ -184,8 +184,10 @@ type OrderDetailResponse struct {
 func GetOrderDetailById(ctx *macaron.Context) string {
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" {
+		cookieStr = "1|2"
 		//这里直接调取util重新过一次绿叶 获取openId 等信息
 	}
+	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 
@@ -294,7 +296,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 	switch req.OrderType {
 	case "0":
 		//带解答
-		list, err = model.GetLawyerQs(lawyer.FirstCategory, req.OrderType, req.StartLine, req.EndLine)
+		list, err = model.GetLawyerQs(lawyer.FirstCategoryId, req.OrderType, req.StartLine, req.EndLine)
 		if err != nil && !strings.Contains(err.Error(), RNF) {
 			response.Code = CODE_ERROR
 			response.Msg = err.Error()
@@ -303,7 +305,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		}
 		if int64(len(list)) != (req.EndLine - req.StartLine + 1) {
 			a := req.EndLine - int64(len(list))
-			list1, list1Err := model.GetNotSpectial(lawyer.FirstCategory, req.OrderType, req.StartLine, a)
+			list1, list1Err := model.GetNotSpectial(lawyer.FirstCategoryId, req.OrderType, req.StartLine, a)
 			if list1Err != nil && !strings.Contains(list1Err.Error(), RNF) {
 				response.Code = CODE_ERROR
 				response.Msg = list1Err.Error()
@@ -377,7 +379,9 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" {
 		//这里直接调取util重新过一次绿叶 获取openId 等信息
+		cookieStr = "1|2"
 	}
+	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 

@@ -207,7 +207,7 @@ params
 
 
 */
-
+//init的那个方法在哪里
 type NewQuestionRequest struct {
 	CateId    string `json:"typeId"`
 	TypePrice string `json:"typePrice"`
@@ -226,7 +226,9 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" {
 		//这里直接调取util重新过一次绿叶 获取openId 等信息
+		cookieStr = "1|2"
 	}
+	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId, userType)

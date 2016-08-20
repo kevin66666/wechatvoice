@@ -26,4 +26,5 @@ func SetRouter(m *macaron.Macaron) {
 	m.Get("/toindex", c.ToIndex)
 
 	m.Get("/front/getcatList", c.GetQuestionCateList)
+	m.Post("/front/createquestion", c.CreateNewQuestion)
 }

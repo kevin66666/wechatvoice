@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Unknwon/macaron"
 	"log"
 	"strconv"
@@ -231,8 +232,8 @@ func GetOrderDetailById(ctx *macaron.Context) string {
 }
 
 type LawyerOrderListReq struct {
-	StartNum  int64  `json:"startNum"`
-	EndNum    int64  `json:"endNum"`
+	StartLine int64  `json:"startNum"`
+	EndLine   int64  `json:"endNum"`
 	OrderType string `json:"orderType"`
 }
 type LawyerOrderListResponse struct {
@@ -256,7 +257,9 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" {
 		//这里直接调取util重新过一次绿叶 获取openId 等信息
+		cookieStr = "1|2"
 	}
+	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 
@@ -265,7 +268,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 
 	body, _ := ctx.Req.Body().String()
 
-	req := new(OrderListFrontRequest)
+	req := new(LawyerOrderListReq)
 
 	response := new(LawyerOrderListResponse)
 
@@ -288,10 +291,10 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	switch req.OrderStatus {
+	switch req.OrderType {
 	case "0":
 		//带解答
-		list, err = model.GetLawyerQs(lawyer.FirstCategory, req.OrderStatus, req.StartLine, req.EndLine)
+		list, err = model.GetLawyerQs(lawyer.FirstCategory, req.OrderType, req.StartLine, req.EndLine)
 		if err != nil && !strings.Contains(err.Error(), RNF) {
 			response.Code = CODE_ERROR
 			response.Msg = err.Error()
@@ -300,7 +303,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		}
 		if int64(len(list)) != (req.EndLine - req.StartLine + 1) {
 			a := req.EndLine - int64(len(list))
-			list1, list1Err := model.GetNotSpectial(lawyer.FirstCategory, req.OrderStatus, req.StartLine, a)
+			list1, list1Err := model.GetNotSpectial(lawyer.FirstCategory, req.OrderType, req.StartLine, a)
 			if list1Err != nil && !strings.Contains(list1Err.Error(), RNF) {
 				response.Code = CODE_ERROR
 				response.Msg = list1Err.Error()

@@ -26,8 +26,8 @@ func init() {
 	env := os.Getenv("RUN_ENV")
 	if env == "prod" {
 		// log.Println("=====>>>连接整死库")
-		db, err = gorm.Open("mysql", "shangqu:riA6Y4y1fEwcg@tcp(wbollalpha.mysql.rds.aliyuncs.com:3306)/wfx?charset=utf8mb4&parseTime=True&loc=Local")
-		old_db, err = gorm.Open("mysql", "shangqu:riA6Y4y1fEwcg@tcp(wbollalpha.mysql.rds.aliyuncs.com:3306)/wechat?charset=utf8mb4&parseTime=True&loc=Local")
+		db, err = gorm.Open("mysql", "root:7de2cd9b31@tcp(localhost:3306)/mylawyerfriend?charset=utf8mb4&parseTime=True&loc=Local")
+		//old_db, err = gorm.Open("mysql", "shangqu:riA6Y4y1fEwcg@tcp(wbollalpha.mysql.rds.aliyuncs.com:3306)/wechat?charset=utf8mb4&parseTime=True&loc=Local")
 	} else {
 		// log.Println("=====>>>连接整死库")
 		db, err = gorm.Open("mysql", "root:root@tcp(127.0.0.1:3306)/test?charset=utf8&parseTime=True&loc=Local")

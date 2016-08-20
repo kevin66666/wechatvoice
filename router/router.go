@@ -31,4 +31,7 @@ func SetRouter(m *macaron.Macaron) {
 	m.Post("/ucenter/lawyerlist", c.GetLayerOrderList)
 	m.Post("/ucenter/userlist", c.GetMemberOrderList)
 	m.Post("/ucenter/orderdetail", c.GetOrderDetailById)
+
+	m.Get("/tool/sign", c.GetSign)
+	m.Get("/tool/code", c.GetOpenCodeInfo)
 }

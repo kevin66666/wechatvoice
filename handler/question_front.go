@@ -5,13 +5,14 @@ import (
 
 	"github.com/Unknwon/macaron"
 
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
 	"time"
 	"wechatvoice/model"
 	"wechatvoice/tool/util"
-	"fmt"
+	"math/rand"
 )
 
 const (
@@ -52,27 +53,39 @@ type QuestionQueryResponse struct {
 }
 
 type QuestionInfo struct {
-	QuestionId         string `json:"questionId"`
-	QuestionTopic      string `json:"questionName"`
-	QuestionCategoryId string `json:"questionCateId"`
-	QuestionCateName   string `json:"cateName"`
-	LawyerName         string `json:"lawyerName"`
-	LawyerId           string `json:"lawyerId"`
-	HeadImg            string `json:"headImg"`
-	VoicePath          string `json:"path"`
-	IsSolved string `json:"isSolved"`
+	OrderId   string     `json:"orderId"`
+	LaywerId  string     `json:"laywerId"`
+	Question  string     `json:"question"`
+	Name      string     `json:"name"`
+	SelfIntr  string     `json:"selfIntr"`
+	LawerPic  string     `json:"pic"`
+	Answer    string     `json:"answer"`
+	TypeId    string     `json:"typeId"`
+	TypeName  string     `json:"typeName"`
+	TypePrice string     `json:"typePrice"`
+	Star      int64      `json:"star"`
+	IsPay     bool       `json:"isPay"`
+	AddNum    int64      `json:"addNum"`
+	IsShow    bool       `json:"isShow"`
+	AddInfo   []AddInfos `json:""`
+}
+
+type AddInfos struct {
+	QuestionInfo string `json:"question"`
+	OrderId      string `json:"orderId"`
+	Answer       string `json:"answer"`
 }
 
 //查询问题方法
-/**
-首页进入 开始问题搜索
 
-params
-keyWord 关键词
-categoryId 对应分类ID
-startLine endLine 分页请求数量
-*/
 func QuestionQuery(ctx *macaron.Context) string {
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" {
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId,userType)
 	body, _ := ctx.Req.Body().String()
 	req := new(model.QuestionQuery)
 
@@ -88,7 +101,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 	}
 
 	questionList, count, queryErr := model.GetQuestionQuery(*req)
-
+	fmt.Println(questionList)
 	if queryErr != nil && !strings.Contains(queryErr.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = queryErr.Error()
@@ -97,14 +110,8 @@ func QuestionQuery(ctx *macaron.Context) string {
 	}
 
 	retList := make([]QuestionInfo, 0)
-
 	for _, k := range questionList {
 		single := new(QuestionInfo)
-		single.QuestionId = k.Uuid
-		single.QuestionCategoryId = k.CategoryId
-		single.QuestionTopic = k.Category
-		single.LawyerId = k.AnswerId
-		single.LawyerName = k.AnswerName
 		lawyer := new(model.LawyerInfo)
 		lawyerErr := lawyer.GetConn().Where("uuid = ?", k.AnswerId).Find(&lawyer).Error
 		if lawyerErr != nil && !strings.Contains(lawyerErr.Error(), RNF) {
@@ -113,11 +120,65 @@ func QuestionQuery(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
-		single.HeadImg = lawyer.HeadImgUrl
-		single.VoicePath = k.VoicePath
-		single.QuestionCateName = k.Category
-		retList = append(retList, *single)
+		single.OrderId = k.Uuid
+		single.LaywerId = k.AnswerId
+		single.Question = k.Description
+		single.Name = k.AnswerName
+		single.SelfIntr = lawyer.FirstCategory
+		single.LawerPic = lawyer.HeadImgUrl
+		single.Answer = k.VoicePath
+		single.TypeId = k.CategoryId
+		single.TypeName = k.Category
+		cateInfo := new(model.WechatVoiceQuestionSettings)
+		cateErr := cateInfo.GetConn().Where("category_id = ?", k.CategoryId).Find(&cateInfo).Error
+		if cateErr!=nil{
+			response.Code = CODE_ERROR
+			response.Msg = cateErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		single.TypePrice = cateInfo.PayAmount
+		single.Star = k.RankInfo
+		payment:=new(model.WechatVoicePaymentInfo)
+		payErr:=payment.GetConn().Where("question_id = ?",k.Uuid).Where("open_id = ?",openId).Find(&payment).Error
+
+		if payErr!=nil&&!strings.Contains(payErr.Error(),RNF){
+			response.Code= CODE_ERROR
+			response.Msg = payErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		var payAble bool
+		if payment.Uuid!=""{
+			//说明有支付记录
+			payAble = true
+		}else{
+			payAble = false
+		}
+		single.IsPay = payAble
+		childList,childErr :=model.GetChildAnsers(k.Uuid)
+		if childErr!=nil&&!strings.Contains(childErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = childErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		single.AddNum = len(childList)
+		single.IsShow = false
+		addInfo:=make([]AddInfos,0)
+		if len(childList)>0{
+			for _,v:=range childList {
+				singleChild := new(AddInfos)
+				singleChild.OrderId =v.Uuid
+				singleChild.QuestionInfo = v.Description
+				singleChild.Answer = v.VoicePath
+				addInfo = append(addInfo,*singleChild)
+			}
+		}
+		single.AddInfo = addInfo
+		retList = append(retList,*single)
 	}
+
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
 	response.List = retList
@@ -135,79 +196,30 @@ params
 
 */
 
-type ListInitReq struct {
-	StartLine int64 `json:"startNum"`
-	EndLine   int64 `json:"endNum"`
-}
 
-func QuestionListInit(ctx *macaron.Context) string {
-	body, _ := ctx.Req.Body().String()
-	req := new(ListInitReq)
-	response := new(QuestionQueryResponse)
-	unmarshallErr := json.Unmarshal([]byte(body), req)
-	if unmarshallErr != nil {
-		response.Code = CODE_ERROR
-		response.Msg = MSG_SUCCESS
-		ret_str, _ := json.Marshal(response)
-		return string(ret_str)
-	}
-
-	list, count, err := model.GetQueryList(req.StartLine, req.EndLine)
-
-	if err != nil && !strings.Contains(err.Error(), "record not found") {
-		response.Code = CODE_ERROR
-		response.Msg = err.Error()
-		ret_str, _ := json.Marshal(response)
-		return string(ret_str)
-	}
-	retList := make([]QuestionInfo, 0)
-	for _, k := range list {
-		single := new(QuestionInfo)
-		single.QuestionId = k.Uuid
-		single.QuestionCategoryId = k.CategoryId
-		single.QuestionTopic = k.Category
-		single.LawyerId = k.AnswerId
-		single.LawyerName = k.AnswerName
-		lawyer := new(model.LawyerInfo)
-		lawyerErr := lawyer.GetConn().Where("uuid = ?", k.AnswerId).Find(&lawyer).Error
-		if lawyerErr != nil && !strings.Contains(lawyerErr.Error(), RNF) {
-			response.Code = CODE_ERROR
-			response.Msg = lawyerErr.Error()
-			ret_str, _ := json.Marshal(response)
-			return string(ret_str)
-		}
-		single.HeadImg = lawyer.HeadImgUrl
-		single.VoicePath = k.VoicePath
-		single.QuestionCateName = k.Category
-		retList = append(retList, *single)
-	}
-	response.Code = CODE_SUCCESS
-	response.Msg = MSG_SUCCESS
-	response.List = retList
-	response.Total = count
-	ret_str, _ := json.Marshal(response)
-	return string(ret_str)
-}
 
 type NewQuestionRequest struct {
-	CateId       string `json:"categoryId"`
-	CateName     string `json:"cateName"`
-	AskerOpenId  string `json:"askerOpenId"`
-	Description  string `json:"description"`
-	QuestionType string `json:"type"` //0 直接丢出去 1 指定人提问
-	TargetOpenId string `json:"targetOpenId"`
-	Payment      string `json:"payment"`
+	CateId       string `json:"typeId"`
+	TypePrice string `json:"typePrice"`
+	Content string `json:"content"`
 }
 
 type NewQuestionResponse struct {
 	Code        int64  `json:"code"`
 	Msg         string `json:"msg"`
-	OrderNumber string `json:"orderNumber"`
-	Payment     string `json:"payment"`
+	OrderNumber string `json:"orderId"`
+	Payment     string `json:"price"`
+	IsAdd string `json:"isAdd"`
 }
 
 func CreateNewQuestion(ctx *macaron.Context) string {
-
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" {
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId,userType)
 	body, _ := ctx.Req.Body().String()
 
 	req := new(NewQuestionRequest)
@@ -234,7 +246,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 
 	customer := new(model.MemberInfo)
 
-	customerErr := customer.GetConn().Where("open_id = ?", req.AskerOpenId).Find(&customer).Error
+	customerErr := customer.GetConn().Where("open_id = ?", openId).Find(&customer).Error
 
 	if customerErr != nil && !strings.Contains(customerErr.Error(), RNF) {
 		response.Code = CODE_ERROR
@@ -247,16 +259,16 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	question := new(model.WechatVoiceQuestions)
 	question.Uuid = util.GenerateUuid()
 	question.CategoryId = req.CateId
-	question.Category = req.CateName
+	question.Category = cate.CategoryName
 	question.CategoryIdInt = int64(cate.Model.ID)
-	question.Description = req.Description
+	question.Description = req.Content
 	today := time.Unix(time.Now().Unix(), 0).String()[0:19]
 	question.CreateTime = today
 	question.CustomerId = customer.Uuid
 	question.CustomerName = customer.Name
-	question.CustomerOpenId = req.AskerOpenId
-	question.PaymentInfo = req.Payment
-	payInt, transferErr := strconv.ParseInt(req.Payment, 10, 64)
+	question.CustomerOpenId = openId
+	question.PaymentInfo =req.TypePrice
+	payInt, transferErr := strconv.ParseInt(req.TypePrice, 10, 64)
 	question.OrderNumber = orderNumber
 	if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {
 		response.Code = CODE_ERROR
@@ -266,27 +278,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	}
 
 	question.PaymentInfoInt = payInt
-	switch req.QuestionType {
-	case "0":
-		question.QuestionType = "0"
-		question.Important = "0"
-	case "1":
-		question.AnswerOpenId = req.TargetOpenId
 
-		layer := new(model.LawyerInfo)
-		lawyerErr := layer.GetConn().Where("open_id = ?", req.TargetOpenId).Find(&layer).Error
-
-		if lawyerErr != nil && !strings.Contains(lawyerErr.Error(), RNF) {
-			response.Code = CODE_ERROR
-			response.Msg = lawyerErr.Error()
-			ret_str, _ := json.Marshal(response)
-			return string(ret_str)
-		}
-		question.AnswerName = layer.Name
-		question.AnswerId = layer.Uuid
-		question.AnswerHeadImg = layer.HeadImgUrl
-
-	}
 
 	createErr := question.GetConn().Create(&question).Error
 
@@ -300,11 +292,121 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
 	response.OrderNumber = orderNumber
-	response.Payment = req.Payment
+	response.Payment = req.TypePrice
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
+type SpecialQuestions struct{
+	CateId       string `json:"typeId"`
+	TypePrice string `json:"typePrice"`
+	Content string `json:"content"`
+	QuestionId string `json:"quesionId"`
+	LawyerId string  `json:"lawyerId"`
+}
+func CreateNewSpecialQuestion(ctx *macaron.Context)string{
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" {
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId,userType)
+	body, _ := ctx.Req.Body().String()
 
+	req := new(SpecialQuestions)
+
+	response := new(NewQuestionResponse)
+
+	unmarshallErr := json.Unmarshal([]byte(body), req)
+	if unmarshallErr != nil {
+		response.Code = CODE_ERROR
+		response.Msg = unmarshallErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	cate := new(model.Category)
+	cateErr := cate.GetConn().Where("uuid = ?", req.CateId).Find(&cate).Error
+
+	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = cateErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	customer := new(model.MemberInfo)
+
+	customerErr := customer.GetConn().Where("open_id = ?", openId).Find(&customer).Error
+
+	if customerErr != nil && !strings.Contains(customerErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = customerErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	orderNumber := util.GenerateOrderNumber()
+	question := new(model.WechatVoiceQuestions)
+	question.Uuid = util.GenerateUuid()
+	question.CategoryId = req.CateId
+	question.Category = cate.CategoryName
+	question.CategoryIdInt = int64(cate.Model.ID)
+	question.Description = req.Content
+	today := time.Unix(time.Now().Unix(), 0).String()[0:19]
+	question.CreateTime = today
+	question.CustomerId = customer.Uuid
+	question.CustomerName = customer.Name
+	question.CustomerOpenId = openId
+	question.PaymentInfo =req.TypePrice
+	payInt, transferErr := strconv.ParseInt(req.TypePrice, 10, 64)
+	question.OrderNumber = orderNumber
+	if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = transferErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	question.PaymentInfoInt = payInt
+	if req.QuestionId!=""{
+		//追加
+		question1 :=new(model.WechatVoiceQuestions)
+		questionErr :=question1.GetConn().Where("uuid = ?",req.QuestionId).Find(&question1).Error
+		if questionErr!=nil&&!strings.Contains(questionErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = questionErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		question.ParentQuestionId = req.QuestionId
+		question.AppenQuestionTime = question.AppenQuestionTime +1
+		question.HaveAppendChild = "1"
+	}
+	if req.LawyerId!=""{
+		//指定问题
+		question.QuestionType = "1"
+		question.Important = "1"
+	}
+
+
+
+
+	createErr := question.GetConn().Create(&question).Error
+
+	if createErr != nil {
+		response.Code = CODE_ERROR
+		response.Msg = createErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.OrderNumber = orderNumber
+	response.Payment = req.TypePrice
+	ret_str, _ := json.Marshal(response)
+	return string(ret_str)
+}
 // 进行支付请求
 type ReqDoPay struct {
 	OrderId string `json:"orderId"`
@@ -379,8 +481,9 @@ type QuestionCateList struct {
 }
 
 type CateInfo struct {
-	CateName string `json:"categoryName"`
-	CateId   string `json:"categoryId"`
+	CateName string `json:"typeId"`
+	CateId   string `json:"typeName"`
+	CatePaymentInfo string `json:"typePrice"`
 }
 
 func GetQuestionCateList(ctx *macaron.Context) string {
@@ -388,7 +491,7 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 
 	list := make([]CateInfo, 0)
 
-	cateList,_, cateErr := model.GetCateList()
+	cateList, cateErr := model.GetCateLists()
 
 	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
 		response.Code = CODE_ERROR
@@ -401,6 +504,15 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 		single := new(CateInfo)
 		single.CateId = k.Uuid
 		single.CateName = k.CategoryName
+		price :=new(model.WechatVoiceQuestionSettings)
+		priceErr :=price.GetConn().Where("category_id = ?",k.Uuid).Find(&price).Error
+		if priceErr!=nil&&!strings.Contains(priceErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = priceErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		single.CatePaymentInfo = price.PayAmount
 		list = append(list, *single)
 	}
 
@@ -669,7 +781,7 @@ func AnswerQuestionInit(ctx *macaron.Context) string {
 	q.LawyerId = lawerInfo.Uuid
 	q.LawerName = lawerInfo.Name
 	//在这里锁住
-	lock :=new(model.AnswerLockInfo)
+	lock := new(model.AnswerLockInfo)
 	/*lockErr:=lock.GetConn().Where("question_id = ?",question.Uuid).Find(&lock).Error
 	if lockErr!=nil&&!strings.Contains(lockErr.Error(),RNF){
 		response.Code = CODE_ERROR
@@ -681,11 +793,11 @@ func AnswerQuestionInit(ctx *macaron.Context) string {
 	lock.QuestionId = question.Uuid
 	lock.OpenIdFirst = openId
 	lock.LockedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
-	err:=lock.GetConn().Create(&lock)
-	if err!=nil{
+	err := lock.GetConn().Create(&lock).Error
+	if err != nil {
 		response.Code = CODE_ERROR
 		response.Msg = err.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
@@ -796,6 +908,7 @@ type SingleQuestionInfo struct {
 	Msg          string `json:"msg"`
 	QuestionInfo `json:"questionInfo"`
 }
+
 //根据ID获取问题详情
 func GetQuestionInfoById(ctx *macaron.Context) string {
 	qId := ctx.Query("id")
@@ -809,104 +922,178 @@ func GetQuestionInfoById(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 	var single QuestionInfo
-	single.HeadImg = questionInfo.AskerHeadImg
-	single.QuestionId = questionInfo.Uuid
-	single.QuestionTopic = questionInfo.Description
-	single.LawyerId = questionInfo.AnswerId
-	single.LawyerName = questionInfo.AnswerName
-	single.QuestionCategoryId = questionInfo.CategoryId
-	single.QuestionCateName =  questionInfo.Category
-	single.IsSolved = questionInfo.IsSolved
+	// single.LawerPic = questionInfo.AskerHeadImg
+	// single.QuestionId = questionInfo.Uuid
+	// single.QuestionTopic = questionInfo.Description
+	// single.LawyerId = questionInfo.AnswerId
+	// single.LawyerName = questionInfo.AnswerName
+	// single.QuestionCategoryId = questionInfo.CategoryId
+	// single.QuestionCateName = questionInfo.Category
+	// single.IsSolved = questionInfo.IsSolved
 
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
 	response.QuestionInfo = single
-	ret_str,_:=json.Marshal(response)
+	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
+
 //做出评价
 type RankAnswerReq struct {
 	QuestionId string `json:"questionId"`
-	RankInfo int64 `json:"rank"`
+	RankInfo   int64  `json:"rank"`
 }
-func RankTheAnswer(ctx *macaron.Context)string{
-	body,_:=ctx.Req.Body().String()
-	req :=new(RankAnswerReq)
-	response :=new(model.GeneralResponse)
-	json.Unmarshal([]byte(body),req)
-	questionInfo :=new(model.WechatVoiceQuestions)
+type RankResponse struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	Red string `json:"redPacket"`
+}
+func RankTheAnswer(ctx *macaron.Context) string {
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" {
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId,userType)
+	body, _ := ctx.Req.Body().String()
+	req := new(RankAnswerReq)
+	response := new(RankResponse)
+	json.Unmarshal([]byte(body), req)
+	questionInfo := new(model.WechatVoiceQuestions)
 
-	questionInfoErr :=questionInfo.GetConn().Where("uuid = ?",req.QuestionId).Find(&questionInfo).Error
-	if questionInfoErr!=nil&&!strings.Contains(questionInfoErr.Error(),RNF){
+	questionInfoErr := questionInfo.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfo).Error
+	if questionInfoErr != nil && !strings.Contains(questionInfoErr.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = questionInfoErr.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
 	questionInfo.IsRanked = "1"
-	r :=strconv.FormatInt(req.RankInfo,10)
+	r := strconv.FormatInt(req.RankInfo, 10)
 	questionInfo.RankInfo = r
 
-	errUpdate :=questionInfo.GetConn().Save(&questionInfo).Error
-	if errUpdate!=nil{
+	errUpdate := questionInfo.GetConn().Save(&questionInfo).Error
+	if errUpdate != nil {
 		response.Code = CODE_ERROR
 		response.Msg = errUpdate.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	lId :=questionInfo.AnswerId
-	rankLog :=new(model.RankInfoLogs)
-	logUuid :=util.GenerateUuid()
+	lId := questionInfo.AnswerId
+	rankLog := new(model.RankInfoLogs)
+	logUuid := util.GenerateUuid()
 	rankLog.Uuid = logUuid
 	rankLog.QuestionId = questionInfo.Uuid
-	rankLog.LawyerId =lId
+	rankLog.LawyerId = lId
 	rankLog.LawyerName = questionInfo.AnswerName
 	rankLog.AskerName = questionInfo.CustomerName
 	rankLog.AskerId = questionInfo.CustomerId
 	rankLog.RankInfo = r
 	today := time.Unix(time.Now().Unix(), 0).String()[0:19]
-	rankLog.RankTime= today
+	rankLog.RankTime = today
 	rankLog.RankPerson = "0"
-	err :=rankLog.GetConn().Create(&rankLog).Error
-	if err!=nil{
+	err := rankLog.GetConn().Create(&rankLog).Error
+	if err != nil {
 		response.Code = CODE_ERROR
 		response.Msg = err.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
-	lInfo :=new(model.LawyerInfo)
-	linfoErr :=lInfo.GetConn().Where("uuid = ?",lId).Find(&lInfo).Error
-	if linfoErr!=nil&&!strings.Contains(linfoErr.Error(),RNF){
+	lInfo := new(model.LawyerInfo)
+	linfoErr := lInfo.GetConn().Where("uuid = ?", lId).Find(&lInfo).Error
+	if linfoErr != nil && !strings.Contains(linfoErr.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = linfoErr.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 	switch req.RankInfo {
 	case 1:
-		lInfo.RankLast = lInfo.RankLast +1
+		lInfo.RankLast = lInfo.RankLast + 1
 	case 2:
-		lInfo.RankFouth = lInfo.RankFouth+1
+		lInfo.RankFouth = lInfo.RankFouth + 1
 	case 3:
-		lInfo.RankThird = lInfo.RankThird+1
+		lInfo.RankThird = lInfo.RankThird + 1
 	case 4:
-		lInfo.RankSecond = lInfo.RankSecond+1
+		lInfo.RankSecond = lInfo.RankSecond + 1
 	case 5:
-		lInfo.RankFirst = lInfo.RankFirst+1
+		lInfo.RankFirst = lInfo.RankFirst + 1
 	}
-	lInfoUErr :=lInfo.GetConn().Save(&lInfo).Error
+	lInfoUErr := lInfo.GetConn().Save(&lInfo).Error
 
-	if lInfoUErr!=nil{
+	if lInfoUErr != nil {
 		response.Code = CODE_ERROR
 		response.Msg = lInfoUErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	setting :=new(model.WechatVoiceQuestionSettings)
+	settingErr :=setting.GetConn().Where("category_id = ?",questionInfo.CategoryId).Find(&setting).Error
+	if settingErr!=nil&&!strings.Contains(settingErr.Error(),RNF){
+		response.Code= CODE_ERROR
+		response.Msg = settingErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	amount,_:=strconv.ParseInt(setting.PayAmountInt,10,64)
+	bb := (100-setting.LawyerFeePercent)/100
+	cc := bb*amount
+	a :=(rand.Int63n(setting.UserRedPacketPercent))/100
+	packet :=cc*a
+	b :=strconv.FormatInt(packet,10)
+	percent,_:=strconv.ParseInt(setting.LawyerFeePercent,10,64)
+	 fees :=amount*percent/100
+	bf,_ :=strconv.ParseFloat(b,64)
+	//记录余
+	cost :=new(model.MemberInfo)
+	costErr :=cost.GetConn().Where("open_id = ?",openId).Find(&cost).Error
+	if costErr!=nil{
+		response.Code= CODE_ERROR
+		response.Msg = costErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	balance :=cost.Balance
+	balanseF,_:=strconv.ParseFloat(balance,64)
+	balanseF = balanseF +bf
+	balanseStr :=strconv.FormatFloat(balanseF,'f',2,64)
+	cost.Balance = balanseStr
+	updaerr:=cost.GetConn().Save(&cost).Error
+	if updaerr!=nil{
+		response.Code= CODE_ERROR
+		response.Msg = updaerr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	//记录律师余额
+	lawyer:=new(model.LawyerInfo)
+	lawyerErr :=lawyer.GetConn().Where("open_id = ?",openId).Find(&lawyer).Error
+	if lawyerErr!=nil{
+		response.Code= CODE_ERROR
+		response.Msg = lawyerErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	balancel :=lawyer.Balance
+	balanseFl,_:=strconv.ParseFloat(balancel,64)
+	bbbb:=float64(fees)
+	balanseFl = balanseF +bbbb
+	balanseStrl :=strconv.FormatFloat(balanseFl,'f',2,64)
+	lawyer.Balance = balanseStrl
+	updaerr1:=cost.GetConn().Save(&cost).Error
+	if updaerr1!=nil{
+		response.Code= CODE_ERROR
+		response.Msg = updaerr1.Error()
 		ret_str,_:=json.Marshal(response)
 		return string(ret_str)
 	}
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
-	ret_str,_:=json.Marshal(response)
+	response.Red = b
+	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
 
@@ -914,68 +1101,174 @@ func RankTheAnswer(ctx *macaron.Context)string{
 type CheckIsLocked struct {
 	QuestionId string `json:"questionId"`
 }
-func CheckAnswerIsLocked(ctx *macaron.Context)string{
+
+func CheckAnswerIsLocked(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
 	req := new(CheckIsLocked)
 
-	json.Unmarshal([]byte(body),req)
+	json.Unmarshal([]byte(body), req)
 
-	questionInfo :=new(model.WechatVoiceQuestions)
-	response :=new(model.GeneralResponse)
+	questionInfo := new(model.WechatVoiceQuestions)
+	response := new(model.GeneralResponse)
 
-	questionInfoErr :=questionInfo.GetConn().Where("uuid = ?",req.QuestionId).Find(&questionInfo).Error
-	if questionInfoErr!=nil&&!strings.Contains(questionInfoErr.Error(),RNF){
+	questionInfoErr := questionInfo.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfo).Error
+	if questionInfoErr != nil && !strings.Contains(questionInfoErr.Error(), RNF) {
 		response.Msg = questionInfoErr.Error()
 		response.Code = CODE_ERROR
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
-	if questionInfo.IsSolved=="1"{
+	if questionInfo.IsSolved == "1" {
 		response.Msg = "问题已被解答"
 		response.Code = CODE_ERROR
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	list,err :=model.GetLockListById(req.QuestionId)
-	if err!=nil&&!strings.Contains(err.Error(),RNF){
+	list, err := model.GetLockListById(req.QuestionId)
+	if err != nil && !strings.Contains(err.Error(), RNF) {
 		response.Msg = err.Error()
 		response.Code = CODE_ERROR
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
-	if len(list)2{
+	if len(list) == 2 {
 		response.Code = CODE_ERROR
 		response.Msg = "当前人数过多"
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
-	ret_str,_:=json.Marshal(response)
+	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
 
-func CreatePvInfo(ctx *macaron.Context)string{
+func CreatePvInfo(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
 	req := new(CheckIsLocked)
 
-	json.Unmarshal([]byte(body),req)
-	questionInfo :=new(model.WechatVoiceQuestions)
-	response :=new(model.GeneralResponse)
-	questionInfoErr :=questionInfo.GetConn().Where("uuid = ?",req.QuestionId).Find(&questionInfo).Error
-	if questionInfoErr!=nil&&!strings.Contains(questionInfoErr.Error(),RNF){
+	json.Unmarshal([]byte(body), req)
+	questionInfo := new(model.WechatVoiceQuestions)
+	response := new(model.GeneralResponse)
+	questionInfoErr := questionInfo.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfo).Error
+	if questionInfoErr != nil && !strings.Contains(questionInfoErr.Error(), RNF) {
 		fmt.Println(questionInfoErr.Error())
 	}
-	questionInfo.Pv = questionInfo.Pv+1
-	err :=questionInfo.GetConn().Save(&questionInfo).Error
-	if err!=nil&&!strings.Contains(err.Error(),RNF){
+	questionInfo.Pv = questionInfo.Pv + 1
+	err := questionInfo.GetConn().Save(&questionInfo).Error
+	if err != nil && !strings.Contains(err.Error(), RNF) {
 		fmt.Println(err.Error())
 	}
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
+	ret_str, _ := json.Marshal(response)
+	return string(ret_str)
+}
+
+type InitSpecail struct {
+	LawyerId string `json:"lawyerId"`
+	TypeId string `json:"typeId"`
+	OrderId string `json:"orderId"`
+}
+type InitSpecailResponse struct {
+	Code int64 `json:"code"`
+	Msg string `json:"msg"`
+	Name string `json:"name"`
+	SelfIntr string `json:"selfIntr"`
+	Pic string `json:"pic"`
+	TypePrice string `json:"typePrice"`
+	TypeId string `json:"typeId"`
+	ParentOrderId string `json:"parentOrderId"`
+	TypeName string `json:"typeName"`
+}
+func InitSpecialInfo(ctx *macaron.Context)string{
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" {
+		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	}
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId,userType)
+	body, _ := ctx.Req.Body().String()
+	req := new(InitSpecail)
+	response := new(InitSpecailResponse)
+	json.Unmarshal([]byte(body), req)
+	if req.OrderId=="-1"{
+		lawer :=new(model.LawyerInfo)
+		lawerErr :=lawer.GetConn().Where("open_id = ?",req.LawyerId).Find(&lawer).Error
+		if lawerErr!=nil&&!strings.Contains(lawerErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = lawerErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		cateInfo :=new(model.Category)
+		cateErr :=cateInfo.GetConn().Where("uuid = ?",lawer.FirstCategory).Find(&cateInfo).Error
+		if cateErr!=nil&&!strings.Contains(cateErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = cateErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		pay :=new(model.WechatVoiceQuestionSettings)
+		payErr:=pay.GetConn().Where("category_id = ?",req.TypeId).Find(&pay).Error
+		if payErr!=nil&&!strings.Contains(cateErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = payErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+
+		response.Code = CODE_SUCCESS
+		response.Msg = MSG_SUCCESS
+		response.Name = lawer.Name
+		response.SelfIntr = cateInfo.CategoryName
+		response.Pic = lawer.HeadImgUrl
+		response.TypePrice = pay.PayAmount
+		response.TypeId = req.TypeId
+		response.ParentOrderId = ""
+		response.TypeName = cateInfo.CategoryName
+
+	}else{
+		//追问
+		question:=new(model.WechatVoiceQuestions)
+		qErr :=question.GetConn().Where("uuid = ?",req.OrderId).Find(&question).Error
+		if qErr!=nil&&!strings.Contains(qErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = qErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		response.Code = CODE_SUCCESS
+		response.Msg = MSG_SUCCESS
+		response.Name = question.AnswerName
+		response.Pic = question.AnswerHeadImg
+		response.TypePrice = question.PaymentInfo
+		response.TypeId = question.CategoryId
+		response.TypeName = question.Category
+		response.ParentOrderId = req.OrderId
+		lawer :=new(model.LawyerInfo)
+		lawerErr :=lawer.GetConn().Where("open_id = ?",question.AnswerOpenId).Find(&lawer).Error
+		if lawerErr!=nil&&!strings.Contains(lawerErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = lawerErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		cateInfo :=new(model.Category)
+		cateErr :=cateInfo.GetConn().Where("uuid = ?",lawer.FirstCategory).Find(&cateInfo).Error
+		if cateErr!=nil&&!strings.Contains(cateErr.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = cateErr.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		response.SelfIntr = cateInfo.CategoryName
+
+	}
 	ret_str,_:=json.Marshal(response)
 	return string(ret_str)
 }

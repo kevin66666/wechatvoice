@@ -7,7 +7,7 @@ import (
 
 type LawCatgory struct {
 	gorm.Model
-	Uuid        string `sql:"size:32;not null"` //主键
+	Uuid         string `sql:"size:32;not null"` //主键
 	CategoryName string
 }
 
@@ -25,13 +25,13 @@ func (this *LawCatgory) CloseConn(db *gorm.DB) {
 	dbpool.CloseConn(db)
 }
 
-func GetCateList()([]LawCatgory,error){
-	conn :=dbpool.OpenConn()
+func GetCateLists() ([]LawCatgory, error) {
+	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 
-	list :=make([]LawCatgory,0)
+	list := make([]LawCatgory, 0)
 
-	err :=conn.Where("uuid is not ?","1").Find(&list).Error
+	err := conn.Where("uuid is not ?", "1").Find(&list).Error
 
-	return list,err
+	return list, err
 }

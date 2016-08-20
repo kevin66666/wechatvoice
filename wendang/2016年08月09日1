@@ -1,0 +1,269 @@
+搜索页面
+
+起始条件
+
+"keyWords"
+"startNum"
+"endNum"
+
+
+
+返回值
+
+{
+	"code":10000,
+	"msg":"ok",
+	"list":[
+		{
+			"orderId":"xxxx",//问题ID
+			"laywerId":"100", //律师ID
+			"question":"这是",//问题名字
+			"name":"张三",//律师名字
+			"selfIntr":"律师", //擅长类型
+			"pic":"img/a9.png",//律师头像
+			"answer":"###",//录音连接
+			"typeId":"100",//类型ID
+			"typeName":"婚姻类型",
+			"typePrice":"1",//类型价格
+			"star":5, //5星
+			"isPay":false,
+			"addNum":2, //追问次数
+			"isShow":false, //折叠展开  默认全部false
+			"addInfo":[
+				{
+					"question":"这是追问",
+					"orderId":"xxxxxx"
+					"answer":"###"
+				},
+				{
+					"question":"这是追问",
+					"answer":"###"
+				}
+			]
+		},
+		{
+			"laywerId":"101",
+			"question":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"name":"李四",
+			"selfIntr":"律师",
+			"pic":"img/a9.png",
+			"answer":"###",
+			"typeId":"101",
+			"typeName":"版权类型",
+			"typePrice":"1",
+			"star":3,
+			"addNum":0,
+			"isShow":false,
+			"addInfo":[]
+		},
+		{
+			"laywerId":"102",
+			"question":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"name":"王五",
+			"selfIntr":"律师",
+			"pic":"img/a9.png",
+			"answer":"###",
+			"typeId":"102",
+			"typeName":"贸易类型",
+			"typePrice":"1",
+			"star":2,
+			"addNum":2,
+			"isShow":false,
+			"addInfo":[
+				{
+					"question":"这是追问",
+					"answer":"###"
+				},
+				{
+					"question":"这是追问",
+					"answer":"###"
+				}
+			]
+		}
+	]
+}
+
+
+开始提问
+提问单独一个接口
+	第一步:拉取所有问题类型以及对应价格的list
+			{
+				"code":10000,
+				"msg":"ok",
+				"list":[
+					{
+						"typeId":"100",
+						"typeName":"婚姻类型",
+						"typePrice":"3"
+					}
+				]
+			}
+	第二步:提交问题
+			{
+				"typeId":"xxx",
+				"typePrice":"3",
+				"content":"问题的内容"
+			}
+			{
+				"code":10000,
+				"msg":"ok" ,//*****
+				"orderId":"xxxx",
+				"price":"xxx",
+				"isAdd":"xxx"
+			}
+追加和指定律师提问一个接口
+
+
+
+律师订单中心
+
+{
+	"startNum":1,
+	"endNum":10,
+	"orderType":"-1"//-1 未解答 已解答 1
+}
+
+{
+	"code":10000,
+	"msg":"ok",
+	"list":[
+		{
+			"orderId":"100",
+			//"status":"抢答",
+			"content":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"type":"测试类型",
+			"time":"2016-7-7",
+			"price":1,
+			"answer":"###"
+		},
+		{
+			"orderId":"101",
+			"status":"抢答",
+			"content":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"type":"测试类型",
+			"time":"2016-7-7",
+			"price":2,
+			"answer":"###"
+		},
+		{
+			"orderId":"102",
+			"status":"抢答",
+			"content":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"type":"测试类型",
+			"time":"2016-7-7",
+			"price":3,
+			"answer":"###"
+		}
+	]
+}
+
+
+用户中心订单
+
+{
+	"code":10000,
+	"msg":"ok",
+	"list":[
+		{
+			"orderId":"100",
+			"status":"抢答",
+			"content":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"typeId":"100",
+			"typeName":"版权类型",
+			"time":"2016-7-7",
+			"answer":"#",
+			"addNum":1,
+			"price":"1",
+			"canEval":true
+		},
+		{
+			"orderId":"101",
+			"status":"抢答",
+			"content":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"typeId":"101",
+			"typeName":"版权类型",
+			"time":"2016-7-7",
+			"answer":"##",
+			"addNum":2,
+			"price":"2",
+			"canEval":false
+		},
+		{
+			"orderId":"102",
+			"status":"抢答",
+			"content":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+			"typeId":"102",
+			"typeName":"版权类型",
+			"time":"2016-7-7",
+			"answer":"###",
+			"addNum":0,
+			"price":"3",
+			"canEval":true
+		}
+	]
+}
+
+评价接口
+
+{
+	"star":5,
+	"orderId":"xxx"
+}
+
+{
+	"code":1,
+	"msg":"1",
+	"redPacket":"0.13"
+}
+
+
+//指定律师提问
+
+初始化过程
+
+{
+	"lawyerId":"xxx",
+	"typeId":"xxx",
+	"orderId":"-1" //-1 是搜索  其他是追问orderId    1
+}
+{
+	"code":10000,
+	"msg":"ok",
+	"name":"李四",
+	"selfIntr":"擅长版权",
+	"pic":"img/a9.png",
+	"typePrice":"1",
+	"typeId":"101",
+	"parentOrderId":"xxx"
+	"typeName":"版权类型"
+}
+
+回答问题 初始化页面
+第一步 检查问题是否被锁
+
+请求订单ID
+{
+	"orderId":"xxxx"
+}
+
+给状态码返回
+{
+	"code":10000,  10001 
+	"msg":"ok"
+}
+
+//第一次过了  再请求一次 说明可以抢答 加载数据
+{
+	"orderId":"xxxx"
+}
+
+{
+	"orderId":"",
+	"typeId":"类型ID"，
+	"typeName":"类型名称",
+	"content":"问题内容",
+	//"openId"
+}
+
+
+追问后的回答是否可以免费听  服了一个钱 是否其他2个可以免费听

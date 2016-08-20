@@ -1,0 +1,5 @@
+d:\Desktop\TempImage\RecordingDemo\录音\bin\WebApplication1.dll
+d:\Desktop\TempImage\RecordingDemo\录音\bin\WebApplication1.pdb
+d:\Desktop\TempImage\RecordingDemo\录音\obj\Debug\录音.csprojResolveAssemblyReference.cache
+d:\Desktop\TempImage\RecordingDemo\录音\obj\Debug\WebApplication1.dll
+d:\Desktop\TempImage\RecordingDemo\录音\obj\Debug\WebApplication1.pdb

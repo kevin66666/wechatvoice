@@ -1,0 +1,11 @@
+{
+	"code":10000,
+	"msg":"ok",
+	"name":"李四",
+	"selfIntr":"擅长版权",
+	"pic":"img/a9.png",
+	"typePrice":"1",
+	"typeId":"101",
+	"typeName":"版权类型",
+	"parentOrderId":"xxx"
+}

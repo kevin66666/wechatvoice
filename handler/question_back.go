@@ -31,6 +31,21 @@ func CreateCateList(ctx *macaron.Context) string {
 
 	cate := new(model.LawCatgory)
 
+	cateErr := cate.GetConn().Where("category_name = ?", req.CateName).Find(&cate).Error
+
+	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = cateErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	if cate.Uuid != "" {
+		response.Code = CODE_ERROR
+		response.Msg = "不能重复添加"
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
 	cate.Uuid = uuid
 	cate.CategoryName = req.CateName
 
@@ -84,7 +99,7 @@ func GetCateList(ctx *macaron.Context) string {
 
 	list := make([]CateDetail, 0)
 
-	lists, count, errs := model.GetCateList(req.StartLine, req.EndLine)
+	lists, count, errs := model.GetCateListById(req.StartLine, req.EndLine)
 	if errs != nil && !strings.Contains(errs.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = errs.Error()

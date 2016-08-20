@@ -44,6 +44,8 @@ const (
 	WECHAT_PREPAY_URL = "/wechatvoice/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
 )
 
+var merchantIndexUrl = "/wechatvoice/daodaolaw/search.html"
+
 //查询问题返回
 type QuestionQueryResponse struct {
 	Code  int64          `json:"code"`
@@ -78,11 +80,17 @@ type AddInfos struct {
 
 //查询问题方法
 
+func ToIndex(ctx *macaron.Context) {
+	ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + merchantIndexUrl + "\"</script>"))
+}
+
 func QuestionQuery(ctx *macaron.Context) string {
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" {
 		//这里直接调取util重新过一次绿叶 获取openId 等信息
+		cookieStr = "1|2"
 	}
+	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId, userType)
@@ -131,7 +139,10 @@ func QuestionQuery(ctx *macaron.Context) string {
 		single.TypeName = k.Category
 		cateInfo := new(model.WechatVoiceQuestionSettings)
 		cateErr := cateInfo.GetConn().Where("category_id = ?", k.CategoryId).Find(&cateInfo).Error
-		if cateErr != nil {
+		if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
+			fmt.Println("=================>>>>>cateErr")
+			fmt.Println(cateErr.Error())
+			fmt.Println("=================>>>>>")
 			response.Code = CODE_ERROR
 			response.Msg = cateErr.Error()
 			ret_str, _ := json.Marshal(response)
@@ -491,19 +502,22 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 
 	cateList, cateErr := model.GetCateLists()
 
+	fmt.Println(len(cateList))
 	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = cateErr.Error()
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-
 	for _, k := range cateList {
 		single := new(CateInfo)
 		single.CateId = k.Uuid
 		single.CateName = k.CategoryName
 		price := new(model.WechatVoiceQuestionSettings)
 		priceErr := price.GetConn().Where("category_id = ?", k.Uuid).Find(&price).Error
+		if priceErr != nil {
+			fmt.Println(priceErr.Error())
+		}
 		if priceErr != nil && !strings.Contains(priceErr.Error(), RNF) {
 			response.Code = CODE_ERROR
 			response.Msg = priceErr.Error()
@@ -511,11 +525,13 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 			return string(ret_str)
 		}
 		single.CatePaymentInfo = price.PayAmount
+		fmt.Println(single)
 		list = append(list, *single)
 	}
 
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
+	response.List = list
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }

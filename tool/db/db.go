@@ -30,8 +30,8 @@ func init() {
 		old_db, err = gorm.Open("mysql", "shangqu:riA6Y4y1fEwcg@tcp(wbollalpha.mysql.rds.aliyuncs.com:3306)/wechat?charset=utf8mb4&parseTime=True&loc=Local")
 	} else {
 		// log.Println("=====>>>连接整死库")
-		db, err = gorm.Open("mysql", "root:llobw123**8@tcp(123.56.11.116:6033)/shangqu?charset=utf8mb4&parseTime=True&loc=Local")
-		old_db, err = gorm.Open("mysql", "root:llobw123**8@tcp(123.56.11.116:6033)/wechat?charset=utf8mb4&parseTime=True&loc=Local")
+		db, err = gorm.Open("mysql", "root:root@tcp(127.0.0.1:3306)/test?charset=utf8&parseTime=True&loc=Local")
+		//old_db, err = gorm.Open("mysql", "root:llobw123**8@tcp(123.56.11.116:6033)/wechat?charset=utf8mb4&parseTime=True&loc=Local")
 	}
 	if err != nil {
 		log.Println("when connect to mysql:" + err.Error())
@@ -39,7 +39,7 @@ func init() {
 	}
 	//设置数据库名称单数
 	db.SingularTable(true)
-	old_db.SingularTable(true)
+	//old_db.SingularTable(true)
 
 	//设置池子大小
 	db.DB().SetMaxIdleConns(int(MAX_IDLE_CONN_NUM))

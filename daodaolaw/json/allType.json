@@ -1,0 +1,36 @@
+{
+	"code":10000,
+	"msg":"ok",
+	"list":[
+		{
+			"typeId":"100",
+			"typeName":"婚姻类型",
+			"typePrice":"3"
+		},
+		{
+			"typeId":"101",
+			"typeName":"贸易类型",
+			"typePrice":5
+		},
+		{
+			"typeId":"102",
+			"typeName":"合同类型",
+			"typePrice":2
+		},
+		{
+			"typeId":"103",
+			"typeName":"婚姻类型",
+			"typePrice":3
+		},
+		{
+			"typeId":"104",
+			"typeName":"贸易类型",
+			"typePrice":5
+		},
+		{
+			"typeId":"105",
+			"typeName":"合同类型",
+			"typePrice":2
+		}
+	]
+}

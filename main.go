@@ -10,5 +10,5 @@ func main() {
 	m := macaron.New()
 	m.SetDefaultCookieSecret("git.yanzhilu.org")
 	router.SetRouter(m)
-	m.Run(6000)
+	m.Run(8000)
 }

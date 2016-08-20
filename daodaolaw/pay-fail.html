@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh">
+  <meta charset="utf-8">
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>我要搜索</title>
+  <link href="lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+  <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" type="text/css" href="css/wbollStore.css">
+</head>
+
+<body>
+  <div class="tip-page-success">
+    <p class="fa fa-exclamation-circle tip-icon-font color-wine-red"></p>
+    <h3 class="exchange-success">支付失败</h3>
+    <div class="text-center margin-lg-t wboll-T4 reason"></div>
+    <div class="text-center marg-tp-44">
+      <span class="text-center wboll-T4 bg-wine-red bord-red color-white margin-lg-r padding-vertical-10 pad-lr-25 bord-radius" ontouchend="toPay()">继续支付</span>
+      <span class="text-center wboll-T4 bord-wine-red padding-vertical-10 pad-lr-25 bord-radius" ontouchend="location.href='search.html'">返回首页</span>
+    </div>
+  </div>
+  
+<script src="lib/bootstrap/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+<script src="lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type='text/javascript'></script>
+<script src="lib/react/react.min.js" type="text/javascript"></script>
+<script src="lib/react/JSXTransformer.js" type="text/javascript"></script>
+<script type="text/jsx">
+  var param=location.search?location.search.slice(1).split('&'):''
+  var reason=param?param[0].split('=')[1]:''
+  reason=reason?['微信支付失败','用户取消支付','调起微信接口失败'][reason]:''
+  var orderId=param?param[1].split('=')[1]:''
+  $('.reason').html(reason)
+
+  function toPay(){
+    var data={orderId:orderId}
+    $.ajax({
+      url:'',
+      type:'POST',
+      data:JSON.stringify(data),
+      dataType:'json',
+      success:function(prepayInfo){
+        if(prepayInfo.code===10000){
+          this.props.resetList(index)
+          //调取支付接口
+          
+          wx.config({
+              debug: false,
+              appId: data.page_appid,
+              timestamp: data.page_appid,
+              nonceStr: data.page_appid,
+              signature: data.page_appid,
+              jsApiList: ['chooseWXPay']
+          });
+          wx.ready(function(){
+            wx.chooseWXPay({
+              timestamp: data.pay_timeStamp,
+              nonceStr: data.pay_nonceStr,
+              package: data.pay_package,
+              signType: data.pay_signType,
+              paySign: data.pay_paySign,
+              success: function (res) {
+                // 支付成功
+                location.href = 'order-detail.html?orderId='+orderId
+              },
+              fail: function (res) {
+                // 支付失败
+                window.location.replace="pay-fail?r="+"微信支付失败!"
+              },
+              cancel: function (res) {
+                // 用户取消
+                window.location.replace="pay-fail?r="+"用户取消支付!"
+              }
+            });
+          });
+          wx.error(function(res){
+            window.location.replace="pay-fail?r="+"调起微信接口失败!"
+          });
+        }
+      }.bind(this),
+      error:function(data){
+        console.log('搜索问题失败:',data)
+      }
+    })
+  }
+  
+</script>
+
+</body>
+</html>
+
+

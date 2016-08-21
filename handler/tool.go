@@ -53,9 +53,12 @@ func GetSign(ctx *macaron.Context) string {
 func GetOpenCodeInfo(ctx *macaron.Context) {
 	fmt.Println("aaaaaaaaaa")
 	url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=http://www.mylvfa.com&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+	fmt.Println(url)
+	// "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=http://www.mylvfa.com&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 	// res, err := http.Get(url)
 	// if err != nil {www.mylvfa.com&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect
 	// 	fmt.Println(err.Error())
+	//https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=http://www.mylvfa.com&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect
 	// }
 
 	ctx.Redirect(url)

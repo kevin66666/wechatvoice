@@ -1,13 +1,17 @@
 package handler
 
 import (
+	"crypto/md5"
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"github.com/Unknwon/macaron"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -166,3 +170,120 @@ func GetUserInfo(openId, accessToken string) *UserInfo {
 // 		}
 // 	}
 // }
+
+func GenerateSign(paramsMap map[string]string, paramsList []string, key string) string {
+	paramsStr := ""
+
+	// 首先进行字典序排序
+	sort.Strings(paramsList)
+
+	for _, param := range paramsList {
+		if paramsMap[param] != "" {
+			if paramsStr == "" {
+				paramsStr = param + "=" + paramsMap[param]
+			} else {
+				paramsStr = paramsStr + "&" + param + "=" + paramsMap[param]
+			}
+		}
+	}
+
+	if key != "" {
+		paramsStr += "&key=" + key
+	}
+
+	return strings.ToUpper(Md5(paramsStr))
+}
+func GeneratePageSign(paramsMap map[string]string, paramsList []string) string {
+	paramsStr := ""
+
+	// 首先进行字典序排序
+	sort.Strings(paramsList)
+
+	for _, param := range paramsList {
+		if paramsStr == "" {
+			paramsStr = param + "=" + paramsMap[param]
+		} else {
+			paramsStr = paramsStr + "&" + param + "=" + paramsMap[param]
+		}
+	}
+
+	return Sha1(paramsStr)
+}
+func GenerateXMLStr(params map[string]string) string {
+	result := "<xml>"
+
+	for k, v := range params {
+		result = result + "<" + k + "><![CDATA[" + v + "]]></" + k + ">"
+	}
+
+	result += "</xml>"
+	return result
+}
+
+// 获取JSAPI_TICKET返回值
+type RespJsapiTicket struct {
+	Code int64  `json:"code"`
+	Msg  string `json:"msg"`
+
+	Ticket string `json:"jsapiTicket"`
+}
+
+func JsapiTicker1(ctx *macaron.Context) string {
+	appid := ctx.Query("appid")
+	fmt.Println(appid)
+	result := new(RespJsapiTicket)
+	res, err := http.Get("http://www.mylvfa.com/getAccessToken")
+	if err != nil {
+		result.Code = CODE_ERROR
+		result.Msg = err.Error()
+		ret_str, _ := json.Marshal(result)
+		return string(ret_str)
+	}
+	resBody, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(resBody))
+	defer res.Body.Close()
+	token := string(resBody)
+
+	url1 := "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + token + "&type=jsapi"
+	res2, res2Err := http.Get(url1)
+	if res2Err != nil {
+		result.Code = CODE_ERROR
+		result.Msg = res2Err.Error()
+		ret_str, _ := json.Marshal(result)
+		return string(ret_str)
+	}
+	resBody2, _ := ioutil.ReadAll(res2.Body)
+	fmt.Println(string(resBody))
+	defer res2.Body.Close()
+	type ApiTk struct {
+		ErrorCode int64  `json:"errcode"`
+		ErrMsg    string `json:"errmsg"`
+		Ticket    string `json:"ticket"`
+		Expires   int64  `json:"expires_in"`
+	}
+
+	resss := new(ApiTk)
+	json.Unmarshal(resBody2, resss)
+	result.Code = 10000
+	result.Msg = "ok"
+	result.Ticket = resss.Ticket
+	str, _ := json.Marshal(result)
+	return string(str)
+}
+func Sha1(str string) string {
+	result := ""
+	if str == "" {
+		return result
+	}
+	b := sha1.Sum([]byte(str))
+	return fmt.Sprintf("%x", b)
+}
+
+func Md5(str string) string {
+	result := ""
+	if str == "" {
+		return result
+	}
+	b := md5.Sum([]byte(str))
+	return fmt.Sprintf("%x", b)
+}

@@ -44,4 +44,8 @@ func SetRouter(m *macaron.Macaron) {
 	m.Get("/tool/sign", c.GetSign)
 	m.Get("/tool/code", c.GetOpenCodeInfo)
 	m.Get("/tool/info", c.GetAllInfo)
+
+	m.Post("/front/initpay", c.InitPay)
+	m.Post("/front/dopay", c.DoPayNew)
+	m.Get("/front/uni", c.UniFi)
 }

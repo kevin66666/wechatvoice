@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/json"
+	"encoding/xml"
 
 	"github.com/Unknwon/macaron"
 
@@ -10,6 +12,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	//"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -396,12 +399,106 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	return string(ret_str)
 }
 
+type DoPayReq struct {
+	OrderId string `json:"orderId"`
+}
+
+// func DoPay(ctx *macaron.Context) string {
+// 	//http://60.205.4.26:22334/prepayId\?appid\=wxac69efc11c5e182f\
+// 	//http://60.205.4.26:22334/prepayId?appid=wxac69efc11c5e182f&body=payTest&mch_id=1344737201&nonce_str=W1471365761W&
+// 	//notify_url=http://www.mylvfa.com/wxpay/config/&openid=o-u0Nv-Hd01lO6wpKyb8VGQaNGpg&out_trade_no=20150806125346&spbill_create_ip=127.0.0.1&total_fee=1&trade_type=JSAPI"	//
+// 	req := new(DoPayReq)
+// 	body, _ := ctx.Req.Body().String()
+// 	json.Unmarshal([]byte(body), req)
+// 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+// 	if cookieStr == "" && ctx.Query("code") == "" {
+// 		re := "http://www.mylvfa.com/voice/front/createnewspecialquestion"
+// 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+// 		//cookieStr = "1|2"
+// 		ctx.Redirect(url)
+// 	}
+// 	code := ctx.Query("code")
+// 	if code != "" {
+// 		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+// 		res, err := http.Get(url)
+// 		if err != nil {
+// 			fmt.Println("=========xxxxx")
+// 			fmt.Println(err.Error())
+// 		}
+// 		resBody, _ := ioutil.ReadAll(res.Body)
+// 		fmt.Println(string(resBody))
+// 		defer res.Body.Close()
+// 		fmt.Println("==========>>>>")
+// 		res1 := new(OpenIdResponse)
+// 		json.Unmarshal(resBody, res1)
+// 		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+// 		member := new(model.MemberInfo)
+// 		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+// 		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+// 			response.Code = CODE_ERROR
+// 			response.Msg = memberErr.Error()
+// 			ret_str, _ := json.Marshal(res)
+// 			return string(ret_str)
+// 		}
+// 		if member.Uuid == "" {
+// 			fmt.Println("新的用户")
+// 			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+// 			member.Uuid = util.GenerateUuid()
+// 			member.HeadImgUrl = user.HeadImgUrl
+// 			member.OpenId = user.OpenId
+// 			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+// 			member.NickName = user.NickName
+// 			err := member.GetConn().Create(&member).Error
+// 			if err != nil {
+// 				response.Code = CODE_ERROR
+// 				response.Msg = err.Error()
+// 				ret_str, _ := json.Marshal(response)
+// 				return string(ret_str)
+// 			}
+// 		}
+// 		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+// 	}
+// 	order := new(model.WechatVoiceQuestions)
+// 	orderErr := order.GetConn().Where("order_number = ?", req.OrderId).Find(&order).Error
+// 	if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
+// 		fmt.Println(orderErr.Error())
+// 	}
+// 	openId := strings.Split(cookieStr, "|")[0]
+// 	userType := strings.Split(cookieStr, "|")[1]
+// 	fmt.Println(cookieStr)
+// 	// appId := "wxac69efc11c5e182f"
+// 	// mchId := "1344737201"
+// 	nonceStr := util.GenerateUuid()
+// 	notify_url := "http://www.mylvfa.com/voice/afterpay"
+// 	openId1 := openId
+// 	orderId := req.OrderId
+// 	pay := order.PaymentInfo
+
+// 	url := "http://60.205.4.26:22334/prepayId?appid=wxac69efc11c5e182f&body=pay&mch_id=1344737201&nonce_str=" + nonceStr + "&notify_url=" + notify_url + "&openid=" + openId + "&out_trade_no=" + req.OrderId + "&spbill_create_ip=127.0.0.1&total_fee=" + pay + "&trade_type=JSAPI"
+// 	res, err := http.Get(url)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// 	a := new(PayJson)
+// 	resBody, _ := ioutil.ReadAll(res.Body)
+// 	fmt.Println(string(resBody))
+// 	defer res.Body.Close()
+// 	json.Unmarshal(resBody, a)
+
+// 	str := a.Sign
+
+// }
+
 type SpecialQuestions struct {
 	CateId     string `json:"typeId"`
 	TypePrice  string `json:"typePrice"`
 	Content    string `json:"content"`
 	QuestionId string `json:"quesionId"`
 	LawyerId   string `json:"lawyerId"`
+}
+
+type PayJson struct {
+	Sign string `json:"sign"`
 }
 
 func CreateNewSpecialQuestion(ctx *macaron.Context) string {
@@ -548,29 +645,6 @@ func CreateNewSpecialQuestion(ctx *macaron.Context) string {
 	response.Payment = req.TypePrice
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
-}
-
-// 进行支付请求
-type ReqDoPay struct {
-	OrderId string `json:"orderId"`
-	Type    string `json:"type"` // 0 余额支付   1 微信支付   2 货到付款
-}
-
-// 进行支付响应
-type RespDoPay struct {
-	Code           int64  `json:"code"`
-	Msg            string `json:"msg"`
-	Type           string `json:"type"`
-	JumpSuccessUrl string `json:"paySuccess"`
-	JumpFailedUrl  string `json:"payFailed"`
-	JumpSubmitUrl  string `json:"submitSuccess"`
-	Timestamp      int64  `json:"timestamp"`
-	NonceStr       string `json:"nonceStr"`
-	Package        string `json:"package"`
-	SignType       string `json:"signType"`
-	PaySign        string `json:"paySign"`
-	AppId          string `json:"appId"`
-	ConfigSign     string `json:"configSign"`
 }
 
 //这里获取分类问题的配置选项
@@ -1771,4 +1845,404 @@ func InitSpecialInfo(ctx *macaron.Context) string {
 	}
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
+}
+
+// 初始化预支付界面请求结构体
+type ReqInitPrePay struct {
+	OrderId string `json:"orderId"`
+}
+
+// 初始化预支付界面响应结构体
+type RespInitPrePay struct {
+	Code       int64  `json:"code"`
+	Msg        string `json:"msg"`
+	OrderId    string `json:"orderId"`
+	TotalMoney string `json:"totalMoney"`
+}
+
+func InitPay(ctx *macaron.Context) string {
+	info := new(ReqInitPrePay)
+	result := new(RespInitPrePay)
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	//response := new(InitSpecailResponse)
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/initspecialinfo"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			result.Code = CODE_ERROR
+			result.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(result)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				result.Code = CODE_ERROR
+				result.Msg = err.Error()
+				ret_str, _ := json.Marshal(result)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
+	openId := strings.Split(cookieStr, "|")[0]
+	fmt.Println(openId)
+	userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(userType)
+	reqData, _ := ctx.Req.Body().String()
+	err := json.Unmarshal([]byte(reqData), info)
+	if err != nil {
+		//log.Error("[errorInfo]: error when unmarshal request body")
+		result.Code = CODE_ERROR
+		result.Msg = "json解析异常"
+	} else {
+
+		result.Code = CODE_SUCCESS
+		result.Msg = "ok"
+		orderInfo := new(model.WechatVoiceQuestions)
+		orderErr := orderInfo.GetConn().Where("order_number = ?", info.OrderId).Find(&orderInfo).Error
+		if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
+			result.Code = CODE_ERROR
+			result.Msg = orderErr.Error()
+			ret_str, _ := json.Marshal(result)
+			return string(ret_str)
+		}
+
+		result.OrderId = orderInfo.OrderNumber
+		result.TotalMoney = orderInfo.PaymentInfo
+	}
+	ret_str, _ := json.Marshal(result)
+	return string(ret_str)
+
+}
+
+// 进行支付请求
+type ReqDoPay struct {
+	OrderId string `json:"orderId"`
+	Type    string `json:"type"` // 0 余额支付   1 微信支付   2 货到付款
+}
+
+// 进行支付响应
+type RespDoPay struct {
+	Code           int64  `json:"code"`
+	Msg            string `json:"msg"`
+	Type           string `json:"type"`
+	JumpSuccessUrl string `json:"paySuccess"`
+	JumpFailedUrl  string `json:"payFailed"`
+	JumpSubmitUrl  string `json:"submitSuccess"`
+	Timestamp      int64  `json:"timestamp"`
+	NonceStr       string `json:"nonceStr"`
+	Package        string `json:"package"`
+	SignType       string `json:"signType"`
+	PaySign        string `json:"paySign"`
+	AppId          string `json:"appId"`
+	ConfigSign     string `json:"configSign"`
+}
+
+func DoPayNew(ctx *macaron.Context) string {
+	result := new(RespDoPay)
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	//response := new(InitSpecailResponse)
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/initspecialinfo"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			result.Code = CODE_ERROR
+			result.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(result)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				result.Code = CODE_ERROR
+				result.Msg = err.Error()
+				ret_str, _ := json.Marshal(result)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId, userType)
+	info := new(ReqDoPay)
+	reqData, _ := ctx.Req.Body().String()
+	fmt.Println("===============================do pay new 中获取到的参数===============================")
+	fmt.Println(reqData)
+	fmt.Println("===============================do pay new 中获取到的参数===============================")
+	// 解析请求体
+	orderInfo := new(model.WechatVoiceQuestions)
+	orderErr := orderInfo.GetConn().Where("order_number = ?", info.OrderId).Find(&orderInfo).Error
+	if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
+		fmt.Println(orderErr.Error())
+	}
+	err := json.Unmarshal([]byte(reqData), info)
+	if err != nil {
+		// log.Error("[errorInfo]: error when unmarshal request body")
+		result.Code = CODE_ERROR
+		result.Msg = "json解析异常"
+	} else {
+		appId := ""
+		mchId := ""
+		merchantName := ""
+		orderNumber := info.OrderId
+		priceInt := orderInfo.PaymentInfo
+		serverIp := "127.0.0.1"
+		key := ""
+		payPayge := ""
+		afterPay := "http://www.mylvfa.com/voice/afterpay"
+		url := "http://www.mylvfa.com/voice/uni?appid=" + appId + "&mchid=" + mchId + "&name=" + merchantName + "&ordernumber=" + orderNumber + "&price=" + priceInt + "&serverIp=" + serverIp + "&key=" + key + "&payPayge=" + payPayge + "&afterpay=" + afterPay
+		res, reserr := http.Get(url)
+		if reserr != nil {
+			fmt.Println(reserr)
+		}
+		defer res.Body.Close()
+		HTTPResult, _ := ioutil.ReadAll(res.Body)
+		res111 := new(UnifiedOrderResp)
+		json.Unmarshal(HTTPResult, res111)
+		result.Code = CODE_SUCCESS
+		result.Msg = "成功!"
+		result.Type = info.Type
+		result.JumpFailedUrl = AFTER_PAY_JUMP_PAGE_FAILD + info.OrderId
+		result.JumpSuccessUrl = AFTER_PAY_JUMP_PAGE_SUCCESS + info.OrderId
+		result.NonceStr = res111.NonceStr
+		result.Package = res111.Package
+		result.PaySign = res111.PaySign
+		result.SignType = res111.SignType
+		result.AppId = res111.AppId
+		result.ConfigSign = res111.ConfigSign
+		timeStamp, _ := strconv.ParseInt(res111.TimeStamp, 10, 64)
+		result.Timestamp = timeStamp
+		//这里说明 是支付成功的 说明开始进入请求福记接口阶段
+		fmt.Println("预支付成功")
+	}
+	ret_str, _ := json.Marshal(result)
+	return string(ret_str)
+}
+
+type UnifiedOrderResp struct {
+	Code int64  `json:"code"`
+	Msg  string `json:"msg"`
+
+	AppId      string `json:"appId"`
+	PrepayId   string `json:"prepayId"`
+	CodeUrl    string `json:"codeUrl"`
+	TimeStamp  string `json:"timestamp"`
+	NonceStr   string `json:"nonceStr"`
+	Package    string `json:"package"`
+	SignType   string `json:"MD5"`
+	PaySign    string `json:"paySign"`
+	ConfigSign string `json:"configSign"`
+}
+
+// 微信预支付推送结构体
+type WechatRespUnifiedOrder struct {
+	ReturnCode string `xml:"return_code"`
+	ReturnMsg  string `xml:"return_msg"`
+	Appid      string `xml:"appid"`
+	MchId      string `xml:"mch_id"`
+	DeviceInfo string `xml:"device_info"`
+	NonceStr   string `xml:"nonce_str"`
+	Sign       string `xml:"sign"`
+	ResultCode string `xml:"result_code"`
+	ErrCode    string `xml:"err_code"`
+	ErrCodeDes string `xml:"err_code_des"`
+	TradeType  string `xml:"trade_type"`
+	PrepayId   string `xml:"prepay_id"`
+	CodeUrl    string `xml:"code_url"`
+}
+
+func UniFi(ctx *macaron.Context) string {
+	result := new(UnifiedOrderResp)
+	paramsMap := make(map[string]string, 0)
+	paramsList := []string{"appid", "mch_id", "body", "out_trade_no", "total_fee", "spbill_create_ip", "device_info", "nonce_str", "fee_type", "time_start", "notify_url", "trade_type"}
+
+	// 获取请求中需要带的必要信息
+	Appid := ctx.Query("appid")
+	MchId := ctx.Query("mchid")
+	Body := ctx.Query("name")
+	OutTradeNo := ctx.Query("ordernumber")
+	TotalFee := ctx.Query("price")
+	SpbillCreateIp := ctx.Query("serverIp")
+	Key := ctx.Query("key")
+	PageUrl := ctx.Query("payPage")
+	if Appid == "" || MchId == "" || Body == "" || OutTradeNo == "" || TotalFee == "" || SpbillCreateIp == "" || Key == "" || PageUrl == "" {
+		result.Code = 400
+		result.Msg = "参数不全"
+	} else {
+		// 所有必须字段不为空,加入必须字段到map中
+		paramsMap["appid"] = Appid
+		paramsMap["mch_id"] = MchId
+		paramsMap["body"] = Body
+		paramsMap["out_trade_no"] = OutTradeNo
+		paramsMap["total_fee"] = TotalFee
+		paramsMap["spbill_create_ip"] = SpbillCreateIp
+
+		// 有默认值的字段处理
+		paramsMap["device_info"] = DEFAULT_DEVICE_INFO
+		paramsMap["nonce_str"] = util.GenerateUuid()
+		paramsMap["fee_type"] = DEFAULT_FEE_TYPE
+		paramsMap["time_start"] = time.Now().Format("20060102150405")
+		paramsMap["notify_url"] = DEFAULT_NOTIFY_URL
+		paramsMap["trade_type"] = DEFAULT_TRADE_TYPE
+
+		sign := GenerateSign(paramsMap, paramsList, ctx.Query("key"))
+		paramsMap["sign"] = sign
+
+		xmlStr := GenerateXMLStr(paramsMap)
+
+		HTTPBody := bytes.NewBuffer([]byte(xmlStr))
+
+		res1, err1 := http.Post(UNIFIEDORDER_URL, "application/xml", HTTPBody)
+		if err1 != nil {
+			result.Code = CODE_ERROR
+			result.Msg = err1.Error()
+			ret_str, _ := json.Marshal(result)
+			return string(ret_str)
+		} else {
+			HTTPResult, err := ioutil.ReadAll(res1.Body)
+			defer res1.Body.Close()
+			if err != nil {
+				// log.Error("[UnifiedOrder]:error when read responce body:" + err.Error())
+				result.Code = CODE_ERROR
+				result.Msg = "读取返回体错误!"
+				ret_str, _ := json.Marshal(result)
+				return string(ret_str)
+			} else {
+				var wechatResult WechatRespUnifiedOrder
+				fmt.Println("=========>>>>>>>>>>")
+				fmt.Println(string(HTTPResult))
+				fmt.Println("=========>>>>>>>>>>")
+				err := xml.Unmarshal(HTTPResult, &wechatResult)
+				if err != nil {
+					//log.Error("[UnifiedOrder]:error when unmarshal http result body:" + err.Error())
+					result.Code = CODE_ERROR
+					result.Msg = "解析返回体错误!"
+				} else if strings.ToUpper(wechatResult.ResultCode) != "SUCCESS" {
+					result.Code = CODE_ERROR
+					result.Msg = wechatResult.ReturnMsg
+				} else if strings.ToUpper(wechatResult.ReturnCode) != "SUCCESS" {
+					result.Code = CODE_ERROR
+					result.Msg = "errCode:" + wechatResult.ErrCode + "errMsg:" + wechatResult.ErrCodeDes
+				} else {
+
+					// 开始签名前端页面发起支付所用参数
+					prepayMap := make(map[string]string, 0)
+					prepayList := []string{"appId", "timeStamp", "nonceStr", "package", "signType"}
+
+					nTimeStr := strconv.FormatInt(time.Now().Unix(), 10)
+					newNonceStr := util.GenerateUuid()
+
+					prepayMap["appId"] = Appid
+					prepayMap["timeStamp"] = nTimeStr
+					prepayMap["nonceStr"] = newNonceStr
+					prepayMap["package"] = DEFAULT_PACKAGE_PRE_STR + wechatResult.PrepayId
+					prepayMap["signType"] = DEFAULT_SIGN_TYPE
+
+					prepaySign := GenerateSign(prepayMap, prepayList, ctx.Query("key"))
+
+					rest, errT := http.Get("http://www.mylvfa.com/voice/ticket?appid=wxac69efc11c5e182f")
+					if errT != nil {
+						result.Code = CODE_ERROR
+						result.Msg = errT.Error()
+						ret_Str, _ := json.Marshal(result)
+						return string(ret_Str)
+					} else {
+						defer rest.Body.Close()
+						resBody2, _ := ioutil.ReadAll(rest.Body)
+						tic := new(RespJsapiTicket)
+						err11 := json.Unmarshal(resBody2, tic)
+						if err11 != nil {
+							result.Code = CODE_ERROR
+							result.Msg = err11.Error()
+							ret_str, _ := json.Marshal(result)
+							return string(ret_str)
+						} else {
+							configMap := make(map[string]string, 0)
+							configList := []string{"jsapi_ticket", "timestamp", "noncestr", "url"}
+							configMap["jsapi_ticket"] = tic.Ticket
+							configMap["timestamp"] = nTimeStr
+							configMap["noncestr"] = newNonceStr
+							configMap["url"] = PageUrl
+							configSign := GeneratePageSign(configMap, configList)
+							result.Code = CODE_SUCCESS
+							result.Msg = "SUCCESS"
+							result.CodeUrl = wechatResult.CodeUrl
+							result.NonceStr = newNonceStr
+							result.Package = DEFAULT_PACKAGE_PRE_STR + wechatResult.PrepayId
+							result.PaySign = prepaySign
+							result.PrepayId = wechatResult.PrepayId
+							result.SignType = DEFAULT_SIGN_TYPE
+							result.TimeStamp = nTimeStr
+							result.AppId = Appid
+							result.ConfigSign = configSign
+						}
+
+					}
+
+				}
+			}
+
+		}
+	}
+	resByte, _ := json.Marshal(result)
+	fmt.Println(string(resByte))
+	return string(resByte)
 }

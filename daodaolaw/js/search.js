@@ -336,7 +336,7 @@ var Ask=React.createClass({
   		content:this.state.content
   	}
   	$.ajax({
-				url:'json/search.json',
+				url:'http://www.mylvfa.com/voice/front/createquestion',
 				//搜索页面提问接口
 				type:'POST',
 				data:JSON.stringify(data),

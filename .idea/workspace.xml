@@ -28,9 +28,32 @@
       <file leaf-file-name="question_front.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handler/question_front.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="621">
-              <caret line="2217" column="16" selection-start-line="2217" selection-start-column="16" selection-end-line="2217" selection-end-column="16" />
-              <folding />
+            <state relative-caret-position="40194">
+              <caret line="2255" column="1" selection-start-line="2255" selection-start-column="1" selection-end-line="2255" selection-end-column="1" />
+              <folding>
+                <element signature="n#!!block;n#ToIndex#0" expanded="true" />
+                <element signature="n#!!block;n#QuestionQuery#0" expanded="true" />
+                <element signature="n#!!block;n#CreateNewQuestion#0" expanded="true" />
+                <element signature="n#!!block;n#CreateNewSpecialQuestion#0" expanded="true" />
+                <element signature="n#!!block;n#GetQuestionConfig#0" expanded="true" />
+                <element signature="n#!!block;n#GetQuestionCateList#0" expanded="true" />
+                <element signature="n#!!block;n#AppendQuestion#0" expanded="true" />
+                <element signature="n#!!block;n#PeekAvalable#0" expanded="true" />
+                <element signature="n#!!block;n#DoPay#0" expanded="true" />
+                <element signature="n#!!block;n#VoiceUpLoad#0" expanded="true" />
+                <element signature="n#!!block;n#AnswerQuestionInit#0" expanded="true" />
+                <element signature="n#!!block;n#DoAnswerQuestion#0" expanded="true" />
+                <element signature="n#!!block;n#AddPeekCount#0" expanded="true" />
+                <element signature="n#!!block;n#GetQuestionInfoById#0" expanded="true" />
+                <element signature="n#!!block;n#RankTheAnswer#0" expanded="true" />
+                <element signature="n#!!block;n#CheckAnswerIsLocked#0" expanded="true" />
+                <element signature="n#!!block;n#CreatePvInfo#0" expanded="true" />
+                <element signature="n#!!block;n#InitSpecialInfo#0" expanded="true" />
+                <element signature="n#!!block;n#InitPay#0" expanded="true" />
+                <element signature="n#!!block;n#DoPayNew#0" expanded="true" />
+                <element signature="n#!!block;n#UniFi#0" expanded="true" />
+                <element signature="n#!!block;n#SendRedPacketToLaw#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -655,12 +678,12 @@
       <workItem from="1470666969714" duration="4507000" />
       <workItem from="1470841866833" duration="6319000" />
       <workItem from="1471779055360" duration="15000" />
-      <workItem from="1471779074358" duration="143000" />
+      <workItem from="1471779074358" duration="548000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28488000" />
+    <option name="totallyTimeSpent" value="28893000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="803" extended-state="6" />
@@ -1042,9 +1065,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/handler/question_front.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="621">
-          <caret line="2217" column="16" selection-start-line="2217" selection-start-column="16" selection-end-line="2217" selection-end-column="16" />
-          <folding />
+        <state relative-caret-position="40194">
+          <caret line="2255" column="1" selection-start-line="2255" selection-start-column="1" selection-end-line="2255" selection-end-column="1" />
+          <folding>
+            <element signature="n#!!block;n#ToIndex#0" expanded="true" />
+            <element signature="n#!!block;n#QuestionQuery#0" expanded="true" />
+            <element signature="n#!!block;n#CreateNewQuestion#0" expanded="true" />
+            <element signature="n#!!block;n#CreateNewSpecialQuestion#0" expanded="true" />
+            <element signature="n#!!block;n#GetQuestionConfig#0" expanded="true" />
+            <element signature="n#!!block;n#GetQuestionCateList#0" expanded="true" />
+            <element signature="n#!!block;n#AppendQuestion#0" expanded="true" />
+            <element signature="n#!!block;n#PeekAvalable#0" expanded="true" />
+            <element signature="n#!!block;n#DoPay#0" expanded="true" />
+            <element signature="n#!!block;n#VoiceUpLoad#0" expanded="true" />
+            <element signature="n#!!block;n#AnswerQuestionInit#0" expanded="true" />
+            <element signature="n#!!block;n#DoAnswerQuestion#0" expanded="true" />
+            <element signature="n#!!block;n#AddPeekCount#0" expanded="true" />
+            <element signature="n#!!block;n#GetQuestionInfoById#0" expanded="true" />
+            <element signature="n#!!block;n#RankTheAnswer#0" expanded="true" />
+            <element signature="n#!!block;n#CheckAnswerIsLocked#0" expanded="true" />
+            <element signature="n#!!block;n#CreatePvInfo#0" expanded="true" />
+            <element signature="n#!!block;n#InitSpecialInfo#0" expanded="true" />
+            <element signature="n#!!block;n#InitPay#0" expanded="true" />
+            <element signature="n#!!block;n#DoPayNew#0" expanded="true" />
+            <element signature="n#!!block;n#UniFi#0" expanded="true" />
+            <element signature="n#!!block;n#SendRedPacketToLaw#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

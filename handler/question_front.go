@@ -397,6 +397,9 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	response.OrderNumber = orderNumber
 	response.Payment = req.TypePrice
 	ret_str, _ := json.Marshal(response)
+	fmt.Println("=====================================>>>>>")
+	fmt.Println(string(ret_str))
+	fmt.Println("=====================================>>>>>")
 	return string(ret_str)
 }
 

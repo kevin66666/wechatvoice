@@ -541,6 +541,7 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 		res1 := new(OpenIdResponse)
 		json.Unmarshal(resBody, res1)
 		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 	}
 	fmt.Println(cookieStr)
 	list := make([]CateInfo, 0)

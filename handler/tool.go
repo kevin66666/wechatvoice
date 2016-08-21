@@ -74,6 +74,8 @@ func AuthCodeURL(appId, redirectURI, scope, state string) string {
 }
 
 func GetAllInfo(ctx *macaron.Context) {
+	fmt.Println("=====================>>>>>")
+	fmt.Println(url.QueryEscape("code"))
 	fmt.Println(ctx.Params("code"))
 	// code := url.QueryEscape("code")
 	// fmt.Println(code)

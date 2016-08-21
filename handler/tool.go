@@ -131,3 +131,38 @@ func GetUserInfo(openId, accessToken string) *UserInfo {
 	fmt.Println(res1)
 	return res1
 }
+
+// func GetAllUtil(code string) error {
+// 	url := "http://60.205.4.26:22334/getOpenid?code=" + code
+// 	res, err := http.Get(url)
+// 	if err != nil {
+// 		fmt.Println("=========xxxxx")
+// 		fmt.Println(err.Error())
+// 		return err
+// 	}
+// 	resBody, _ := ioutil.ReadAll(res.Body)
+// 	fmt.Println(string(resBody))
+// 	defer res.Body.Close()
+// 	fmt.Println("==========>>>>")
+// 	res1 := new(OpenIdResponse)
+// 	json.Unmarshal(resBody, res1)
+// 	ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+// 	member := new(model.MemberInfo)
+// 	memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+// 	if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+// 		return memberErr
+// 	}
+// 	if member.Uuid == "" {
+// 		fmt.Println("新的用户")
+// 		user := GetUserInfo(res1.OpenId, res1.AccessToken)
+// 		member.Uuid = util.GenerateUuid()
+// 		member.HeadImgUrl = user.HeadImgUrl
+// 		member.OpenId = user.OpenId
+// 		member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+// 		member.NickName = user.NickName
+// 		err := member.GetConn().Create(&member).Error
+// 		if err1 != nil {
+// 			return err1
+// 		}
+// 	}
+// }

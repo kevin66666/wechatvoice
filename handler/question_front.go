@@ -87,9 +87,10 @@ func ToIndex(ctx *macaron.Context) {
 }
 
 func QuestionQuery(ctx *macaron.Context) string {
+	response := new(QuestionQueryResponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-	if cookieStr == "" {
-		//这里直接调取util重新过一次绿叶 获取openId 等信息
+
+	if cookieStr == "" && ctx.Query("code") == "" {
 		re := "http://www.mylvfa.com/voice/front/questionquery"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
@@ -100,15 +101,41 @@ func QuestionQuery(ctx *macaron.Context) string {
 		url := "http://60.205.4.26:22334/getOpenid?code=" + code
 		res, err := http.Get(url)
 		if err != nil {
+			fmt.Println("=========xxxxx")
 			fmt.Println(err.Error())
 		}
 		resBody, _ := ioutil.ReadAll(res.Body)
 		fmt.Println(string(resBody))
 		defer res.Body.Close()
-
+		fmt.Println("==========>>>>")
 		res1 := new(OpenIdResponse)
 		json.Unmarshal(resBody, res1)
 		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 	}
 	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
@@ -118,8 +145,6 @@ func QuestionQuery(ctx *macaron.Context) string {
 	req := new(model.QuestionQuery)
 
 	marshallErr := json.Unmarshal([]byte(body), req)
-
-	response := new(QuestionQueryResponse)
 
 	if marshallErr != nil {
 		response.Code = CODE_ERROR
@@ -243,10 +268,55 @@ type NewQuestionResponse struct {
 }
 
 func CreateNewQuestion(ctx *macaron.Context) string {
+	response := new(NewQuestionResponse)
+
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-	if cookieStr == "" {
-		//这里直接调取util重新过一次绿叶 获取openId 等信息
-		cookieStr = "1|2"
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/createquestion"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 	}
 	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
@@ -255,8 +325,6 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
 
 	req := new(NewQuestionRequest)
-
-	response := new(NewQuestionResponse)
 
 	unmarshallErr := json.Unmarshal([]byte(body), req)
 	if unmarshallErr != nil {
@@ -337,18 +405,62 @@ type SpecialQuestions struct {
 }
 
 func CreateNewSpecialQuestion(ctx *macaron.Context) string {
+	response := new(NewQuestionResponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-	if cookieStr == "" {
-		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/createquestion"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
 	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId, userType)
 	body, _ := ctx.Req.Body().String()
 
 	req := new(SpecialQuestions)
-
-	response := new(NewQuestionResponse)
 
 	unmarshallErr := json.Unmarshal([]byte(body), req)
 	if unmarshallErr != nil {
@@ -626,9 +738,60 @@ type QuestionNewResponse struct {
 }
 
 func AppendQuestion(ctx *macaron.Context) string {
+	response := new(QuestionNewResponse)
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/createquestion"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
+
 	body, _ := ctx.Req.Body().String()
 	req := new(QuestionAppendRequest)
-	response := new(QuestionNewResponse)
+
 	json.Unmarshal([]byte(body), req)
 
 	questionInfoOld := new(model.WechatVoiceQuestions)
@@ -711,13 +874,63 @@ type PeekResponse struct {
 //这里需要看下微信支付业务 点击获取之后
 
 func PeekAvalable(ctx *macaron.Context) string {
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	response := new(PeekResponse)
+
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/createquestion"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
 	body, _ := ctx.Req.Body().String()
 	req := new(PeekAnswerRequest)
 	json.Unmarshal([]byte(body), req)
-	response := new(PeekResponse)
 
 	//设置cookie  第一段为openId 第二段为类型 1 用户 2律师
-	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	// cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" {
 		//这里直接调取util重新过一次绿叶 获取openId 等信息
 	}
@@ -788,14 +1001,63 @@ type QuestionInfoss struct {
 }
 
 func AnswerQuestionInit(ctx *macaron.Context) string {
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	response := new(AnswerQuestion1Response)
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/createquestion"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
 	//点击回答问题  显示问题
 	body, _ := ctx.Req.Body().String()
 	req := new(AnswerQuestion1)
 	json.Unmarshal([]byte(body), req)
-	response := new(AnswerQuestion1Response)
 
 	//设置cookie  第一段为openId 第二段为类型 1 用户 2律师
-	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	// cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" {
 		//这里直接调取util重新过一次绿叶 获取openId 等信息
 	}
@@ -899,18 +1161,67 @@ type DoAnsweQuestion struct {
 }
 
 func DoAnswerQuestion(ctx *macaron.Context) string {
+	response := new(model.GeneralResponse)
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/createquestion"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
 	body, _ := ctx.Req.Body().String()
 	req := new(DoAnsweQuestion)
 	json.Unmarshal([]byte(body), req)
-	response := new(model.GeneralResponse)
 
 	question := new(model.WechatVoiceQuestions)
 
 	//设置cookie  第一段为openId 第二段为类型 1 用户 2律师
-	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-	if cookieStr == "" {
-		//这里直接调取util重新过一次绿叶 获取openId 等信息
-	}
+	// cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	// if cookieStr == "" {
+	// 	//这里直接调取util重新过一次绿叶 获取openId 等信息
+	// }
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 
@@ -996,6 +1307,7 @@ type SingleQuestionInfo struct {
 
 //根据ID获取问题详情
 func GetQuestionInfoById(ctx *macaron.Context) string {
+
 	qId := ctx.Query("id")
 	questionInfo := new(model.WechatVoiceQuestions)
 	response := new(SingleQuestionInfo)
@@ -1035,16 +1347,66 @@ type RankResponse struct {
 }
 
 func RankTheAnswer(ctx *macaron.Context) string {
+	response := new(RankResponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-	if cookieStr == "" {
-		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/createquestion"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
 	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	// fmt.Println(cookieStr)
+	// cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	// if cookieStr == "" {
+	// 	//这里直接调取util重新过一次绿叶 获取openId 等信息
+	// }
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId, userType)
 	body, _ := ctx.Req.Body().String()
 	req := new(RankAnswerReq)
-	response := new(RankResponse)
+
 	json.Unmarshal([]byte(body), req)
 	questionInfo := new(model.WechatVoiceQuestions)
 
@@ -1192,6 +1554,7 @@ type CheckIsLocked struct {
 }
 
 func CheckAnswerIsLocked(ctx *macaron.Context) string {
+	// cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	body, _ := ctx.Req.Body().String()
 	req := new(CheckIsLocked)
 
@@ -1236,6 +1599,7 @@ func CheckAnswerIsLocked(ctx *macaron.Context) string {
 }
 
 func CreatePvInfo(ctx *macaron.Context) string {
+
 	body, _ := ctx.Req.Body().String()
 	req := new(CheckIsLocked)
 
@@ -1276,15 +1640,61 @@ type InitSpecailResponse struct {
 
 func InitSpecialInfo(ctx *macaron.Context) string {
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-	if cookieStr == "" {
-		//这里直接调取util重新过一次绿叶 获取openId 等信息
+	response := new(InitSpecailResponse)
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/createquestion"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
 	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId, userType)
 	body, _ := ctx.Req.Body().String()
 	req := new(InitSpecail)
-	response := new(InitSpecailResponse)
+
 	json.Unmarshal([]byte(body), req)
 	if req.OrderId == "-1" {
 		lawer := new(model.LawyerInfo)

@@ -27,6 +27,15 @@ func SetRouter(m *macaron.Macaron) {
 
 	m.Get("/front/getcatList", c.GetQuestionCateList)
 	m.Post("/front/createquestion", c.CreateNewQuestion)
+	m.Post("/front/createnewspecialquestion", c.CreateNewSpecialQuestion)
+	m.Post("/front/appendquestion", c.AppendQuestion)
+	m.Post("/front/peekavalable", c.PeekAvalable)
+	m.Post("/front/answerquestioninit", c.AnswerQuestionInit)
+	m.Post("/front/getorderdetailbyid", c.GetOrderDetailById)
+	m.Post("/front/doanswerquestion", c.DoAnswerQuestion)
+	m.Post("/front/ranktheanswer", c.RankTheAnswer)
+	m.Post("/front/checklock", c.CheckAnswerIsLocked)
+	m.Post("/front/initspecialinfo", c.InitSpecialInfo)
 
 	m.Post("/ucenter/lawyerlist", c.GetLayerOrderList)
 	m.Post("/ucenter/userlist", c.GetMemberOrderList)

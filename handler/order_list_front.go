@@ -233,7 +233,7 @@ func GetOrderDetailById(ctx *macaron.Context) string {
 	response := new(OrderDetailResponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/createquestion"
+		re := "http://www.mylvfa.com/voice/front/orderdetail"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
@@ -350,7 +350,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 	response := new(LawyerOrderListResponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/createquestion"
+		re := "http://www.mylvfa.com/voice/front/lawyerlist"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
@@ -512,7 +512,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 	response := new(MemberListReponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/createquestion"
+		re := "http://www.mylvfa.com/voice/front/userlist"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)

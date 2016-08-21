@@ -408,7 +408,7 @@ func CreateNewSpecialQuestion(ctx *macaron.Context) string {
 	response := new(NewQuestionResponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/createquestion"
+		re := "http://www.mylvfa.com/voice/front/createnewspecialquestion"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
@@ -741,7 +741,7 @@ func AppendQuestion(ctx *macaron.Context) string {
 	response := new(QuestionNewResponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/createquestion"
+		re := "http://www.mylvfa.com/voice/front/appendquestion"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
@@ -878,7 +878,7 @@ func PeekAvalable(ctx *macaron.Context) string {
 	response := new(PeekResponse)
 
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/createquestion"
+		re := "http://www.mylvfa.com/voice/front/peekavalable"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
@@ -1004,7 +1004,7 @@ func AnswerQuestionInit(ctx *macaron.Context) string {
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	response := new(AnswerQuestion1Response)
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/createquestion"
+		re := "http://www.mylvfa.com/voice/front/answerquestioninit"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
@@ -1164,7 +1164,7 @@ func DoAnswerQuestion(ctx *macaron.Context) string {
 	response := new(model.GeneralResponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/createquestion"
+		re := "http://www.mylvfa.com/voice/front/doanswerquestion"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
@@ -1350,7 +1350,7 @@ func RankTheAnswer(ctx *macaron.Context) string {
 	response := new(RankResponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/createquestion"
+		re := "http://www.mylvfa.com/voice/front/ranktheanswer"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
@@ -1642,7 +1642,7 @@ func InitSpecialInfo(ctx *macaron.Context) string {
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	response := new(InitSpecailResponse)
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/createquestion"
+		re := "http://www.mylvfa.com/voice/front/initspecialinfo"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)

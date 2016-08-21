@@ -326,26 +326,25 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId, userType)
-	// body, _ := ctx.Req.Body().String()
+	body, _ := ctx.Req.Body().String()
 
-	// req := new(NewQuestionRequest)
+	req := new(NewQuestionRequest)
 
-	// unmarshallErr := json.Unmarshal([]byte(body), req)
-	// fmt.Println("发问请求提")
-	// fmt.Println(body)
-	// fmt.Println("发问请求提")
-	// if unmarshallErr != nil {
-	// 	fmt.Println(unmarshallErr.Error())
-	// 	response.Code = CODE_ERROR
-	// 	response.Msg = unmarshallErr.Error()
-	// 	ret_str, _ := json.Marshal(response)
-	// 	return string(ret_str)
-	// }
-	a := ctx.Header().Get("typeId")
-	fmt.Println(a)
-	cateId := ctx.Query("typeId")
-	typePrice := ctx.Query("typePrice")
-	content := ctx.Query("content")
+	unmarshallErr := json.Unmarshal([]byte(body), req)
+	fmt.Println("发问请求提")
+	fmt.Println(body)
+	fmt.Println("发问请求提")
+	if unmarshallErr != nil {
+		fmt.Println(unmarshallErr.Error())
+		response.Code = CODE_ERROR
+		response.Msg = unmarshallErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	//fmt.Println(a)
+	cateId := req.CateId
+	typePrice := req.TypePrice
+	content := req.Content
 
 	cate := new(model.Category)
 	cateErr := cate.GetConn().Where("uuid = ?", cateId).Find(&cate).Error

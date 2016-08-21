@@ -326,24 +326,27 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId, userType)
-	body, _ := ctx.Req.Body().String()
+	// body, _ := ctx.Req.Body().String()
 
-	req := new(NewQuestionRequest)
+	// req := new(NewQuestionRequest)
 
-	unmarshallErr := json.Unmarshal([]byte(body), req)
-	fmt.Println("发问请求提")
-	fmt.Println(body)
-	fmt.Println("发问请求提")
-	if unmarshallErr != nil {
-		fmt.Println(unmarshallErr.Error())
-		response.Code = CODE_ERROR
-		response.Msg = unmarshallErr.Error()
-		ret_str, _ := json.Marshal(response)
-		return string(ret_str)
-	}
+	// unmarshallErr := json.Unmarshal([]byte(body), req)
+	// fmt.Println("发问请求提")
+	// fmt.Println(body)
+	// fmt.Println("发问请求提")
+	// if unmarshallErr != nil {
+	// 	fmt.Println(unmarshallErr.Error())
+	// 	response.Code = CODE_ERROR
+	// 	response.Msg = unmarshallErr.Error()
+	// 	ret_str, _ := json.Marshal(response)
+	// 	return string(ret_str)
+	// }
+	cateId := ctx.Query("typeId")
+	typePrice := ctx.Query("typePrice")
+	content := ctx.Query("content")
 
 	cate := new(model.Category)
-	cateErr := cate.GetConn().Where("uuid = ?", req.CateId).Find(&cate).Error
+	cateErr := cate.GetConn().Where("uuid = ?", cateId).Find(&cate).Error
 
 	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
 		fmt.Println(cateErr)
@@ -368,17 +371,17 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	orderNumber := util.GenerateOrderNumber()
 	question := new(model.WechatVoiceQuestions)
 	question.Uuid = util.GenerateUuid()
-	question.CategoryId = req.CateId
+	question.CategoryId = cateId
 	question.Category = cate.CategoryName
 	question.CategoryIdInt = int64(cate.Model.ID)
-	question.Description = req.Content
+	question.Description = content
 	today := time.Unix(time.Now().Unix(), 0).String()[0:19]
 	question.CreateTime = today
 	question.CustomerId = customer.Uuid
 	question.CustomerName = customer.Name
 	question.CustomerOpenId = openId
-	question.PaymentInfo = req.TypePrice
-	payInt, transferErr := strconv.ParseInt(req.TypePrice, 10, 64)
+	question.PaymentInfo = typePrice
+	payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
 	question.OrderNumber = orderNumber
 	if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {
 		response.Code = CODE_ERROR
@@ -401,7 +404,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
 	response.OrderNumber = orderNumber
-	response.Payment = req.TypePrice
+	response.Payment = typePrice
 	ret_str, _ := json.Marshal(response)
 	fmt.Println("=====================================>>>>>")
 	fmt.Println(string(ret_str))

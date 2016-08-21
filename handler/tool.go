@@ -54,10 +54,9 @@ func GetOpenCodeInfo(ctx *macaron.Context) {
 	fmt.Println("aaaaaaaaaa")
 
 	re := "http://60.205.4.26:8000/tool/info?code=&state="
-	a, _ := url.Parse(re)
-	b := a.Query().Encode()
+	a := url.QueryEscape(re)
 
-	url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + b + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+	url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + a + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 	fmt.Println(url)
 	// "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=http://www.mylvfa.com&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 	// res, err := http.Get(url)
@@ -76,6 +75,6 @@ func AuthCodeURL(appId, redirectURI, scope, state string) string {
 
 func GetAllInfo(ctx *macaron.Context) {
 	fmt.Println(ctx.Params("code"))
-	code := url.QueryEscape("code")
-	fmt.Println(code)
+	// code := url.QueryEscape("code")
+	// fmt.Println(code)
 }

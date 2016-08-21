@@ -522,8 +522,7 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 
 	if cookieStr == "" {
-		//这里直接调取util重新过一次绿叶 获取openId 等信息
-		re := "http://www.mylvfa.com/voice/front/getcateList"
+		re := "http://www.mylvfa.com/voice/front/getcatList"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)

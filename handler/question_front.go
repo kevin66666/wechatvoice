@@ -341,6 +341,8 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	// 	ret_str, _ := json.Marshal(response)
 	// 	return string(ret_str)
 	// }
+	a := ctx.Header().Get("typeId")
+	fmt.Println(a)
 	cateId := ctx.Query("typeId")
 	typePrice := ctx.Query("typePrice")
 	content := ctx.Query("content")

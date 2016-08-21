@@ -2246,3 +2246,7 @@ func UniFi(ctx *macaron.Context) string {
 	fmt.Println(string(resByte))
 	return string(resByte)
 }
+
+func SendRedPacketToLaw() string {
+	return ""
+}

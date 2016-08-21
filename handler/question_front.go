@@ -521,7 +521,7 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 	response := new(QuestionCateList)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 
-	if cookieStr == "" {
+	if cookieStr == "" && ctx.Query("code") == "" {
 		re := "http://www.mylvfa.com/voice/front/getcatList"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"

@@ -76,9 +76,17 @@ func AuthCodeURL(appId, redirectURI, scope, state string) string {
 func GetAllInfo(ctx *macaron.Context) {
 	fmt.Println("=====================>>>>>")
 	// ctx.Params(name)
-	fmt.Println(ctx.Query("code"))
+	code := ctx.Query("code")
 	fmt.Println(url.QueryEscape("code"))
 	fmt.Println(ctx.Params("code"))
+	url := "http://60.205.4.26:22334/getOpenid?code=" + code
+	res, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	resBody, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(resBody))
+	defer res.Body.Close()
 	// code := url.QueryEscape("code")
 	// fmt.Println(code)
 }

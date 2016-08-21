@@ -769,8 +769,8 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 	}
 	for _, k := range cateList {
 		single := new(CateInfo)
-		single.CateId = k.Uuid
-		single.CateName = k.CategoryName
+		single.CateName = k.Uuid
+		single.CateId = k.CategoryName
 		price := new(model.WechatVoiceQuestionSettings)
 		priceErr := price.GetConn().Where("category_id = ?", k.Uuid).Find(&price).Error
 		if priceErr != nil {

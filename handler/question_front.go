@@ -551,9 +551,20 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 			return string(ret_str)
 		}
 		if member.Uuid == "" {
-
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
 			member.Uuid = util.GenerateUuid()
-
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
 		}
 		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 	}

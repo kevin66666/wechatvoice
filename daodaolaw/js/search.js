@@ -18,7 +18,7 @@ var Search=React.createClass({
 		}
 		$.ajax({
 			//url:'json/init.json',
-			url:'http://www.mylvfa.com/voice/front/questionquery',
+			url:'/voice/front/questionquery',
 			//http://www.mylvfa.com/wechatvoice/ 搜索页面初始化接口
 			type:'POST',
 			data:JSON.stringify(data),

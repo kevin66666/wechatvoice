@@ -6,6 +6,7 @@ import (
 	"github.com/Unknwon/macaron"
 	"io/ioutil"
 	"net/http"
+	//"net/url"
 	"strconv"
 	"time"
 )
@@ -49,17 +50,18 @@ func GetSign(ctx *macaron.Context) string {
 	return string(ret_str)
 }
 
-func GetOpenCodeInfo(ctx *macaron.Context) string {
+func GetOpenCodeInfo(ctx *macaron.Context) {
 	fmt.Println("aaaaaaaaaa")
 	url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=http://www.mylvfa.com&response_type=code&scope=SCOPE&state=STATE#wechat_redirect"
-	res, err := http.Get(url)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+	// res, err := http.Get(url)
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
 
-	defer res.Body.Close()
-	resBody, _ := ioutil.ReadAll(res.Body)
-	fmt.Println(string(resBody))
+	ctx.Redirect(url)
 
-	return ""
+}
+
+func AuthCodeURL(appId, redirectURI, scope, state string) string {
+	return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=http://,ylvfa.com&response_type=code&scope=SCOPE&state=STATE#wechat_redirect"
 }

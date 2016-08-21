@@ -537,7 +537,7 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 		resBody, _ := ioutil.ReadAll(res.Body)
 		fmt.Println(string(resBody))
 		defer res.Body.Close()
-
+		fmt.Println("==========>>>>")
 		res1 := new(OpenIdResponse)
 		json.Unmarshal(resBody, res1)
 		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")

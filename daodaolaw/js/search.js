@@ -22,7 +22,7 @@ var Search=React.createClass({
 			//http://www.mylvfa.com/wechatvoice/ 搜索页面初始化接口
 			type:'POST',
 			data:JSON.stringify(data),
-			dataType:'jsonp',
+			dataType:'json',
 			success:function(data){
 				if(data.code===10000){
 					if(data.list.length>0){

@@ -341,6 +341,7 @@ var Ask=React.createClass({
 				type:'POST',
 				data:JSON.stringify(data),
 				dataType:'json',
+				contentType: "application/json,
 				success:function(data){
 					if(data.code===10000){
 						调微信支付

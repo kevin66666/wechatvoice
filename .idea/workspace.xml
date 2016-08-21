@@ -29,7 +29,7 @@
         <entry file="file://$PROJECT_DIR$/handler/question_front.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="40194">
-              <caret line="2255" column="1" selection-start-line="2255" selection-start-column="1" selection-end-line="2255" selection-end-column="1" />
+              <caret line="2265" column="1" selection-start-line="2265" selection-start-column="1" selection-end-line="2265" selection-end-column="1" />
               <folding>
                 <element signature="n#!!block;n#ToIndex#0" expanded="true" />
                 <element signature="n#!!block;n#QuestionQuery#0" expanded="true" />
@@ -678,12 +678,12 @@
       <workItem from="1470666969714" duration="4507000" />
       <workItem from="1470841866833" duration="6319000" />
       <workItem from="1471779055360" duration="15000" />
-      <workItem from="1471779074358" duration="548000" />
+      <workItem from="1471779074358" duration="768000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28893000" />
+    <option name="totallyTimeSpent" value="29113000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="803" extended-state="6" />
@@ -1066,7 +1066,7 @@
     <entry file="file://$PROJECT_DIR$/handler/question_front.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="40194">
-          <caret line="2255" column="1" selection-start-line="2255" selection-start-column="1" selection-end-line="2255" selection-end-column="1" />
+          <caret line="2265" column="1" selection-start-line="2265" selection-start-column="1" selection-end-line="2265" selection-end-column="1" />
           <folding>
             <element signature="n#!!block;n#ToIndex#0" expanded="true" />
             <element signature="n#!!block;n#QuestionQuery#0" expanded="true" />

@@ -91,6 +91,7 @@ func ToIndex(ctx *macaron.Context) {
 
 func QuestionQuery(ctx *macaron.Context) string {
 	response := new(QuestionQueryResponse)
+	fmt.Println("=================进入方法")
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 
 	if cookieStr == "" && ctx.Query("code") == "" {

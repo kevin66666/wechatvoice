@@ -331,7 +331,11 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	req := new(NewQuestionRequest)
 
 	unmarshallErr := json.Unmarshal([]byte(body), req)
+	fmt.Println("发问请求提")
+	fmt.Println(body)
+	fmt.Println("发问请求提")
 	if unmarshallErr != nil {
+		fmt.Println(unmarshallErr.Error())
 		response.Code = CODE_ERROR
 		response.Msg = unmarshallErr.Error()
 		ret_str, _ := json.Marshal(response)
@@ -342,6 +346,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	cateErr := cate.GetConn().Where("uuid = ?", req.CateId).Find(&cate).Error
 
 	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
+		fmt.Println(cateErr)
 		response.Code = CODE_ERROR
 		response.Msg = cateErr.Error()
 		ret_str, _ := json.Marshal(response)
@@ -354,11 +359,12 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 
 	if customerErr != nil && !strings.Contains(customerErr.Error(), RNF) {
 		response.Code = CODE_ERROR
+		fmt.Println(customerErr.Error())
 		response.Msg = customerErr.Error()
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-
+	fmt.Println("here.....")
 	orderNumber := util.GenerateOrderNumber()
 	question := new(model.WechatVoiceQuestions)
 	question.Uuid = util.GenerateUuid()
@@ -382,7 +388,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	}
 
 	question.PaymentInfoInt = payInt
-
+	fmt.Println("here............")
 	createErr := question.GetConn().Create(&question).Error
 
 	if createErr != nil {

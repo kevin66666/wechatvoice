@@ -6,8 +6,10 @@ import (
 	"github.com/Unknwon/macaron"
 
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -88,7 +90,25 @@ func QuestionQuery(ctx *macaron.Context) string {
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" {
 		//这里直接调取util重新过一次绿叶 获取openId 等信息
-		cookieStr = "1|2"
+		re := "http://www.mylvfa.com/voice/front/questionquery"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
 	}
 	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]

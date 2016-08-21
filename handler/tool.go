@@ -73,6 +73,14 @@ func AuthCodeURL(appId, redirectURI, scope, state string) string {
 	return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=http://,ylvfa.com&response_type=code&scope=SCOPE&state=STATE#wechat_redirect"
 }
 
+type OpenIdResponse struct {
+	AccessToken  string `json:"access_token"`
+	ExpiresIn    int64  `json:"expores_in"`
+	RefressToken string `json:"refresh_token"`
+	OpenId       string `json:"openid"`
+	Scope        string `json:"scope"`
+}
+
 func GetAllInfo(ctx *macaron.Context) {
 	fmt.Println("=====================>>>>>")
 	// ctx.Params(name)
@@ -87,6 +95,10 @@ func GetAllInfo(ctx *macaron.Context) {
 	resBody, _ := ioutil.ReadAll(res.Body)
 	fmt.Println(string(resBody))
 	defer res.Body.Close()
+
+	res1 := new(OpenIdResponse)
+	json.Unmarshal(resBody, res1)
+	fmt.Println(res1)
 	// code := url.QueryEscape("code")
 	// fmt.Println(code)
 }

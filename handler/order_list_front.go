@@ -512,7 +512,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 	response := new(MemberListReponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/front/rp"
+		re := "http://www.mylvfa.com/voice/ucenter/userlist"
 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
@@ -559,12 +559,12 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 	}
 	fmt.Println(cookieStr)
-	fmt.Println(cookieStr)
+	//fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
-	userType := strings.Split(cookieStr, "|")[1]
+	//userType := strings.Split(cookieStr, "|")[1]
 
 	log.Println("=========>>>>>>,用户OPENID 为", openId)
-	log.Println("=========>>>>>>,用户类型为", userType)
+	//log.Println("=========>>>>>>,用户类型为", userType)
 
 	body, _ := ctx.Req.Body().String()
 

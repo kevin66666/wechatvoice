@@ -532,6 +532,7 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 		url := "http://60.205.4.26:22334/getOpenid?code=" + code
 		res, err := http.Get(url)
 		if err != nil {
+			fmt.Println("=========xxxxx")
 			fmt.Println(err.Error())
 		}
 		resBody, _ := ioutil.ReadAll(res.Body)
@@ -541,7 +542,7 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 		res1 := new(OpenIdResponse)
 		json.Unmarshal(resBody, res1)
 		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
-		ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 	}
 	fmt.Println(cookieStr)
 	list := make([]CateInfo, 0)

@@ -12,8 +12,8 @@ var getDataMixin={
       orderType:type
     }
     $.ajax({
-      url:url,
-      type:'http://www.mylvfa.com/voice/ucenter/userlist',
+      url:"http://www.mylvfa.com/voice/ucenter/userlist",
+      type:'POST',
        data:JSON.stringify(data),
       dataType:'json',
       contentType: "application/json",

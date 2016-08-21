@@ -542,6 +542,19 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 		res1 := new(OpenIdResponse)
 		json.Unmarshal(resBody, res1)
 		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+
+			member.Uuid = util.GenerateUuid()
+
+		}
 		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 	}
 	fmt.Println(cookieStr)

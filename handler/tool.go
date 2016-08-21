@@ -102,3 +102,32 @@ func GetAllInfo(ctx *macaron.Context) {
 	// code := url.QueryEscape("code")
 	// fmt.Println(code)
 }
+
+type UserInfo struct {
+	OpenId     string   `json:"openId"`
+	NickName   string   `json:"nickName"`
+	Sex        string   `json:"sex"`
+	Province   string   `json:"province"`
+	City       string   `json:"city"`
+	Country    string   `json:"country"`
+	HeadImgUrl string   `json:"headImgUrl"`
+	Privilege  []string `json:"privilege"`
+	UnionId    string   `json:"unionid"`
+}
+
+func GetUserInfo(openId, accessToken string) *UserInfo {
+	fmt.Println("新用户=================================》》》")
+	url := "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + openId + "&lang=zh_CN"
+	res, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	resBody, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(resBody))
+	defer res.Body.Close()
+
+	res1 := new(UserInfo)
+	json.Unmarshal(resBody, res1)
+	fmt.Println(res1)
+	return res1
+}

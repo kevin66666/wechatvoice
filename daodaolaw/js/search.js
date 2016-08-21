@@ -294,7 +294,7 @@ var Ask=React.createClass({
 	},
 	componentDidMount:function(){
  		$.ajax({
-			url:'localhost:8000/front/getcatList',
+			url:'http://www.mylvfa.com/voice/front/getcatList',
 			//获取所有问题类型接口
 			type:'GET',
 			// data:JSON.stringify(data),

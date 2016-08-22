@@ -9,11 +9,10 @@ var OrderDetail=React.createClass({
 		var orderId=location.search?location.search.slice(1).split('=')[1]:'';
 		var data={orderId:orderId}
 		$.ajax({
-			url:'http://www.mylvfa.com/voice/ucenter/orderdetail',
-			type:'POST',
-			data:JSON.stringify(data),
+			url:'json/orderDetail.json',
+			type:'GET',
+			// data:JSON.stringify(data),
 			dataType:'json',
-			contentType: "application/json",
 			success:function(data){
 				if(data.code===10000){
 					this.setState({info:data})

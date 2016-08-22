@@ -6,8 +6,8 @@ var Ask=React.createClass({
 			content:'',
 			laywerId:'',
 			typePrice:'',
-			//parentOrderId:'',
-			// isShowType:false,
+			parentOrderId:'' //判断是来自搜索页面 还是追问
+			isShowType:false,
 			allType:[]
 		}
 	},
@@ -24,7 +24,7 @@ var Ask=React.createClass({
 			orderId:orderId //-1 是搜索  其他是追问orderId 
 		}
 		$.ajax({
-			url:'http://www.mylvfa.com/voice/front',
+			url:'json/ask.json',
 			type:'GET',
 			// data:JSON.stringify(data),
 			dataType:'json',

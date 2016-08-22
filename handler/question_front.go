@@ -143,8 +143,8 @@ func QuestionQuery(ctx *macaron.Context) string {
 	}
 	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
-	userType := strings.Split(cookieStr, "|")[1]
-	fmt.Println(openId, userType)
+	// userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId)
 	body, _ := ctx.Req.Body().String()
 	req := new(model.QuestionQuery)
 

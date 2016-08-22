@@ -12,9 +12,10 @@ var getDataMixin={
       orderType:type
     }
     $.ajax({
-      url:url,
-      type:'GET',
-      // data:JSON.stringify(data),
+      url:'http://www.mylvfa.com/voice/ucenter/lawyerlist',
+      type:'POST',
+      data:JSON.stringify(data),
+      contentType:'application/json'
       dataType:'json',
       success:function(data){
         if(data.code===10000){

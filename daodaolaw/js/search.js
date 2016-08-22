@@ -79,8 +79,6 @@ var Search=React.createClass({
 				type:'POST',
 				data:JSON.stringify(data),
 				contentType:'application/json'
-				dataType:'json',
-
 				success:function(data){
 					if(data.code===10000){
 						if(data.list.length>0){

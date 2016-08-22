@@ -24,7 +24,7 @@ var Ask=React.createClass({
 			orderId:orderId //-1 是搜索  其他是追问orderId 
 		}
 		$.ajax({
-			url:'json/ask.json',
+			url:'http://www.mylvfa.com/voice/front',
 			type:'GET',
 			// data:JSON.stringify(data),
 			dataType:'json',

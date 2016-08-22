@@ -78,7 +78,8 @@ var Search=React.createClass({
 				url:'http://www.mylvfa.com/voice/front/questionquery',
 				type:'POST',
 				data:JSON.stringify(data),
-				contentType:'application/json'
+				contentType:'application/json',
+				dataType:'json',
 				success:function(data){
 					if(data.code===10000){
 						if(data.list.length>0){

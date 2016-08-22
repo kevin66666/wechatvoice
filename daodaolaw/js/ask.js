@@ -6,8 +6,8 @@ var Ask=React.createClass({
 			content:'',
 			laywerId:'',
 			typePrice:'',
-			//parentOrderId:'',
-			// isShowType:false,
+			parentOrderId:'' //判断是来自搜索页面 还是追问
+			isShowType:false,
 			allType:[]
 		}
 	},

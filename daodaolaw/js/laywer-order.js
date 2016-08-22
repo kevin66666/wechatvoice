@@ -13,6 +13,7 @@ var getDataMixin={
     }
     $.ajax({
       url:'http://www.mylvfa.com/voice/ucenter/lawyerlist',
+      ///ucenter/lawyerlist
       type:'POST',
       data:JSON.stringify(data),
       contentType:'application/json',

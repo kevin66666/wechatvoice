@@ -6,3 +6,6 @@ laywer-order.js
 现在的问题是 给我一个ORDERID  我直接返回对应的权限  如果能够回答 直接给你问题的详情么？
 
 还是怎样？ 我先把接口修改下补充上去
+
+
+laywer.js  <Loading load={this.state.load} tips={this.state.tips}/>  59hang

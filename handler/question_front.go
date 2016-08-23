@@ -820,7 +820,7 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 	}
 	fmt.Println(cookieStr)
 	list := make([]CateInfo, 0)
-
+	fmt.Println("========进入这个方法啦")
 	cateList, cateErr := model.GetCateLists()
 
 	fmt.Println(len(cateList))

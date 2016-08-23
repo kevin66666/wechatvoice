@@ -38,7 +38,7 @@ var Answer=React.createClass({
 		})
 		//初始化时获取微信config
 		$.ajax({
-			url:'',  //回答问题页面初始化订单信息
+			url:'http://www.mylvfa.com/voice/front/getconfig',  //回答问题页面初始化订单信息
 			type:'GET',
 			// data:JSON.stringify(data),
 			// contentType: "application/json",
@@ -48,14 +48,14 @@ var Answer=React.createClass({
 						config:config
 					})
 				//返回的config,该代码只做提示功能
-				// data={
-				// 		debug: false,
-				// 		appId: data.page_appid,
-				// 		timestamp: data.page_appid,
-				// 		nonceStr: data.page_appid,
-				// 		signature: data.page_appid,
-				// 		jsApiList: ['startRecord','stopRecord','playVoice','uploadVoice','onVoiceRecordEnd'] //这个是固定的api
-				// }
+				data={
+						debug: false,
+						appId: data.appId,
+						timestamp: data.timestamp,
+						nonceStr: data.nonceStr,
+						signature: data.signature,
+						jsApiList: ['startRecord','stopRecord','playVoice','uploadVoice','onVoiceRecordEnd'] //这个是固定的api
+				}
 				}else{
 					this.tips(data.msg)
 				}

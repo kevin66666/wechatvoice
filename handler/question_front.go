@@ -477,6 +477,23 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
+	// paramsList := []string{"appid", "mch_id", "body", "out_trade_no", "total_fee", "spbill_create_ip", "device_info", "nonce_str", "fee_type", "time_start", "notify_url", "trade_type"}
+	// paramsMap := make(map[string]string, 0)
+	// paramsMap["appid"] = "wxac69efc11c5e182f"
+	// paramsMap["mch_id"] = "1344737201"
+	// paramsMap["body"] = "pay"
+	// paramsMap["out_trade_no"] = orderNumber
+	// paramsMap["total_fee"] = "1"
+	// paramsMap["spbill_create_ip"] = "127.0.0.1"
+
+	// // 有默认值的字段处理
+	// paramsMap["device_info"] = DEFAULT_DEVICE_INFO
+	// paramsMap["nonce_str"] = nstr
+	// paramsMap["fee_type"] = DEFAULT_FEE_TYPE
+	// paramsMap["time_start"] = tStr
+	// paramsMap["notify_url"] = "http://www.mylvfa.com/wxpay/config/"
+	// paramsMap["trade_type"] = DEFAULT_TRADE_TYPE
+	// sign := GenerateSign(paramsMap, paramsList)
 	/**
 
 	Appid     string `json:"appId"`
@@ -2464,4 +2481,31 @@ func GetSigns(timeStr string) string {
 	json.Unmarshal(resBody, resa)
 	fmt.Println(string(resBody))
 	return resa.Sign
+}
+
+type ConfigResponssss struct {
+	Code      int64  `json:"code"`
+	Msg       string `json:"msg"`
+	Appid     string `json:"appId"`
+	TimeStamp string `json:"timestamp"`
+	NonceStr  string `json:"nonceStr"`
+	Sing      string `json:"signature"`
+}
+
+func GetWxVoiceConfig(ctx *macaron.Context) string {
+	ticker := JsapiTicker12()
+	nstr := util.GenerateUuid()
+
+	timeStamp := time.Now().Format("20060102150405")
+	str := "jsapi_ticket=" + ticker + "&noncestr=" + nstr + "&timestamp=" + timeStamp + "&url=http://mp.weixin.qq.com?params=value"
+	str = Sha1(str)
+	response := new(ConfigResponssss)
+	response.Code = CODE_SUCCESS
+	response.Msg = "ok"
+	response.Appid = "wxac69efc11c5e182f"
+	response.TimeStamp = timeStamp
+	response.NonceStr = nstr
+	response.Sing = str
+	ret_str, _ := json.Marshal(response)
+	return string(ret_str)
 }

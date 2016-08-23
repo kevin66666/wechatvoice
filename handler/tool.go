@@ -270,6 +270,45 @@ func JsapiTicker1(ctx *macaron.Context) string {
 	str, _ := json.Marshal(result)
 	return string(str)
 }
+func JsapiTicker12() string {
+	appid := "wxac69efc11c5e182f"
+	fmt.Println(appid)
+	result := new(RespJsapiTicket)
+	res, err := http.Get("http://www.mylvfa.com/getAccessToken")
+	if err != nil {
+		result.Code = CODE_ERROR
+		result.Msg = err.Error()
+		ret_str, _ := json.Marshal(result)
+		return string(ret_str)
+	}
+	resBody, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(resBody))
+	defer res.Body.Close()
+	token := string(resBody)
+
+	url1 := "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=" + token + "&type=jsapi"
+	res2, res2Err := http.Get(url1)
+	if res2Err != nil {
+		result.Code = CODE_ERROR
+		result.Msg = res2Err.Error()
+		ret_str, _ := json.Marshal(result)
+		return string(ret_str)
+	}
+	resBody2, _ := ioutil.ReadAll(res2.Body)
+	fmt.Println(string(resBody))
+	defer res2.Body.Close()
+	type ApiTk struct {
+		ErrorCode int64  `json:"errcode"`
+		ErrMsg    string `json:"errmsg"`
+		Ticket    string `json:"ticket"`
+		Expires   int64  `json:"expires_in"`
+	}
+
+	resss := new(ApiTk)
+	json.Unmarshal(resBody2, resss)
+	fmt.Println(resss)
+	return resss.Ticket
+}
 func Sha1(str string) string {
 	result := ""
 	if str == "" {

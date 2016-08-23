@@ -14,9 +14,9 @@ var getDataMixin={
     $.ajax({
       url:"http://www.mylvfa.com/voice/ucenter/userlist",
       type:'POST',
-      data:JSON.stringify(data),
-       contentType:'application/json',
-      dataType:'jsonp',
+       data:JSON.stringify(data),
+      dataType:'json',
+      contentType: "application/json",
       success:function(data){
         if(data.code===10000){
           if(data.list.length>0){
@@ -154,12 +154,12 @@ var ResolvedList=React.createClass({
   	//听完语音后显示评价框
   	var audio=$(e.target).prev()[0]
   	var ms=audio.duration*1000
-  	// audio.play()
-  	// setTimeout(function(){
-  	// 	if(audio.ended&&canEval){
+  	audio.play()
+  	setTimeout(function(){
+  		if(audio.ended&&canEval){
 	  		this.props.changeEvaluate(true)
-	  // 	}
-  	// }.bind(this),ms)
+	  	}
+  	}.bind(this),ms)
   },
   addOne:function(dom){
   	if(dom.addNum>0){
@@ -227,7 +227,7 @@ var Evaluate=React.createClass({
 			// 	dataType:'json',
 			// 	success:function(data){
 			// 		if(data.code===10000){
-			// 			//发红包 redPacket
+			// 			//发红包 redPacket 接口
 						this.props.changeEvaluate(false)
 						this.props.changeMoney(true,data.redPacket)
 			// 		}else{
@@ -292,7 +292,7 @@ var Money=React.createClass({
 		}
 	},
   render:function(){
-  	var isShowMoney=!this.props.isShowMoney?'mcover':'dispN'; 
+  	var isShowMoney=this.props.isShowMoney?'mcover':'dispN'; 
   	var money=this.props.money;	
     return (
       <div className={isShowMoney}>

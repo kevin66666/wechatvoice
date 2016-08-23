@@ -40,8 +40,8 @@
       type:'POST',
       data:JSON.stringify(data),
       dataType:'json',
-      success:function(prepayInfo){
-        if(prepayInfo.code===10000){
+      success:function(data){
+        if(data.code===10000){
           this.props.resetList(index)
           //调取支付接口
           

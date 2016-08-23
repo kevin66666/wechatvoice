@@ -12,12 +12,11 @@ var getDataMixin={
       orderType:type
     }
     $.ajax({
-      url:'http://www.mylvfa.com/voice/ucenter/lawyerlist',
-      ///ucenter/lawyerlist
+      url:"http://www.mylvfa.com/voice/ucenter/lawyerlist",
       type:'POST',
       data:JSON.stringify(data),
-      contentType:'application/json',
-      dataType:'jsonp',
+      dataType:'json',
+      contentType: "application/json",
       success:function(data){
         if(data.code===10000){
           if(data.list.length>0){
@@ -57,7 +56,7 @@ var LaywerOrder=React.createClass({
 			<div>
 				<OrderNav/>
 				<OrderList changeLoad={this.changeLoad}/>
-				
+				<Loading load={this.state.load} tips={this.state.tips}/>
 			</div>
 		)
 	}
@@ -94,11 +93,13 @@ var UnsolvedList=React.createClass({
     }
   },
   toAnswer:function(orderId){
+  	var data={orderId:orderId}
   	$.ajax({
   		url:'',
   		type:'POST',
-  		data:JSON.stringify({orderId:orderId}),
+  		data:JSON.stringify(data),
   		dataType:'json',
+  		contentType: "application/json",
   		success:function(data){
   			if(data.code===10000){
   				location.href='answer.html?orderId='+orderId;

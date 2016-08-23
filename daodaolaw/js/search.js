@@ -17,11 +17,13 @@ var Search=React.createClass({
 			endNum:this.state.searchList.length+10
 		}
 		$.ajax({
-			url:'http://www.mylvfa.com/voice/front/questionquery',
+			//url:'json/init.json',
+			url:'/voice/front/questionquery',
+			//http://www.mylvfa.com/wechatvoice/ 搜索页面初始化接口
 			type:'POST',
 			data:JSON.stringify(data),
-			dataType:'jsonp',
-			contentType:'application/json',
+			contentType: "application/json",
+			dataType:'json',
 			success:function(data){
 				if(data.code===10000){
 					if(data.list.length>0){
@@ -76,11 +78,12 @@ var Search=React.createClass({
 				endNum:searchList.length+10
 			}
 			$.ajax({
-				url:'http://www.mylvfa.com/voice/front/questionquery',
+				url:'json/search.json',
+				//关键字搜索接口
 				type:'POST',
-				data:JSON.stringify(data),
-				contentType:'application/json',
-				dataType:'jsonp',
+			  data:JSON.stringify(data),
+				dataType:'json',
+				contentType: "application/json",
 				success:function(data){
 					if(data.code===10000){
 						if(data.list.length>0){
@@ -171,47 +174,48 @@ var EverySearch=React.createClass({
 		//调取支付接口
 		if(!info.isPay){
 			$.ajax({
-				url:'',
+				url:'',//支付点击
 				type:'POST',
 				data:JSON.stringify(data),
+				contentType: "application/json",
 				dataType:'json',
-				success:function(prepayInfo){
-					if(prepayInfo.code===10000){
+				success:function(data){
+					if(data.code===10000){
 						this.props.resetList(index)
+
 						//调取支付接口
-						
-            wx.config({
-                debug: false,
-                appId: data.page_appid,
-                timestamp: data.page_appid,
-                nonceStr: data.page_appid,
-                signature: data.page_appid,
-                jsApiList: ['chooseWXPay']
-            });
-            wx.ready(function(){
-              wx.chooseWXPay({
-                timestamp: data.pay_timeStamp,
-                nonceStr: data.pay_nonceStr,
-                package: data.pay_package,
-                signType: data.pay_signType,
-                paySign: data.pay_paySign,
-                success: function (res) {
-                  // 支付成功
-                	location.href = 'order-detail.html?orderId='+orderId
-                },
-                fail: function (res) {
-                  // 支付失败
-                  window.location.replace="pay-fail?r=0&orderId="+orderId
-                },
-                cancel: function (res) {
-                  // 用户取消
-                  window.location.replace="pay-fail?r=1&orderId="+orderId
-                }
-              });
-            });
-            wx.error(function(res){
-              window.location.replace="pay-fail?r=2&orderId="+orderId
-            });
+						wx.config({
+							debug: false,
+							appId: data.page_appid,
+							timestamp: data.page_appid,
+							nonceStr: data.page_appid,
+							signature: data.page_appid,
+							jsApiList: ['chooseWXPay']
+						});
+						wx.ready(function(){
+						  wx.chooseWXPay({
+							timestamp: data.pay_timeStamp,
+							nonceStr: data.pay_nonceStr,
+							package: data.pay_package,
+							signType: data.pay_signType,
+							paySign: data.pay_paySign,
+							success: function (res) {
+							  // 支付成功
+								location.href = 'order-detail.html?orderId='+orderId
+							},
+							fail: function (res) {
+							  // 支付失败
+							  window.location.replace="pay-fail?r=0&orderId="+orderId
+							},
+							cancel: function (res) {
+							  // 用户取消
+							  window.location.replace="pay-fail?r=1&orderId="+orderId
+							}
+						  });
+						});
+						wx.error(function(res){
+						  window.location.replace="pay-fail?r=2&orderId="+orderId
+						});
 					}
 				}.bind(this),
 				error:function(data){
@@ -286,14 +290,15 @@ var Ask=React.createClass({
 			typeId:'',
 			content:'',
 			typeName:'',
-			typePrice:1,
+			typePrice:'',
 			isShowType:false,
 			allType:[]
 		}
 	},
 	componentDidMount:function(){
  		$.ajax({
-			url:'json/allType.json',
+			url:'http://www.mylvfa.com/voice/front/getcatList',
+			//获取所有问题类型接口
 			type:'GET',
 			// data:JSON.stringify(data),
 			dataType:'json',
@@ -333,20 +338,53 @@ var Ask=React.createClass({
   		typePrice:this.state.typePrice,
   		content:this.state.content
   	}
-  	// $.ajax({
-			// 	url:'json/search.json',
-			// 	type:'POST',
-			// 	data:JSON.stringify(data),
-			// 	dataType:'json',
-			// 	success:function(data){
-			// 		if(data.code===10000){
-			// 			调微信支付
-			// 		}
-			// 	}.bind(this),
-			// 	error:function(data){
-			// 		console.log('提交问题失败:',data)
-			// 	}
-			// })
+  	$.ajax({
+				url:'http://www.mylvfa.com/voice/front/createquestion',
+				//搜索页面提问接口
+				type:'POST',
+				data:JSON.stringify(data),
+				dataType:'json',
+				contentType: "application/json",
+				success:function(data){
+					if(data.code===10000){
+						//调取支付
+						wx.config({
+							debug: false,
+							appId: data.page_appid,
+							timestamp: data.page_appid,
+							nonceStr: data.page_appid,
+							signature: data.page_appid,
+							jsApiList: ['chooseWXPay']
+						});
+						wx.ready(function(){
+						  wx.chooseWXPay({
+							timestamp: data.pay_timeStamp,
+							nonceStr: data.pay_nonceStr,
+							package: data.pay_package,
+							signType: data.pay_signType,
+							paySign: data.pay_paySign,
+							success: function (res) {
+							  // 支付成功
+								location.href = 'user-order.html'
+							},
+							fail: function (res) {
+							  // 支付失败
+							  window.location.replace="pay-fail?r=0&orderId="+orderId
+							},
+							cancel: function (res) {
+							  // 用户取消
+							  window.location.replace="pay-fail?r=1&orderId="+orderId
+							}
+						});
+						wx.error(function(res){
+						  window.location.replace="pay-fail?r=2&orderId="+orderId
+						});
+					}
+				}.bind(this),
+				error:function(data){
+					console.log('提交问题失败:',data)
+				}
+			})
   },
 	render:function(){
 		var isShow=this.props.isShowAsk?'question':'dispN'

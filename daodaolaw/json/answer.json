@@ -4,5 +4,8 @@
 	"name":"tom",
 	"selfIntr":"tom",
 	"pic":"img/a9.png",
-	"price":"1"
+	"price":"1",
+	"typeId":"",
+	"typeName":"",
+	"content":""
 }

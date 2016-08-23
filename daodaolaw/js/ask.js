@@ -6,8 +6,8 @@ var Ask=React.createClass({
 			content:'',
 			laywerId:'',
 			typePrice:'',
-			parentOrderId:'' //判断是来自搜索页面 还是追问
-			isShowType:false,
+			//parentOrderId:'',
+			// isShowType:false,
 			allType:[]
 		}
 	},
@@ -24,7 +24,7 @@ var Ask=React.createClass({
 			orderId:orderId //-1 是搜索  其他是追问orderId 
 		}
 		$.ajax({
-			url:'json/ask.json',
+			url:'http://www.mylvfa.com/voice/front',
 			type:'GET',
 			// data:JSON.stringify(data),
 			dataType:'json',
@@ -93,20 +93,53 @@ var Ask=React.createClass({
   		content:this.state.content,
   		parentOrderId:this.state.parentOrderId
   	}
-  	// $.ajax({
-			// 	url:'json/ask.json',
-			// 	type:'GET',
-			// 	// data:JSON.stringify(data),
-			// 	dataType:'json',
-			// 	success:function(data){
-			// 		if(data.code===10000){
-			// 			this.setState({searchList:data.list})
-			// 		}
-			// 	}.bind(this),
-			// 	error:function(data){
-			// 		console.log('提交问题失败:',data)
-			// 	}
-			// })
+  	$.ajax({
+				url:'json/ask.json', 
+				//提问接口
+				type:'POST',
+				data:JSON.stringify(data),
+				contentType: "application/json",
+				dataType:'json',
+				success:function(data){
+					if(data.code===10000){
+						//调取支付
+						wx.config({
+							debug: false,
+							appId: data.page_appid,
+							timestamp: data.page_appid,
+							nonceStr: data.page_appid,
+							signature: data.page_appid,
+							jsApiList: ['chooseWXPay']
+						});
+						wx.ready(function(){
+						  wx.chooseWXPay({
+							timestamp: data.pay_timeStamp,
+							nonceStr: data.pay_nonceStr,
+							package: data.pay_package,
+							signType: data.pay_signType,
+							paySign: data.pay_paySign,
+							success: function (res) {
+							  // 支付成功
+								location.href = 'user-order.html'
+							},
+							fail: function (res) {
+							  // 支付失败
+							  window.location.replace="pay-fail?r=0&orderId="+orderId
+							},
+							cancel: function (res) {
+							  // 用户取消
+							  window.location.replace="pay-fail?r=1&orderId="+orderId
+							}
+						});
+						wx.error(function(res){
+						  window.location.replace="pay-fail?r=2&orderId="+orderId
+						});
+					}
+				}.bind(this),
+				error:function(data){
+					console.log('提交问题失败:',data)
+				}
+			})
   },
 	render:function(){
 		var init=this.state.init

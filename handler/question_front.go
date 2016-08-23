@@ -2427,7 +2427,7 @@ func PayBill(nstr, nSt, openId, orderNumber, fee, timeStamp string) (string, str
 				prepayId = resp.PrepayId
 				sings = resp.Sign
 				//var nSt string
-				url1 := "http://60.205.4.26:22334/prepaySign?appId=wxac69efc11c5e182f&nonceStr=" + nSt + "&package=prepay_id=" + prepayId + "&signType=MD5&timeStamp=" + timeStamp
+				url1 := "http://60.205.4.26:22334/prepaySign?appId=wxac69efc11c5e182f&nonceStr=" + nstr + "&package=prepay_id=" + prepayId + "&signType=MD5&timeStamp=" + timeStamp
 				res2, res2err := http.Get(url1)
 				if res2err != nil {
 					fmt.Println(res2err.Error(), "5")

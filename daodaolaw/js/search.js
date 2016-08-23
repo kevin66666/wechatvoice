@@ -382,7 +382,7 @@ var Ask=React.createClass({
 						 WeixinJSBridge.invoke(
                			 'getBrandWCPayRequest', {
                      "appId": data.appId,     //公众号名称，由商户传入
-                     "timeStamp":data.timestamp.toString(),         //时间戳，自1970年以来的秒数
+                     "timeStamp":data.timestamp,         //时间戳，自1970年以来的秒数
                      "nonceStr":data.nonceStr, //随机串
                      "package":data.package,
                      "signType":data.signType,         //微信签名方式：

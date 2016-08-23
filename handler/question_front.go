@@ -469,7 +469,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	timeStamp := time.Now().Unix()
 	fmt.Println(timeStamp)
 	tStr := strconv.FormatInt(timeStamp, 10)
-	sign, prepayId, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
+	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
 	if signErr != nil {
 		fmt.Println(signErr.Error())
 		response.Code = CODE_ERROR
@@ -487,12 +487,12 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	SignType  string `json:"signType"`
 	PaySign   string `json:"paySign"`
 	*/
-	signnew := GetSigns(tStr)
+	// signnew := GetSigns(tStr)
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
 	response.Appid = "wxac69efc11c5e182f"
 	response.NonceStr = nstr
-	response.Signature = signnew
+	response.Signature = sings
 	response.SignType = "MD5"
 	response.Package = "prepay_id=" + prepayId
 	response.TimeStamp = tStr
@@ -2389,52 +2389,55 @@ type PayFinal struct {
 	Sign string `json:"sign"`
 }
 
-func PayBill(nstr, nSt, openId, orderNumber, fee, timeStamp string) (string, string, error) {
+func PayBill(nstr, nSt, openId, orderNumber, fee, timeStamp string) (string, string, string, error) {
 	// var nstr string
 	// var openId string
 	// var orderNumber string
 	// var fee string
 	var sign string
 	var prepayId string
+	var sings string
 	url := "http://60.205.4.26:22334/prepayId?appid=wxac69efc11c5e182f&mch_id=1344737201&nonce_str=" + nstr + "&notify_url=http://www.mylvfa.com/wxpay/config/&openid=" + openId + "&out_trade_no=" + orderNumber + "&spbill_create_ip=127.0.0.1&total_fee=" + fee + "&trade_type=JSAPI&body=my_pay_test"
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err.Error(), "1")
-		return sign, prepayId, err
+		return sign, prepayId, sings, err
 	} else {
 		body, bodyErr := ioutil.ReadAll(res.Body)
 		if bodyErr != nil {
 			fmt.Println("bodyerr ", bodyErr.Error(), "2")
-			return sign, prepayId, bodyErr
+			return sign, prepayId, sings, bodyErr
 		}
 		responseSign := new(ResponsePay)
 		unmarErr := json.Unmarshal(body, responseSign)
 		if unmarErr != nil {
 			fmt.Println(unmarErr.Error(), "3")
-			return sign, prepayId, unmarErr
+			return sign, prepayId, sings, unmarErr
 		} else {
 			sign = responseSign.Sign
+			//sings = responseSign
 			fmt.Println(sign)
 
 			resp := new(PaySignResponse)
 			unmarErr = xml.Unmarshal([]byte(sign), resp)
 			if unmarErr != nil {
 				fmt.Println(unmarErr.Error(), "4")
-				return sign, prepayId, unmarErr
+				return sign, prepayId, sings, unmarErr
 			} else {
 				prepayId = resp.PrepayId
+				sings = resp.Sign
 				//var nSt string
 				url1 := "http://60.205.4.26:22334/prepaySign?appId=wxac69efc11c5e182f&nonceStr=" + nSt + "&package=prepay_id=" + prepayId + "&signType=MD5&timeStamp=" + timeStamp
 				res2, res2err := http.Get(url1)
 				if res2err != nil {
 					fmt.Println(res2err.Error(), "5")
-					return sign, prepayId, res2err
+					return sign, prepayId, sings, res2err
 				} else {
 					r := new(PayFinal)
 					bodyF, errF := ioutil.ReadAll(res2.Body)
 					if errF != nil {
 						fmt.Println(errF.Error(), "6")
-						return sign, prepayId, errF
+						return sign, sings, prepayId, errF
 					} else {
 						json.Unmarshal(bodyF, r)
 						sign = r.Sign
@@ -2443,8 +2446,8 @@ func PayBill(nstr, nSt, openId, orderNumber, fee, timeStamp string) (string, str
 			}
 		}
 	}
-	fmt.Println(sign, prepayId)
-	return sign, prepayId, nil
+	fmt.Println(sign, prepayId, sings)
+	return sign, prepayId, sings, nil
 }
 func GetSigns(timeStr string) string {
 	// signs := time.Now().Unix()

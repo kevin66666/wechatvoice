@@ -2474,7 +2474,7 @@ func PayBill(nstr, nSt, openId, orderNumber, fee, timeStamp string) (string, str
 func GetSigns(timeStr string) string {
 	// signs := time.Now().Unix()
 	// signsStr := strconv.FormatInt(signs, 10)
-	url := "http://60.205.4.26:22334/configSign?noncestr=W1471365761W&timestamp=" + timeStr + "&url=http://www.mylvfa.com/voice/front/createquestion"
+	url := "http://60.205.4.26:22334/configSign?noncestr=W1471365761W&timestamp=" + timeStr + "&url=http://www.mylvfa.com/daodaolaw/search.html"
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err.Error())

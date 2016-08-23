@@ -49,7 +49,7 @@ const (
 	WECHAT_PREPAY_URL = "/wechatvoice/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
 )
 
-var merchantIndexUrl = "home/workspace_go/src/wechatvoice/daodaolaw/search.html"
+var merchantIndexUrl = "http://www.mylvfa.com/daodaolaw/search.html"
 
 //查询问题返回
 type QuestionQueryResponse struct {
@@ -86,6 +86,55 @@ type AddInfos struct {
 //查询问题方法
 
 func ToIndex(ctx *macaron.Context) {
+	fmt.Println("=================进入方法")
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/toindex"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	fmt.Println("============code is ")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			fmt.Println(memberErr.Error(), "=====会员出错")
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				fmt.Println(err.Error(), "xxxxx")
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
+	openId := strings.Split(cookieStr, "|")[0]
+	// userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId)
 	ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + merchantIndexUrl + "\"</script>"))
 }
 

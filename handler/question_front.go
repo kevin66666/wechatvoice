@@ -466,7 +466,8 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	nstr := util.GenerateUuid()
 	nSt := util.GenerateUuid()
 	timeStamp := time.Now().Unix()
-	tStr := strconv.FormatInt(timeStamp, 64)
+	fmt.Println(timeStamp)
+	tStr := strconv.FormatInt(timeStamp, 10)
 	sign, prepayId, signErr := PayBill(nstr, nSt, openId, orderNumber, typePrice, tStr)
 	if signErr != nil {
 		fmt.Println(signErr.Error())

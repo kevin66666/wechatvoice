@@ -468,7 +468,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	timeStamp := time.Now().Unix()
 	fmt.Println(timeStamp)
 	tStr := strconv.FormatInt(timeStamp, 10)
-	sign, prepayId, signErr := PayBill(nstr, nSt, openId, orderNumber, typePrice, tStr)
+	sign, prepayId, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
 	if signErr != nil {
 		fmt.Println(signErr.Error())
 		response.Code = CODE_ERROR

@@ -494,6 +494,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	response.SignType = "MD5"
 	response.Package = prepayId
 	response.TimeStamp = tStr
+	response.PaySign = sign
 	ret_str, _ := json.Marshal(response)
 	fmt.Println("=====================================>>>>>")
 	fmt.Println(string(ret_str))

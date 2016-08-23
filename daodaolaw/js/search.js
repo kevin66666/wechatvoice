@@ -352,10 +352,10 @@ var Ask=React.createClass({
 						//调取支付
 						wx.config({
 							debug: false,
-							appId: data.page_appid,
-							timestamp: data.page_appid,
-							nonceStr: data.page_appid,
-							signature: data.page_appid,
+							appId: data.appId,
+							timestamp: data.timestamp,
+							nonceStr: data.nonceStr,
+							signature: data.signature,
 							jsApiList: ['chooseWXPay']
 						});
 						wx.ready(function(){

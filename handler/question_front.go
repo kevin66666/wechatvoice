@@ -2413,7 +2413,7 @@ func PayBill(nstr, nSt, openId, orderNumber, fee, timeStamp string) (string, str
 			fmt.Println(sign)
 
 			resp := new(PaySignResponse)
-			unmarErr = json.Unmarshal([]byte(sign), resp)
+			unmarErr = xml.Unmarshal([]byte(sign), resp)
 			if unmarErr != nil {
 				fmt.Println(unmarErr.Error(), "4")
 				return sign, prepayId, unmarErr

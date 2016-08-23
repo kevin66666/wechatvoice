@@ -360,11 +360,11 @@ var Ask=React.createClass({
 						});
 						wx.ready(function(){
 						  wx.chooseWXPay({
-								timestamp: data.pay_timeStamp,
-								nonceStr: data.pay_nonceStr,
-								package: data.pay_package,
-								signType: data.pay_signType,
-								paySign: data.pay_paySign,
+								timestamp: data.timestamp,
+								nonceStr: data.nonceStr,
+								package: data.package,
+								signType: data.signType,
+								paySign: data.paySign,
 								success: function (res) {
 								  // 支付成功
 									location.href = 'user-order.html'

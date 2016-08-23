@@ -2410,6 +2410,7 @@ func PayBill(nstr, nSt, openId, orderNumber, fee, timeStamp string) (string, str
 			return sign, prepayId, unmarErr
 		} else {
 			sign := responseSign.Sign
+			fmt.Println(sign)
 
 			resp := new(PaySignResponse)
 			unmarErr = json.Unmarshal([]byte(sign), resp)

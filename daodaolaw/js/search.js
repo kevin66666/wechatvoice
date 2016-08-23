@@ -371,16 +371,16 @@ var Ask=React.createClass({
 								},
 								fail: function (res) {
 								  // 支付失败
-								  window.location.replace="pay-fail?r=0&orderId="+orderId
+								  window.location.replace="pay-fail?r=0&orderId="+data.orderId
 								},
 								cancel: function (res) {
 								  // 用户取消
-								  window.location.replace="pay-fail?r=1&orderId="+orderId
+								  window.location.replace="pay-fail?r=1&orderId="+data.orderId
 								}
 							});
 						})
 						wx.error(function(res){
-						  window.location.replace="pay-fail?r=2&orderId="+orderId
+						  window.location.replace="pay-fail?r=2&orderId="+data.orderId
 						})
 					}
 				}.bind(this),

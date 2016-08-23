@@ -331,6 +331,7 @@ type OrderResponse struct {
 	Package   string `json:"package"`
 	SignType  string `json:"signType"`
 	PaySign   string `json:"paySign"`
+	OrderId   string `json:"orderId"`
 }
 
 func CreateNewQuestion(ctx *macaron.Context) string {
@@ -495,6 +496,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	response.Package = prepayId
 	response.TimeStamp = tStr
 	response.PaySign = sign
+	response.OrderId = orderNumber
 	ret_str, _ := json.Marshal(response)
 	fmt.Println("=====================================>>>>>")
 	fmt.Println(string(ret_str))

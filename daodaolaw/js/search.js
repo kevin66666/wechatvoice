@@ -351,7 +351,7 @@ var Ask=React.createClass({
 					if(data.code===10000){
 						//调取支付
 						wx.config({
-							debug: false,
+							debug: true,
 							appId: data.appId,
 							timestamp: data.timestamp,
 							nonceStr: data.nonceStr,

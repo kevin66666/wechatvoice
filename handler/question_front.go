@@ -487,11 +487,12 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	SignType  string `json:"signType"`
 	PaySign   string `json:"paySign"`
 	*/
+	signnew := GetSigns(tStr)
 	response.Code = CODE_SUCCESS
 	response.Msg = MSG_SUCCESS
 	response.Appid = "wxac69efc11c5e182f"
 	response.NonceStr = nstr
-	response.Signature = sign
+	response.Signature = signnew
 	response.SignType = "MD5"
 	response.Package = prepayId
 	response.TimeStamp = tStr
@@ -2444,4 +2445,20 @@ func PayBill(nstr, nSt, openId, orderNumber, fee, timeStamp string) (string, str
 	}
 	fmt.Println(sign, prepayId)
 	return sign, prepayId, nil
+}
+func GetSigns(timeStr string) string {
+	// signs := time.Now().Unix()
+	// signsStr := strconv.FormatInt(signs, 10)
+	url := "http://60.205.4.26:22334/configSign?noncestr=W1471365761W&timestamp=" + timeStr + "&url=http://www.mylvfa.com/wxpay/config/pay.html"
+	res, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	defer res.Body.Close()
+	resa := new(AResponse)
+	resBody, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(resBody, resa)
+	fmt.Println(string(resBody))
+	return resa.Sign
 }

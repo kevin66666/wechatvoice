@@ -2440,5 +2440,6 @@ func PayBill(nstr, nSt, openId, orderNumber, fee, timeStamp string) (string, str
 			}
 		}
 	}
+	fmt.Println(sign, prepayId)
 	return sign, prepayId, nil
 }

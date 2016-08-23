@@ -101,6 +101,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		ctx.Redirect(url)
 	}
 	code := ctx.Query("code")
+	fmt.Println("============code is ")
 	if code != "" {
 		url := "http://60.205.4.26:22334/getOpenid?code=" + code
 		res, err := http.Get(url)

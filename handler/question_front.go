@@ -494,7 +494,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	response.NonceStr = nstr
 	response.Signature = signnew
 	response.SignType = "MD5"
-	response.Package = prepayId
+	response.Package = "prepay_id=" + prepayId
 	response.TimeStamp = tStr
 	response.PaySign = sign
 	response.OrderId = orderNumber

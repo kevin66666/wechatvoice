@@ -18,7 +18,7 @@ var Search=React.createClass({
 		}
 		$.ajax({
 			//url:'json/init.json',
-			url:'http://www.mylvfa.com/voice/front/questionquery',
+			url:'/voice/front/questionquery',
 			//http://www.mylvfa.com/wechatvoice/ 搜索页面初始化接口
 			type:'POST',
 			data:JSON.stringify(data),
@@ -81,7 +81,7 @@ var Search=React.createClass({
 				url:'json/search.json',
 				//关键字搜索接口
 				type:'POST',
-			  	data:JSON.stringify(data),
+			  data:JSON.stringify(data),
 				dataType:'json',
 				contentType: "application/json",
 				success:function(data){
@@ -216,6 +216,8 @@ var EverySearch=React.createClass({
 						wx.error(function(res){
 						  window.location.replace="pay-fail?r=2&orderId="+orderId
 						});
+					}else{
+						this.tips(data.msg)
 					}
 				}.bind(this),
 				error:function(data){
@@ -358,27 +360,28 @@ var Ask=React.createClass({
 						});
 						wx.ready(function(){
 						  wx.chooseWXPay({
-							timestamp: data.pay_timeStamp,
-							nonceStr: data.pay_nonceStr,
-							package: data.pay_package,
-							signType: data.pay_signType,
-							paySign: data.pay_paySign,
-							success: function (res) {
-							  // 支付成功
-								location.href = 'user-order.html'
-							},
-							fail: function (res) {
-							  // 支付失败
-							  window.location.replace="pay-fail?r=0&orderId="+orderId
-							},
-							cancel: function (res) {
-							  // 用户取消
-							  window.location.replace="pay-fail?r=1&orderId="+orderId
-							}
-						});
+								timestamp: data.pay_timeStamp,
+								nonceStr: data.pay_nonceStr,
+								package: data.pay_package,
+								signType: data.pay_signType,
+								paySign: data.pay_paySign,
+								success: function (res) {
+								  // 支付成功
+									location.href = 'user-order.html'
+								},
+								fail: function (res) {
+								  // 支付失败
+								  window.location.replace="pay-fail?r=0&orderId="+orderId
+								},
+								cancel: function (res) {
+								  // 用户取消
+								  window.location.replace="pay-fail?r=1&orderId="+orderId
+								}
+							});
+						})
 						wx.error(function(res){
 						  window.location.replace="pay-fail?r=2&orderId="+orderId
-						});
+						})
 					}
 				}.bind(this),
 				error:function(data){

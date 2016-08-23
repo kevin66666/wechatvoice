@@ -110,30 +110,31 @@ var Ask=React.createClass({
 							nonceStr: data.page_appid,
 							signature: data.page_appid,
 							jsApiList: ['chooseWXPay']
-						});
+						})
 						wx.ready(function(){
 						  wx.chooseWXPay({
-							timestamp: data.pay_timeStamp,
-							nonceStr: data.pay_nonceStr,
-							package: data.pay_package,
-							signType: data.pay_signType,
-							paySign: data.pay_paySign,
-							success: function (res) {
-							  // 支付成功
-								location.href = 'user-order.html'
-							},
-							fail: function (res) {
-							  // 支付失败
-							  window.location.replace="pay-fail?r=0&orderId="+orderId
-							},
-							cancel: function (res) {
-							  // 用户取消
-							  window.location.replace="pay-fail?r=1&orderId="+orderId
-							}
-						});
+								timestamp: data.pay_timeStamp,
+								nonceStr: data.pay_nonceStr,
+								package: data.pay_package,
+								signType: data.pay_signType,
+								paySign: data.pay_paySign,
+								success: function (res) {
+								  // 支付成功
+									location.href = 'user-order.html'
+								},
+								fail: function (res) {
+								  // 支付失败
+								  window.location.replace="pay-fail?r=0&orderId="+orderId
+								},
+								cancel: function (res) {
+								  // 用户取消
+								  window.location.replace="pay-fail?r=1&orderId="+orderId
+								}
+							})
+						})
 						wx.error(function(res){
 						  window.location.replace="pay-fail?r=2&orderId="+orderId
-						});
+						})
 					}
 				}.bind(this),
 				error:function(data){

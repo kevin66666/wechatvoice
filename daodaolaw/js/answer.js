@@ -96,7 +96,7 @@ var Answer=React.createClass({
 			      _this.tips('录音时长超过1分钟,关闭录音')
 			    }
 			})
-		}
+		})
 		wx.error(function(res){
 		  _this.tips('微信录音接口调取失败')
 		})
@@ -105,12 +105,18 @@ var Answer=React.createClass({
     // recorder.stop()
     //停止录音
     var _this=this
-    wx.stopRecord({
-	    success: function (res) {
-	      var localId = res.localId
-	      _this.setState({answer:localId})
-	      _this.tips('结束录音')
-	    }
+    wx.config(this.state.config)
+		wx.ready(function(){
+			wx.stopRecord({
+		    success: function (res) {
+		      var localId = res.localId
+		      _this.setState({answer:localId})
+		      _this.tips('结束录音')
+		    }
+			})
+		})
+		wx.error(function(res){
+		  _this.tips('微信录音接口调取失败')
 		})
 	},
 	reset:function(){
@@ -134,7 +140,7 @@ var Answer=React.createClass({
 		      _this.tips('结束录音')
 		    }
 			})
-		}
+		})
 		wx.error(function(res){
 		  _this.tips('微信录音接口调取失败')
 		})
@@ -148,7 +154,7 @@ var Answer=React.createClass({
 			wx.playVoice({
 			  localId: _this.state.answer 
 		  })
-		}
+		})
 	  wx.error(function(res){
 		  _this.tips('微信播放录音接口调取失败')
 		})
@@ -164,11 +170,12 @@ var Answer=React.createClass({
 		    isShowProgressTips: 1, // 默认为1，显示进度提示
 	      success: function (res) {
 	      	data.serverId = res.serverId; // 返回音频的服务器端ID
+	      	_this.doSave(data)
 	    	}
 			})
-		}
-		
-
+		})
+	},
+	doSave:function(data){
 		$.ajax({
 			url:'', //保存录音--服务器端ID{serverId:"serverId"}
 			type:'POST',

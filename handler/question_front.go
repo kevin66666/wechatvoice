@@ -2376,7 +2376,7 @@ type PaySignResponse struct {
 	MchId      string `xml:"mch_id"`
 	NonceStr   string `xml:"nonce_str"`
 	Sign       string `xml:"sign"`
-	ResultCode string `xml:"return_code"`
+	ResultCode string `xml:"result_code"`
 	PrepayId   string `xml:"prepay_id"`
 	TradeType  string `xml:"trade_type"`
 }

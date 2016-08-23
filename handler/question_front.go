@@ -481,7 +481,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	paramsMap := make(map[string]string, 0)
 	paramsMap["appid"] = "wxac69efc11c5e182f"
 	paramsMap["mch_id"] = "1344737201"
-	paramsMap["body"] = "pay"
+	paramsMap["body"] = "my_pay_test"
 	paramsMap["out_trade_no"] = orderNumber
 	paramsMap["total_fee"] = "1"
 	paramsMap["spbill_create_ip"] = "127.0.0.1"

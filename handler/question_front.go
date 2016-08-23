@@ -477,26 +477,28 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	paramsList := []string{"appid", "mch_id", "body", "out_trade_no", "total_fee", "spbill_create_ip", "device_info", "nonce_str", "fee_type", "time_start", "notify_url", "trade_type"}
-	paramsMap := make(map[string]string, 0)
-	paramsMap["appid"] = "wxac69efc11c5e182f"
-	paramsMap["mch_id"] = "1344737201"
-	paramsMap["body"] = "my_pay_test"
-	paramsMap["out_trade_no"] = orderNumber
-	paramsMap["total_fee"] = "1"
-	paramsMap["spbill_create_ip"] = "127.0.0.1"
-
-	// 有默认值的字段处理
-	paramsMap["device_info"] = DEFAULT_DEVICE_INFO
-	paramsMap["nonce_str"] = nstr
-	paramsMap["fee_type"] = DEFAULT_FEE_TYPE
-	paramsMap["time_start"] = tStr
-	paramsMap["notify_url"] = "http://www.mylvfa.com/wxpay/config/"
-	paramsMap["trade_type"] = DEFAULT_TRADE_TYPE
-	key := "C4CA4238A0B923820DCC509A6F75849B"
-	signself := GenerateSign(paramsMap, paramsList, key)
-	fmt.Println("keyself", signself)
 	fmt.Println(sings)
+	// paramsList := []string{"appid", "mch_id", "body", "out_trade_no", "total_fee", "spbill_create_ip", "device_info", "nonce_str", "fee_type", "time_start", "notify_url", "trade_type"}
+	// paramsMap := make(map[string]string, 0)
+	// paramsMap["appid"] = "wxac69efc11c5e182f"
+	// paramsMap["mch_id"] = "1344737201"
+	// paramsMap["body"] = "my_pay_test"
+	// paramsMap["out_trade_no"] = orderNumber
+	// paramsMap["total_fee"] = "1"
+	// paramsMap["spbill_create_ip"] = "127.0.0.1"
+
+	// // 有默认值的字段处理
+	// paramsMap["device_info"] = DEFAULT_DEVICE_INFO
+	// paramsMap["nonce_str"] = nstr
+	// paramsMap["fee_type"] = DEFAULT_FEE_TYPE
+	// paramsMap["time_start"] = tStr
+	// paramsMap["notify_url"] = "http://www.mylvfa.com/wxpay/config/"
+	// paramsMap["trade_type"] = DEFAULT_TRADE_TYPE
+	// //key := "C4CA4238A0B923820DCC509A6F75849B"
+	// signself := GeneratePageSign(paramsMap, paramsList)
+	// fmt.Println("keyself", signself)
+	// fmt.Println(sings)
+	signSelf := GetSigns(tStr)
 	/**
 
 	Appid     string `json:"appId"`
@@ -512,7 +514,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	response.Msg = MSG_SUCCESS
 	response.Appid = "wxac69efc11c5e182f"
 	response.NonceStr = nstr
-	response.Signature = signself
+	response.Signature = signSelf
 	response.SignType = "MD5"
 	response.Package = "prepay_id=" + prepayId
 	response.TimeStamp = tStr
@@ -2512,3 +2514,40 @@ func GetWxVoiceConfig(ctx *macaron.Context) string {
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }
+
+type UnifiedOrderResps struct {
+	Head struct {
+		Code int64  `json:"code"`
+		Msg  string `json:"msg"`
+	} `json:"head"`
+	Body struct {
+		AppId      string `json:"appId"`
+		PrepayId   string `json:"prepayId"`
+		CodeUrl    string `json:"codeUrl"`
+		TimeStamp  string `json:"timestamp"`
+		NonceStr   string `json:"nonceStr"`
+		Package    string `json:"package"`
+		SignType   string `json:"MD5"`
+		PaySign    string `json:"paySign"`
+		ConfigSign string `json:"configSign"`
+	} `json:"body"`
+}
+
+// func UnifieOrder(appid, mchId, body, outNo, total, ip, deviceInfo, nonceStr, feetype, times, notiu, tradetype string) UnifiedOrderResps {
+// 	paramsMap := make(map[string]string, 0)
+// 	paramsList := []string{"appid", "mch_id", "body", "out_trade_no", "total_fee", "spbill_create_ip", "device_info", "nonce_str", "fee_type", "time_start", "notify_url", "trade_type"}
+// 	paramsMap["appid"] = appid
+// 	paramsMap["mch_id"] = mchId
+// 	paramsMap["body"] = body
+// 	paramsMap["out_trade_no"] = outNo
+// 	paramsMap["total_fee"] = total
+// 	paramsMap["spbill_create_ip"] = ip
+
+// 	// 有默认值的字段处理
+// 	paramsMap["device_info"] = deviceInfo
+// 	paramsMap["nonce_str"] = nonceStr
+// 	paramsMap["fee_type"] = feetype
+// 	paramsMap["time_start"] = times
+// 	paramsMap["notify_url"] = notiu
+// 	paramsMap["trade_type"] = tradetype
+// }

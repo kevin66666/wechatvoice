@@ -477,23 +477,26 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	// paramsList := []string{"appid", "mch_id", "body", "out_trade_no", "total_fee", "spbill_create_ip", "device_info", "nonce_str", "fee_type", "time_start", "notify_url", "trade_type"}
-	// paramsMap := make(map[string]string, 0)
-	// paramsMap["appid"] = "wxac69efc11c5e182f"
-	// paramsMap["mch_id"] = "1344737201"
-	// paramsMap["body"] = "pay"
-	// paramsMap["out_trade_no"] = orderNumber
-	// paramsMap["total_fee"] = "1"
-	// paramsMap["spbill_create_ip"] = "127.0.0.1"
+	paramsList := []string{"appid", "mch_id", "body", "out_trade_no", "total_fee", "spbill_create_ip", "device_info", "nonce_str", "fee_type", "time_start", "notify_url", "trade_type"}
+	paramsMap := make(map[string]string, 0)
+	paramsMap["appid"] = "wxac69efc11c5e182f"
+	paramsMap["mch_id"] = "1344737201"
+	paramsMap["body"] = "pay"
+	paramsMap["out_trade_no"] = orderNumber
+	paramsMap["total_fee"] = "1"
+	paramsMap["spbill_create_ip"] = "127.0.0.1"
 
-	// // 有默认值的字段处理
-	// paramsMap["device_info"] = DEFAULT_DEVICE_INFO
-	// paramsMap["nonce_str"] = nstr
-	// paramsMap["fee_type"] = DEFAULT_FEE_TYPE
-	// paramsMap["time_start"] = tStr
-	// paramsMap["notify_url"] = "http://www.mylvfa.com/wxpay/config/"
-	// paramsMap["trade_type"] = DEFAULT_TRADE_TYPE
-	// sign := GenerateSign(paramsMap, paramsList)
+	// 有默认值的字段处理
+	paramsMap["device_info"] = DEFAULT_DEVICE_INFO
+	paramsMap["nonce_str"] = nstr
+	paramsMap["fee_type"] = DEFAULT_FEE_TYPE
+	paramsMap["time_start"] = tStr
+	paramsMap["notify_url"] = "http://www.mylvfa.com/wxpay/config/"
+	paramsMap["trade_type"] = DEFAULT_TRADE_TYPE
+	key := "C4CA4238A0B923820DCC509A6F75849B"
+	signself := GenerateSign(paramsMap, paramsList, key)
+	fmt.Println("keyself", signself)
+	fmt.Println(sings)
 	/**
 
 	Appid     string `json:"appId"`
@@ -509,7 +512,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	response.Msg = MSG_SUCCESS
 	response.Appid = "wxac69efc11c5e182f"
 	response.NonceStr = nstr
-	response.Signature = sings
+	response.Signature = signself
 	response.SignType = "MD5"
 	response.Package = "prepay_id=" + prepayId
 	response.TimeStamp = tStr

@@ -2614,8 +2614,6 @@ func PayPeekAnswer(ctx *macaron.Context) string {
 	fmt.Println("=======================>>>>")
 	return string(ret_str)
 }
-func AfterPay(ctx *macaron.Context) string {
-	return ""
-}
+
 
 // func GetOrderDetailById(ctx)

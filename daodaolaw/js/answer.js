@@ -42,11 +42,11 @@ var Answer=React.createClass({
 			type:'GET',
 			// data:JSON.stringify(data),
 			// contentType: "application/json",
-			success:function(config){
+			success:function(data){
 				if(data.code===10000){  
-					this.setState({
-						config:config
-					})
+					// this.setState({
+					// 	config:config
+					// })
 				//返回的config,该代码只做提示功能
 				data={
 						debug: false,

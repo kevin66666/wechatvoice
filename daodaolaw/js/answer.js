@@ -48,6 +48,7 @@ var Answer=React.createClass({
 						config:config
 					})
 				//返回的config,该代码只做提示功能
+				console.log("=-====0=-=-=")
 				console.log(data);
 				console.log(data.appId)
 				data={

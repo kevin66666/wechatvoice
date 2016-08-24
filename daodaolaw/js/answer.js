@@ -104,7 +104,7 @@ var Answer=React.createClass({
 			})
 		})
 		wx.error(function(res){
-		  _this.tips('微信录音接口调取失败')
+		  _this.tips('微信录音接口调取失败1')
 		})
 	},
 	stop:function(){
@@ -122,7 +122,7 @@ var Answer=React.createClass({
 			})
 		})
 		wx.error(function(res){
-		  _this.tips('微信录音接口调取失败')
+		  _this.tips('微信录音接口调取失败2')
 		})
 	},
 	reset:function(){
@@ -148,7 +148,7 @@ var Answer=React.createClass({
 			})
 		})
 		wx.error(function(res){
-		  _this.tips('微信录音接口调取失败')
+		  _this.tips('微信录音接口调取失败3')
 		})
 	},
 	play:function(){
@@ -162,7 +162,7 @@ var Answer=React.createClass({
 		  })
 		})
 	  wx.error(function(res){
-		  _this.tips('微信播放录音接口调取失败')
+		  _this.tips('微信播放录音接口调取失败4')
 		})
 	},
 	save:function(){

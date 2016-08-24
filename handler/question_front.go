@@ -2703,4 +2703,58 @@ func AfterPay(ctx *macaron.Context) string {
 	return string(ret_str)
 }
 
+type GetInfo struct {
+	OrderId string `json:"orderId"`
+}
+type GetInfoResponse struct {
+	Code          int64  `json:"code"`
+	Msg           string `json:"msg"`
+	Name          string `json:"name"`
+	SelfIntr      string `json:"selfIntr"`
+	Pic           string `json:"pic"`
+	TypePrice     string `json:"typePrice"`
+	TypeId        string `json:"typeId"`
+	TypeName      string `json:"typeName"`
+	ParentOrderId string `json:"parentOrderId"`
+}
+
+func GetOrderInfoById(ctx *macaron.Context) string {
+	body, _ := ctx.Req.Body().String()
+	req := new(GetInfo)
+	json.Unmarshal([]byte(body), req)
+	response := new(GetInfoResponse)
+	order := new(model.WechatVoiceQuestions)
+	orderErr := order.GetConn().Where("uuid = ?", req.OrderId).Find(&order).Error
+	if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = orderErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	lId := order.AnswerId
+	law := new(model.LawyerInfo)
+	lc := new(model.LawCatgory)
+	ctSet := new(model.WechatVoiceQuestionSettings)
+	err := law.GetConn().Where("uuid = ?", lId).Find(&law).Error
+	err = lc.GetConn().Where("uuid = ?", order.CategoryId).Find(&lc).Error
+	err = ctSet.GetConn().Where("category_id = ?", order.CategoryId).Find(&ctSet).Error
+	if err != nil && !strings.Contains(err.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = "ok"
+	response.Name = law.Name
+	response.SelfIntr = law.FirstCategory
+	response.Pic = law.HeadImgUrl
+	response.TypePrice = ctSet.PayAmount
+	response.TypeId = order.CategoryId
+	response.TypeName = lc.CategoryName
+	response.ParentOrderId = ""
+	ret_str, _ := json.Marshal(response)
+	return string(ret_str)
+}
+
 // func GetOrderDetailById(ctx)

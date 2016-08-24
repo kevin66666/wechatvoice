@@ -25,10 +25,11 @@ var Ask=React.createClass({
 			orderId:orderId //-1 是搜索  其他是追问orderId 
 		}
 		$.ajax({
-			url:'http://www.mylvfa.com/voice/front',
-			type:'GET',
-			// data:JSON.stringify(data),
+			url:'http://www.mylvfa.com/voice/front/getbyid',
+			type:'POST',
+			data:JSON.stringify(data),
 			dataType:'json',
+			contentType: "application/json",
 			success:function(data){
 				if(data.code===10000){
 					this.setState({

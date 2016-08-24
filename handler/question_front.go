@@ -2615,12 +2615,52 @@ func PayPeekAnswer(ctx *macaron.Context) string {
 	fmt.Println("=======================>>>>")
 	return string(ret_str)
 }
-func AfterPay(ctx *macaron.Context) {
+
+type AfterPayInfo struct {
+	Appid         string `xml:"appid"`
+	BankType      string `xml:"bank_type"`
+	CashFee       string `xml:"cash_fee"`
+	FeeType       string `xml:"fee_type"`
+	IsSubscribe   string `xml:"is_subscribe"`
+	MchId         string `xml:"mch_id"`
+	NonceStr      string `xml:"nonce_str"`
+	OpenId        string `xml:"openId"`
+	OutTradeNum   string `xml:"out_trade_no"`
+	ResultCode    string `xml:"result_code"`
+	ReturnCode    string `xml:"return_code"`
+	Sign          string `xml:"sign"`
+	TimeEnd       string `xml:"time_end"`
+	TotalFee      string `xml:"total_fee"`
+	TradeType     string `xml:"trade_type"`
+	TransactionId string `xml:"transaction_id"`
+}
+type AfterPayRespToWechat struct {
+	ReturnCode string `xml:"return_code"`
+	ReturnMsg  string `xml:"return_msg"`
+}
+
+func AfterPay(ctx *macaron.Context) string {
 	req, _ := ctx.Req.Body().String()
 	fmt.Println("===========")
 	fmt.Println(req)
 	fmt.Println("===========")
+	a := new(AfterPayInfo)
+	unmarErr := xml.Unmarshal([]byte(req), a)
+	if unmarErr != nil {
+		fmt.Println("=====>>>", unmarErr.Error())
+	}
+	response := new(AfterPayRespToWechat)
+	if a.ResultCode == "SUCCESS" {
+		fmt.Println("支付回调成功")
 
+	} else {
+		fmt.Println("失败")
+		//response
+	}
+	response.ReturnCode = "SUCCESS"
+	response.ReturnMsg = "OK"
+	ret_str, _ := xml.Marshal(response)
+	return string(ret_str)
 }
 
 // func GetOrderDetailById(ctx)

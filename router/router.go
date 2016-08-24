@@ -52,5 +52,6 @@ func SetRouter(m *macaron.Macaron) {
 	m.Get("/order/touserorder", c.ToUserOrders)
 	m.Post("/front/afterpay", c.AfterPay)
 	m.Post("/front/getbyid", c.GetOrderInfoById)
+	m.Post("/front/createsquestion", c.AskSpecialQuestion)
 	// m.Get("front/getconfig", c.)
 }

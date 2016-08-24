@@ -97,7 +97,7 @@ var Ask=React.createClass({
   		parentOrderId:this.state.parentOrderId
   	}
   	$.ajax({
-			url:'json/ask.json', 
+			url:'http://www.mylvfa.com/voice/front/createsquestion', 
 			//提问接口
 			type:'POST',
 			data:JSON.stringify(data),

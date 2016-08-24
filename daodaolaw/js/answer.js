@@ -15,27 +15,27 @@ var Answer=React.createClass({
 	},
 	componentDidMount:function(){
 		var orderId=location.search?location.search.slice(1).split('=')[1]:''
-		this.setState({orderId:orderId})
-		$.ajax({
-			url:'',  //回答问题页面初始化订单信息
-			type:'POST',
-			data:JSON.stringify(orderId),
-			contentType: "application/json",
-			success:function(data){
-				if(data.code===10000){
-					this.setState({
-						info:data,
-						typeId:data.typeId,
-						typeName:data.typeName
-					})
-				}else{
-					this.tips(data.msg)
-				}
-			}.bind(this),
-			error:function(data){
-				console.log('初始化信息失败:',data)
-			}
-		})
+		// this.setState({orderId:orderId})
+		// $.ajax({
+		// 	url:'http://www.mylvfa.com/voice/',  //回答问题页面初始化订单信息
+		// 	type:'POST',
+		// 	data:JSON.stringify(orderId),
+		// 	contentType: "application/json",
+		// 	success:function(data){
+		// 		if(data.code===10000){
+		// 			this.setState({
+		// 				info:data,
+		// 				typeId:data.typeId,
+		// 				typeName:data.typeName
+		// 			})
+		// 		}else{
+		// 			this.tips(data.msg)
+		// 		}
+		// 	}.bind(this),
+		// 	error:function(data){
+		// 		console.log('初始化信息失败:',data)
+		// 	}
+		// })
 		//初始化时获取微信config
 		$.ajax({
 			url:'http://www.mylvfa.com/voice/front/getconfig',  //回答问题页面初始化订单信息

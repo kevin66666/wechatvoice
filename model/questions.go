@@ -70,7 +70,7 @@ func GetQuestionQuery(req QuestionQuery) ([]WechatVoiceQuestions, int64, error) 
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
 	list1 := make([]WechatVoiceQuestions, 0)
-	query := conn.Where("is_solved = 1")
+	query := conn.Where("is_solved = 2")
 	var err error
 	var count int64
 	if req.KeyWord != "" {

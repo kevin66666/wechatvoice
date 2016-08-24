@@ -56,7 +56,7 @@ var LaywerOrder=React.createClass({
 			<div>
 				<OrderNav/>
 				<OrderList changeLoad={this.changeLoad}/>
-				// <Loading load={this.state.load} tips={this.state.tips}/>
+				<Loading load={this.state.load} tips={this.state.tips}/>
 			</div>
 		)
 	}

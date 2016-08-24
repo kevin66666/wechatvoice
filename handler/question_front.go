@@ -2420,7 +2420,7 @@ func PayBill(nstr, nSt, openId, orderNumber, fee, timeStamp string) (string, str
 	var sign string
 	var prepayId string
 	var sings string
-	url := "http://60.205.4.26:22334/prepayId?appid=wxac69efc11c5e182f&mch_id=1344737201&nonce_str=" + nstr + "&notify_url=http://www.mylvfa.com/wxpay/config/&openid=" + openId + "&out_trade_no=" + orderNumber + "&spbill_create_ip=127.0.0.1&total_fee=" + fee + "&trade_type=JSAPI&body=my_pay_test"
+	url := "http://60.205.4.26:22334/prepayId?appid=wxac69efc11c5e182f&mch_id=1344737201&nonce_str=" + nstr + "&notify_url=http://www.mylvfa.com/voice/front/afterpay&openid=" + openId + "&out_trade_no=" + orderNumber + "&spbill_create_ip=127.0.0.1&total_fee=" + fee + "&trade_type=JSAPI&body=my_pay_test"
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err.Error(), "1")

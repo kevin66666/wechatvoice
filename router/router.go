@@ -49,5 +49,6 @@ func SetRouter(m *macaron.Macaron) {
 	m.Post("/front/dopay", c.DoPayNew)
 	m.Get("/front/uni", c.UniFi)
 	m.Get("/front/toindex", c.ToIndex)
+	m.Get("/order/touserorder",c.ToUserOrders())
 	// m.Get("front/getconfig", c.)
 }

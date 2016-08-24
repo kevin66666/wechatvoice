@@ -2705,6 +2705,8 @@ func AfterPay(ctx *macaron.Context) string {
 
 type GetInfo struct {
 	OrderId string `json:"orderId"`
+	TypeId  string `json:"typeId"`
+	LawId   string `json:"laywerId"`
 }
 type GetInfoResponse struct {
 	Code          int64  `json:"code"`

@@ -2731,7 +2731,7 @@ func GetOrderInfoById(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	lId := order.AnswerId
+	// lId := order.AnswerId
 	law := new(model.LawyerInfo)
 	lc := new(model.LawCatgory)
 	ctSet := new(model.WechatVoiceQuestionSettings)

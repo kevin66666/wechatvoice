@@ -44,9 +44,9 @@ var Answer=React.createClass({
 			// contentType: "application/json",
 			success:function(data){
 				if(data.code===10000){  
-					// this.setState({
-					// 	config:config
-					// })
+					this.setState({
+						config:config
+					})
 				//返回的config,该代码只做提示功能
 				data={
 						debug: true,

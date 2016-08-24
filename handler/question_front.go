@@ -2735,7 +2735,7 @@ func GetOrderInfoById(ctx *macaron.Context) string {
 	law := new(model.LawyerInfo)
 	lc := new(model.LawCatgory)
 	ctSet := new(model.WechatVoiceQuestionSettings)
-	err := law.GetConn().Where("uuid = ?", lId).Find(&law).Error
+	err := law.GetConn().Where("uuid = ?", order.AnswerId).Find(&law).Error
 	err = lc.GetConn().Where("uuid = ?", order.CategoryId).Find(&lc).Error
 	err = ctSet.GetConn().Where("category_id = ?", order.CategoryId).Find(&ctSet).Error
 	if err != nil && !strings.Contains(err.Error(), RNF) {
@@ -2754,6 +2754,8 @@ func GetOrderInfoById(ctx *macaron.Context) string {
 	response.TypeName = lc.CategoryName
 	response.ParentOrderId = ""
 	ret_str, _ := json.Marshal(response)
+	// fmt.Print(string)
+	log.Println(string(ret_str))
 	return string(ret_str)
 }
 

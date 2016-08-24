@@ -633,6 +633,9 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
+	if req.OrderType == "-1" {
+		req.OrderType = "1"
+	}
 	list, err := model.GetCustomerInfo(openId, req.OrderType, req.StartNum, req.EndNum)
 	fmt.Println(len(list))
 	if err != nil && !strings.Contains(err.Error(), RNF) {

@@ -2990,6 +2990,7 @@ func GetJsConfig(ctx *macaron.Context) string {
 	response.NonceStr = nstr
 	response.Signature = sig
 	ret_str, _ := json.Marshal(response)
+	fmt.Print(string(ret_str))
 	return string(ret_str)
 }
 

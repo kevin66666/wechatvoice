@@ -176,6 +176,8 @@ func QuestionQuery(ctx *macaron.Context) string {
 		if member.Uuid == "" {
 			fmt.Println("新的用户")
 			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			log.Println(user)
+			log.Println(user.HeadImgUrl)
 			member.Uuid = util.GenerateUuid()
 			member.HeadImgUrl = user.HeadImgUrl
 			member.OpenId = user.OpenId

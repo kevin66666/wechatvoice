@@ -446,6 +446,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	question.CustomerOpenId = openId
 	question.PaymentInfo = typePrice
 	question.IsSolved = "0"
+	question.AskerHeadImg = customer.HeadImgUrl
 	payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
 	question.OrderNumber = orderNumber
 	if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {

@@ -2939,6 +2939,16 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 			return string(ret_str)
 		}
 		response.Code = CODE_SUCCESS
+		response.Msg = MSG_SUCCESS
+		response.Appid = "wxac69efc11c5e182f"
+		response.NonceStr = nstr
+		response.Signature = signSelf
+		response.SignType = "MD5"
+		response.Package = "prepay_id=" + prepayId
+		response.TimeStamp = tStr
+		response.PaySign = sign
+		response.OrderId = orderNumber
+		response.Code = CODE_SUCCESS
 		response.Msg = "ok"
 		ret_str, _ := json.Marshal(response)
 		fmt.Println("=====================================>>>>>")

@@ -2652,7 +2652,44 @@ func AfterPay(ctx *macaron.Context) string {
 	response := new(AfterPayRespToWechat)
 	if a.ResultCode == "SUCCESS" {
 		fmt.Println("支付回调成功")
+		//修改订单状态
+		orderNumber := a.OutTradeNum
+		order := new(model.WechatVoiceQuestions)
+		orderErr := order.GetConn().Where("order_number =?", orderNumber).Find(&order).Error
+		if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
+			fmt.Println(orderErr.Error())
+		}
+		order.IsPaied = "1"
+		// order.
+		orderErr = order.GetConn().Save(&order).Error
+		if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
+			fmt.Println("update err", orderErr.Error())
+		}
+		pay := new(model.WechatVoicePaymentInfo)
+		pay.Uuid = util.GenerateUuid()
+		pay.SwiftNumber = a.TransactionId
+		pay.QuestionId = order.Uuid
+		pay.OpenId = a.OpenId
+		pay.OrderId = a.OutTradeNum
+		payErr := pay.GetConn().Save(&pay).Error
 
+		if payErr != nil && !strings.Contains(payErr.Error(), RNF) {
+			log.Println(payErr.Error())
+		}
+		/*
+			type WechatVoicePaymentInfo struct {
+				gorm.Model
+				Uuid            string
+				SwiftNumber     string
+				QuestionId      string
+				MemberId        string
+				OpenId          string
+				RedPacketAmount string
+				LawyerAmount    string
+				Left            string
+				OrderId         string
+			}
+					**/
 	} else {
 		fmt.Println("失败")
 		//response

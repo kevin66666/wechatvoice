@@ -41,6 +41,7 @@ type WechatVoiceQuestions struct {
 	ParentQuestionId  string //追问的上一层问题ID
 	AppenQuestionTime int64  //追问次数
 	HaveAppendChild   string //是否有追问问题
+	IsPaied           string
 }
 
 func init() {

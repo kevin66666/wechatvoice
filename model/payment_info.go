@@ -7,14 +7,15 @@ import (
 
 type WechatVoicePaymentInfo struct {
 	gorm.Model
-	Uuid string
-	SwiftNumber string
-	QuestionId string
-	MemberId string
-	OpenId string
+	Uuid            string
+	SwiftNumber     string
+	QuestionId      string
+	MemberId        string
+	OpenId          string
 	RedPacketAmount string
-	LawyerAmount string
-	Left string
+	LawyerAmount    string
+	Left            string
+	OrderId         string
 }
 
 func init() {

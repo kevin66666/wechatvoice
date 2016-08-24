@@ -229,8 +229,8 @@ type OrderDetailResponse struct {
 	OrderInfo `json:"orderInfo"`
 }
 
-var merchantIndexUrl = "http://www.mylvfa.com/daodaolaw/user-order.html"
-func ToUserOrders(ctx *macaron.Context)string{
+var userOrderList = "http://www.mylvfa.com/daodaolaw/user-order.html"
+func ToUserOrders(ctx *macaron.Context){
 	fmt.Println("=================进入方法")
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 
@@ -280,7 +280,7 @@ func ToUserOrders(ctx *macaron.Context)string{
 	openId := strings.Split(cookieStr, "|")[0]
 	// userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId)
-	ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + merchantIndexUrl + "\"</script>"))
+	ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + userOrderList + "\"</script>"))
 }
 
 func GetOrderDetailById(ctx *macaron.Context) string {

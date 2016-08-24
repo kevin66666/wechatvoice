@@ -104,6 +104,7 @@ var Answer=React.createClass({
 			})
 		})
 		wx.error(function(res){
+			console.log(res);
 		  _this.tips('微信录音接口调取失败1')
 		})
 	},

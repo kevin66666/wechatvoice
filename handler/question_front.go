@@ -2929,7 +2929,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 
 	} else {
 		//追加
-		// question.Important = "1"
+		question.Important = "1"
 		question.ParentQuestionId = req.ParentOrderId
 		createErr := question.GetConn().Create(&question).Error
 		if createErr != nil {

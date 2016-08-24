@@ -54,7 +54,13 @@ var Answer=React.createClass({
 						timestamp: data.timestamp,
 						nonceStr: data.nonceStr,
 						signature: data.signature,
-						jsApiList: ['startRecord','stopRecord','playVoice','uploadVoice','onVoiceRecordEnd','translateVoice'] //这个是固定的api
+						jsApiList: ['translateVoice','startRecord', 'stopRecord',  'onRecordEnd',
+        'playVoice',
+        'pauseVoice',
+        'stopVoice',
+        'uploadVoice',
+        'downloadVoice',] 
+						//这个是固定的api
 				}
 				}else{
 					this.tips(data.msg)

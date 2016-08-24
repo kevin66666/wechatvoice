@@ -95,7 +95,7 @@ var UnsolvedList=React.createClass({
   toAnswer:function(orderId){
   	var data={orderId:orderId}
   	$.ajax({
-  		url:'',
+  		url:'', //抢答接口
   		type:'POST',
   		data:JSON.stringify(data),
   		dataType:'json',

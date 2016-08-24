@@ -78,11 +78,12 @@ var Search=React.createClass({
 				endNum:searchList.length+10
 			}
 			$.ajax({
-				url:'json/search.json',
-				//关键字搜索接口
-				type:'POST',
-			  data:JSON.stringify(data),
-				dataType:'json',
+				url:'/voice/front/questionquery',
+			//http://www.mylvfa.com/wechatvoice/ 搜索页面初始化接口
+			type:'POST',
+			data:JSON.stringify(data),
+			contentType: "application/json",
+			dataType:'json',
 				contentType: "application/json",
 				success:function(data){
 					if(data.code===10000){
@@ -184,38 +185,58 @@ var EverySearch=React.createClass({
 						this.props.resetList(index)
 
 						//调取支付接口
-						wx.config({
-							debug: false,
-							appId: data.page_appid,
-							timestamp: data.page_appid,
-							nonceStr: data.page_appid,
-							signature: data.page_appid,
-							jsApiList: ['chooseWXPay']
-						});
-						wx.ready(function(){
-						  wx.chooseWXPay({
-							timestamp: data.pay_timeStamp,
-							nonceStr: data.pay_nonceStr,
-							package: data.pay_package,
-							signType: data.pay_signType,
-							paySign: data.pay_paySign,
-							success: function (res) {
-							  // 支付成功
-								location.href = 'order-detail.html?orderId='+orderId
-							},
-							fail: function (res) {
-							  // 支付失败
-							  window.location.replace="pay-fail?r=0&orderId="+orderId
-							},
-							cancel: function (res) {
-							  // 用户取消
-							  window.location.replace="pay-fail?r=1&orderId="+orderId
-							}
-						  });
-						});
+						// wx.config({
+						// 	debug: false,
+						// 	appId: data.page_appid,
+						// 	timestamp: data.page_appid,
+						// 	nonceStr: data.page_appid,
+						// 	signature: data.page_appid,
+						// 	jsApiList: ['chooseWXPay']
+						// });
+						// wx.ready(function(){
+						//   wx.chooseWXPay({
+						// 	timestamp: data.pay_timeStamp,
+						// 	nonceStr: data.pay_nonceStr,
+						// 	package: data.pay_package,
+						// 	signType: data.pay_signType,
+						// 	paySign: data.pay_paySign,
+						// 	success: function (res) {
+						// 	  // 支付成功
+						// 		location.href = 'order-detail.html?orderId='+data.orderId
+						// 	},
+						// 	fail: function (res) {
+						// 	  // 支付失败
+						// 	  window.location.replace="pay-fail?r=0&orderId="+data.orderId
+						// 	},
+						// 	cancel: function (res) {
+						// 	  // 用户取消
+						// 	  window.location.replace="pay-fail?r=1&orderId="+data.orderId
+						// 	}
+						//   });
+						// });
+						// wx.error(function(res){
+						//   window.location.replace="pay-fail?r=2&orderId="+data.orderId
+						// });
+						WeixinJSBridge.invoke(
+               	'getBrandWCPayRequest', {
+                     "appId": data.appId,     //公众号名称，由商户传入
+                     "timeStamp":data.timeStamp,         //时间戳，自1970年以来的秒数
+                     "nonceStr":data.nonceStr, //随机串
+                     "package":data.package,
+                     "signType":data.signType,         //微信签名方式：
+                     "paySign":data.paySign, //微信签名
+                },
+                function(res){
+                  if(res.err_msg == "get_brand_wcpay_request:ok" ) {     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                    location.href = 'order-detail.html?orderId='+data.orderId
+                  }else{
+                    location.href = "pay-fail?r=0&orderId="+data.orderId
+                  }
+                }
+            )
 						wx.error(function(res){
-						  window.location.replace="pay-fail?r=2&orderId="+orderId
-						});
+						  window.location.replace="pay-fail?r=2&orderId="+data.orderId
+						})
 					}else{
 						this.tips(data.msg)
 					}
@@ -379,23 +400,23 @@ var Ask=React.createClass({
 						// 		}
 						// 	});
 						// })
-						 WeixinJSBridge.invoke(
-               			 'getBrandWCPayRequest', {
+						WeixinJSBridge.invoke(
+               	'getBrandWCPayRequest', {
                      "appId": data.appId,     //公众号名称，由商户传入
                      "timeStamp":data.timeStamp,         //时间戳，自1970年以来的秒数
                      "nonceStr":data.nonceStr, //随机串
                      "package":data.package,
                      "signType":data.signType,         //微信签名方式：
                      "paySign":data.paySign, //微信签名
-                 },
-                 function(res){
+                },
+                function(res){
                   if(res.err_msg == "get_brand_wcpay_request:ok" ) {     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
-                    location.href = data.paySuccess
+                    location.href = "user-order.html"
                   }else{
-                    location.href = data.payFailed
+                    location.href = "pay-fail?r=0&orderId="+data.orderId
                   }
-                 }
-              )
+                }
+            )
 						wx.error(function(res){
 						  window.location.replace="pay-fail?r=2&orderId="+data.orderId
 						})

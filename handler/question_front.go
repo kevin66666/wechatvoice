@@ -2551,3 +2551,68 @@ type UnifiedOrderResps struct {
 // 	paramsMap["notify_url"] = notiu
 // 	paramsMap["trade_type"] = tradetype
 // }
+type PekReq struct {
+	OrderId string `json:"orderId"`
+}
+
+type PeekResponses struct {
+	Code      int64  `json:"code"`
+	Msg       string `json:"msg"`
+	Appid     string `json:"appId"`
+	TimeStamp string `json:"timeStamp"`
+	NonceStr  string `json:"nonceStr"`
+	Signature string `json:"signature"`
+	Package   string `json:"package"`
+	SignType  string `json:"signType"`
+	PaySign   string `json:"paySign"`
+	OrderId   string `json:"orderId"`
+}
+
+func PayPeekAnswer(ctx *macaron.Context) string {
+	req := new(PekReq)
+	body, _ := ctx.Req.Body().String()
+	openId := ""
+	response := new(PeekResponses)
+
+	json.Unmarshal([]byte(body), req)
+	nstr := util.GenerateUuid()
+	nSt := util.GenerateUuid()
+	timeStamp := time.Now().Unix()
+	fmt.Println(timeStamp)
+	tStr := strconv.FormatInt(timeStamp, 10)
+
+	orderNumber := util.GenerateOrderNumber()
+	orderInfo := new(model.WechatVoiceQuestions)
+	orderInfoErr := orderInfo.GetConn().Where("order_number = ?", req.OrderId).Find(&orderInfo).Error
+
+	if orderInfoErr != nil && !strings.Contains(orderInfoErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = orderInfoErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	signSelf := GetSigns(tStr)
+	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
+	fmt.Println(sings)
+	if signErr != nil {
+		fmt.Println(signErr.Error())
+	}
+	response.Code = CODE_SUCCESS
+	//response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.Appid = "wxac69efc11c5e182f"
+	response.NonceStr = nstr
+	response.Signature = signSelf
+	response.SignType = "MD5"
+	response.Package = "prepay_id=" + prepayId
+	response.TimeStamp = tStr
+	response.PaySign = sign
+	response.OrderId = orderNumber
+	ret_str, _ := json.Marshal(response)
+	fmt.Println("=======================>>>")
+	fmt.Println(string(ret_str))
+	fmt.Println("=======================>>>>")
+	return string(ret_str)
+}
+
+// func GetOrderDetailById(ctx)

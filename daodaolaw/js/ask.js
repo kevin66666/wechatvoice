@@ -8,7 +8,8 @@ var Ask=React.createClass({
 			typePrice:'',
 			//parentOrderId:'',
 			// isShowType:false,
-			allType:[]
+			allType:[],
+			isAdd:''
 		}
 	},
 	componentWillMount:function(){
@@ -36,7 +37,8 @@ var Ask=React.createClass({
 						laywerId:laywerId,
 						orderId:orderId,
 						typePrice:data.typePrice,
-						parentOrderId:data.parentOrderId
+						parentOrderId:data.parentOrderId,
+						isAdd:isAdd
 					})
 					if(isAdd==1){
 						//追问免费
@@ -94,53 +96,45 @@ var Ask=React.createClass({
   		parentOrderId:this.state.parentOrderId
   	}
   	$.ajax({
-				url:'json/ask.json', 
-				//提问接口
-				type:'POST',
-				data:JSON.stringify(data),
-				contentType: "application/json",
-				dataType:'json',
-				success:function(data){
-					if(data.code===10000){
-						//调取支付
-						wx.config({
-							debug: false,
-							appId: data.page_appid,
-							timestamp: data.page_appid,
-							nonceStr: data.page_appid,
-							signature: data.page_appid,
-							jsApiList: ['chooseWXPay']
-						})
-						wx.ready(function(){
-						  wx.chooseWXPay({
-								timestamp: data.pay_timeStamp,
-								nonceStr: data.pay_nonceStr,
-								package: data.pay_package,
-								signType: data.pay_signType,
-								paySign: data.pay_paySign,
-								success: function (res) {
-								  // 支付成功
-									location.href = 'user-order.html'
-								},
-								fail: function (res) {
-								  // 支付失败
-								  window.location.replace="pay-fail?r=0&orderId="+orderId
-								},
-								cancel: function (res) {
-								  // 用户取消
-								  window.location.replace="pay-fail?r=1&orderId="+orderId
-								}
-							})
-						})
+			url:'json/ask.json', 
+			//提问接口
+			type:'POST',
+			data:JSON.stringify(data),
+			contentType: "application/json",
+			dataType:'json',
+			success:function(data){
+				if(data.code===10000){
+					if(this.state.isAdd==0){
+						WeixinJSBridge.invoke(
+             	'getBrandWCPayRequest', {
+                   "appId": data.appId,     //公众号名称，由商户传入
+                   "timeStamp":data.timeStamp,         //时间戳，自1970年以来的秒数
+                   "nonceStr":data.nonceStr, //随机串
+                   "package":data.package,
+                   "signType":data.signType,         //微信签名方式：
+                   "paySign":data.paySign, //微信签名
+              },
+              function(res){
+                if(res.err_msg == "get_brand_wcpay_request:ok" ) {     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                  location.href = "user-order.html"
+                }else{
+                  location.href = "pay-fail?r=0&orderId="+data.orderId
+                }
+              }
+            )
 						wx.error(function(res){
-						  window.location.replace="pay-fail?r=2&orderId="+orderId
+						  window.location.replace="pay-fail?r=2&orderId="+data.orderId
 						})
+					}else{
+						//追问
+						location.href='user-order.html'
 					}
-				}.bind(this),
-				error:function(data){
-					console.log('提交问题失败:',data)
 				}
-			})
+			}.bind(this),
+			error:function(data){
+				console.log('提交问题失败:',data)
+			}
+		})
   },
 	render:function(){
 		var init=this.state.init

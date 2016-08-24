@@ -2761,4 +2761,193 @@ func GetOrderInfoById(ctx *macaron.Context) string {
 	return string(ret_str)
 }
 
+type SpecialQuestionsReq struct {
+	LaywerId      string `json:"lawerId"`
+	TypeId        string `json:"typeId"`
+	TypePrice     string `json:"typePrice"`
+	Content       string `json:"content"`
+	ParentOrderId string `json:"parentOrderId"`
+}
+
+func AskSpecialQuestion(ctx *macaron.Context) string {
+	response := new(OrderResponse)
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/createsquestion"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
+	openId := strings.Split(cookieStr, "|")[0]
+	userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId, userType)
+	body, _ := ctx.Req.Body().String()
+	req := new(SpecialQuestionsReq)
+	json.Unmarshal([]byte(body), req)
+
+	fmt.Println("发问请求提1")
+	fmt.Println(body)
+	fmt.Println("发问请求提1")
+
+	cateId := req.TypeId
+	typePrice := req.TypePrice
+	content := req.Content
+
+	cate := new(model.Category)
+	cateErr := cate.GetConn().Where("uuid = ?", cateId).Find(&cate).Error
+
+	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
+		fmt.Println(cateErr)
+		response.Code = CODE_ERROR
+		response.Msg = cateErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	customer := new(model.MemberInfo)
+
+	customerErr := customer.GetConn().Where("open_id = ?", openId).Find(&customer).Error
+
+	if customerErr != nil && !strings.Contains(customerErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		fmt.Println(customerErr.Error())
+		response.Msg = customerErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	fmt.Println("here.....1")
+	orderNumber := util.GenerateOrderNumber()
+	question := new(model.WechatVoiceQuestions)
+	question.Uuid = util.GenerateUuid()
+	question.CategoryId = cateId
+	question.Category = cate.CategoryName
+	question.CategoryIdInt = int64(cate.Model.ID)
+	question.Description = content
+	today := time.Unix(time.Now().Unix(), 0).String()[0:19]
+	question.CreateTime = today
+	question.CustomerId = customer.Uuid
+	question.CustomerName = customer.Name
+	question.CustomerOpenId = openId
+	question.PaymentInfo = typePrice
+	question.IsSolved = "0"
+	question.AskerHeadImg = customer.HeadImgUrl
+	payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
+	question.OrderNumber = orderNumber
+	if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = transferErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	question.PaymentInfoInt = payInt
+
+	nstr := util.GenerateUuid()
+	nSt := util.GenerateUuid()
+	timeStamp := time.Now().Unix()
+	fmt.Println(timeStamp)
+	tStr := strconv.FormatInt(timeStamp, 10)
+	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
+	if signErr != nil {
+		fmt.Println(signErr.Error())
+		response.Code = CODE_ERROR
+		response.Msg = signErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	fmt.Println(sings)
+	signSelf := GetSigns(tStr)
+
+	if req.ParentOrderId == "-1" {
+
+		//指定提问
+		question.Important = "1"
+		createErr := question.GetConn().Create(&question).Error
+		if createErr != nil {
+			response.Code = CODE_ERROR
+			response.Msg = createErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		response.Code = CODE_SUCCESS
+		response.Msg = MSG_SUCCESS
+		response.Appid = "wxac69efc11c5e182f"
+		response.NonceStr = nstr
+		response.Signature = signSelf
+		response.SignType = "MD5"
+		response.Package = "prepay_id=" + prepayId
+		response.TimeStamp = tStr
+		response.PaySign = sign
+		response.OrderId = orderNumber
+		ret_str, _ := json.Marshal(response)
+		fmt.Println("=====================================>>>>>")
+		fmt.Println(string(ret_str))
+		fmt.Println("=====================================>>>>>")
+		return string(ret_str)
+
+	} else {
+		//追加
+		// question.Important = "1"
+		question.ParentQuestionId = req.ParentOrderId
+		createErr := question.GetConn().Create(&question).Error
+		if createErr != nil {
+			response.Code = CODE_ERROR
+			response.Msg = createErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		response.Code = CODE_SUCCESS
+		response.Msg = "ok"
+		ret_str, _ := json.Marshal(response)
+		fmt.Println("=====================================>>>>>")
+		fmt.Println(string(ret_str))
+		fmt.Println("=====================================>>>>>")
+		return string(ret_str)
+	}
+	// fmt.Println("here............")
+
+}
+
 // func GetOrderDetailById(ctx)

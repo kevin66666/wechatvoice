@@ -445,6 +445,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	question.CustomerName = customer.Name
 	question.CustomerOpenId = openId
 	question.PaymentInfo = typePrice
+	question.IsSolved = "0"
 	payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
 	question.OrderNumber = orderNumber
 	if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {
@@ -2614,6 +2615,5 @@ func PayPeekAnswer(ctx *macaron.Context) string {
 	fmt.Println("=======================>>>>")
 	return string(ret_str)
 }
-
 
 // func GetOrderDetailById(ctx)

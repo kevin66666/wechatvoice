@@ -662,7 +662,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.CanEval = a
 		retList = append(retList, *single)
 	}
-	response.Code = CODE_ERROR
+	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
 	response.List = retList
 	ret_str, _ := json.Marshal(response)

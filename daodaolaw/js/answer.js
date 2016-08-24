@@ -52,7 +52,7 @@ var Answer=React.createClass({
 				console.log(data.appId)
 				data={
 						debug: true,
-						appId: data.appId,
+						appId: "wxac69efc11c5e182f",
 						timestamp: data.timestamp,
 						nonceStr: data.nonceStr,
 						signature: data.signature,

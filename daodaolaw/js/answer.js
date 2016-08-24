@@ -43,6 +43,7 @@ var Answer=React.createClass({
 			// data:JSON.stringify(data),
 			// contentType: "application/json",
 			success:function(data){
+				alert(data);
 				if(data.code===10000){  
 					this.setState({
 						config:config

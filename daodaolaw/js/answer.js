@@ -45,27 +45,40 @@ var Answer=React.createClass({
 			success:function(data){
 				alert(data);
 				if(data.code===10000){  
-					this.setState({
-						config:config
-					})
-				//返回的config,该代码只做提示功能
-				console.log("=-====0=-=-=")
-				console.log(data);
-				console.log(data.appId)
-				data={
-						debug: true,
-						appId: "wxac69efc11c5e182f",
-						timestamp: data.timestamp,
-						nonceStr: data.nonceStr,
-						signature: data.signature,
-						jsApiList: ['translateVoice','startRecord', 'stopRecord',  'onRecordEnd',
+				// 	this.setState({
+				// 		config:config
+				// 	})
+				// //返回的config,该代码只做提示功能
+				// 		console.log("=-====0=-=-=")
+				// 		console.log(data);
+				// 		console.log(data.appId)
+				// 		data={
+				// 		debug: true,
+				// 		appId: "wxac69efc11c5e182f",
+				// 		timestamp: data.timestamp,
+				// 		nonceStr: data.nonceStr,
+				// 		signature: data.signature,
+				// 		jsApiList: ['translateVoice','startRecord', 'stopRecord',  'onRecordEnd',
+    //     'playVoice',
+    //     'pauseVoice',
+    //     'stopVoice',
+    //     'uploadVoice',
+    //     'downloadVoice',] 
+				// 		//这个是固定的api
+				// }
+				wx.config({
+							debug: true,
+							appId: data.appId,
+							timestamp: data.timestamp,
+							nonceStr: data.nonceStr,
+							signature: data.signature,
+									jsApiList: ['translateVoice','startRecord', 'stopRecord',  'onRecordEnd',
         'playVoice',
         'pauseVoice',
         'stopVoice',
         'uploadVoice',
         'downloadVoice',] 
-						//这个是固定的api
-				}
+						});
 				}else{
 					this.tips(data.msg)
 				}

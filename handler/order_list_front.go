@@ -230,7 +230,8 @@ type OrderDetailResponse struct {
 }
 
 var userOrderList = "http://www.mylvfa.com/daodaolaw/user-order.html"
-func ToUserOrders(ctx *macaron.Context){
+
+func ToUserOrders(ctx *macaron.Context) {
 	fmt.Println("=================进入方法")
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 
@@ -623,7 +624,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
 
 	req := new(MemberRequest)
-
+	fmt.Println("=======>>>>>>请求数据wei", body)
 	marshallErr := json.Unmarshal([]byte(body), req)
 
 	if marshallErr != nil {
@@ -633,6 +634,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 	list, err := model.GetCustomerInfo(openId, req.OrderType, req.StartNum, req.EndNum)
+	fmt.Println(len(list))
 	if err != nil && !strings.Contains(err.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = err.Error()

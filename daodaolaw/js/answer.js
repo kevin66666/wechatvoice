@@ -49,7 +49,7 @@ var Answer=React.createClass({
 					// })
 				//返回的config,该代码只做提示功能
 				data={
-						debug: false,
+						debug: true,
 						appId: data.appId,
 						timestamp: data.timestamp,
 						nonceStr: data.nonceStr,

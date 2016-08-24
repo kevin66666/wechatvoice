@@ -48,3 +48,8 @@ appId=wxac69efc11c5e182f // appid
             alert(res.err_code+res.err_desc+res.err_msg);
         }
     );
+
+    <audio id="audio">   
+      <source src="http://ossweb-img.qq.com/images/lol/m/act/a20160315live/shake_sound_male.mp3" type="audio/mpeg">
+      Your browser does not support the audio tag.
+    </audio>

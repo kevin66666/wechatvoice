@@ -2960,4 +2960,54 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 
 }
 
+/**
+appId: data.appId,
+timestamp: data.timestamp,
+nonceStr: data.nonceStr,
+signature: data.signature,
+*/
+type JsConfig struct {
+	Code      int64  `json:"code"`
+	Msg       string `json:"msg"`
+	AppId     string `json:"appId"`
+	TimeStamp string `json:"timestamp"`
+	NonceStr  string `json:"nonceStr"`
+	Signature string `json:"signature"`
+}
+
+func GetJsConfig(ctx *macaron.Context) string {
+	response := new(JsConfig)
+	appId := "wxac69efc11c5e182f"
+	nstr := util.GenerateUuid()
+	timeStamp := time.Now().Unix()
+	fmt.Println(timeStamp)
+	tStr := strconv.FormatInt(timeStamp, 10)
+	sig := GetSignsInfo(tStr, nstr)
+	response.Code = CODE_SUCCESS
+	response.Msg = "ok"
+	response.AppId = appId
+	response.TimeStamp = tStr
+	response.NonceStr = nstr
+	response.Signature = sig
+	ret_str, _ := json.Marshal(response)
+	return string(ret_str)
+}
+
+func GetSignsInfo(timeStr, nstr string) string {
+	// signs := time.Now().Unix()
+	// signsStr := strconv.FormatInt(signs, 10)
+	url := "http://60.205.4.26:22334/configSign?noncestr=" + nstr + "&timestamp=" + timeStr + "&url=http://www.mylvfa.com/daodaolaw/answer.html"
+	res, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	defer res.Body.Close()
+	resa := new(AResponse)
+	resBody, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(resBody, resa)
+	fmt.Println(string(resBody))
+	return resa.Sign
+}
+
 // func GetOrderDetailById(ctx)

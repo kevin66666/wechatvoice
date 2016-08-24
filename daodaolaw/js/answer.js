@@ -19,7 +19,7 @@ var Answer=React.createClass({
 		$.ajax({
 			url:'',  //回答问题页面初始化订单信息
 			type:'POST',
-			data:JSON.stringify(data),
+			data:JSON.stringify(orderId),
 			contentType: "application/json",
 			success:function(data){
 				if(data.code===10000){

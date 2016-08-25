@@ -37,7 +37,7 @@ var OrderDetail=React.createClass({
 		var isShow=this.state.isShow?'padding-md-t add-Info':'dispN';
 		var url="ask.html?laywerId="+info.laywerId+'&typeId='+info.typeId+'&orderId=-1&isAdd=0';
 		var addInfo=''
-		if(info.addInfo.length>0){
+		if(info.addInfo&&info.addInfo.length>0){
 			addInfo=info.addInfo.map(function(dom){
 				return 	<li>
 						  		<p>{dom.question}</p>

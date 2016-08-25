@@ -2576,6 +2576,8 @@ type PeekResponses struct {
 func PayPeekAnswer(ctx *macaron.Context) string {
 	req := new(PekReq)
 	body, _ := ctx.Req.Body().String()
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	fmt.Print(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	response := new(PeekResponses)
 

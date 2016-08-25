@@ -1,51 +1,30 @@
 {
 	"code":10000,
 	"msg":"ok",
-	"list":[
+	"orderId":"100",
+	"laywerId":"100",
+	"question":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+	"name":"张三",
+	"selfIntr":"律师",
+	"pic":"img/a9.png",
+	"answer":"###",
+	"typeId":"100",
+	"typeName":"婚姻类型",
+	"typePrice":"1",
+	"star":5,
+	"addNum":2,
+	"isShow":false,
+	"isPay":false,
+	"addInfo":[
 		{
-			"orderId":"100",
-			"laywerId":"100",
-			"question":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
-			"name":"张三",
-			"selfIntr":"律师",
-			"pic":"img/a9.png",
-			"answer":"###",
-			"typeId":"100",
-			"typeName":"婚姻类型",
-			"typePrice":"1",
-			"star":5,
-			"addNum":2,
-			"isShow":false,
-			"isPay":false,
-			"addInfo":[
-				{
-					"orderId":"1001",
-					"question":"这是追问",
-					"answer":"###"
-				},
-				{
-					"orderId":"1002",
-					"question":"这是追问",
-					"answer":"###"
-				}
-			]
+			"orderId":"1001",
+			"question":"这是追问",
+			"answer":"###"
 		},
 		{
-			"orderId":"101",
-			"laywerId":"101",
-			"question":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
-			"name":"李四",
-			"selfIntr":"律师",
-			"pic":"img/a9.png",
-			"answer":"###",
-			"typeId":"101",
-			"typeName":"版权类型",
-			"typePrice":"1",
-			"star":3,
-			"addNum":0,
-			"isShow":false,
-			"isPay":false,
-			"addInfo":[]
+			"orderId":"1002",
+			"question":"这是追问",
+			"answer":"###"
 		}
 	]
 }

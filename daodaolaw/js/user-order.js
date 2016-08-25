@@ -149,14 +149,14 @@ var ResolvedList=React.createClass({
     	this.req(this,'json/userOrder.json','2')
     }
   },
-getAnswer:function(orderId,canEval,answer,e){
+  getAnswer:function(orderId,canEval,answer,e){
   	this.props.getOrderId(orderId)
   	//听完语音后显示评价框
   	var _this=this
   	var $audio=$(e.target).prev()
   	$audio.prop({src:answer,autoplay:'autoplay'})
   	$audio.on('ended',function(){
-  		console.log(111,canEval)
+  		console.log(canEval)
   		if(canEval){
   			_this.props.changeEvaluate(true)
   		}
@@ -292,18 +292,6 @@ var Money=React.createClass({
 				})
 		}
 	},
-	// componentDidMount:function(){
-	// 	if(!this.props.isShowMoney){
-	// 		$('.money .pic')
-	// 			.animate({top:'30%'},1000)
-	// 			.animate({top:"5%"})
-	// 			.animate({top:'30%'},1000)
-	// 			.animate({top:"20%"},function(){
-	// 				$('.pic>img').attr('src','img/money_open.jpg');
-	// 				$('.price').css('display','inline');
-	// 			})
-	// 	}
-	// },
   render:function(){
   	var isShowMoney=this.props.isShowMoney?'mcover':'dispN'; 
   	var money=this.props.money;	

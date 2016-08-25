@@ -27,8 +27,9 @@ var OrderDetail=React.createClass({
 	changeFold:function(){
 		this.setState({isShow:!this.state.isShow})
 	},
-	play:function(e){
-		$(e.target).prev()[0].play()
+	play:function(answer,e){
+		var $audio=$(e.target).prev()
+  	$audio.prop({src:answer,autoplay:'autoplay'})
 	},
 	render:function(){
 		var info=this.state.info;
@@ -63,7 +64,7 @@ var OrderDetail=React.createClass({
 				  <p className="pull-left"><a href={url}><img src={info.pic}/></a></p>
 			    <p className="voice pull-left">
 				    <audio src={info.answer} controls="controls"/>
-				    <span className="price" onTouchEnd={this.play}>免费听取</span>
+				    <span className="price" onTouchEnd={this.play.bind(this,info.answer)}>免费听取</span>
 				    <img src="img/xiaoxi.png"/>
 			    </p>
 			  </div>

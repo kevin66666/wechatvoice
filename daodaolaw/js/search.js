@@ -233,18 +233,18 @@ var EverySearch=React.createClass({
 		var isAddNum=info.addNum>0?'text-center padding-md-t':'dispN';
 		var isShow=info.isShow?'padding-md-t add-Info':'dispN';
 		var addInfo=''
-		// if(info.addInfo.length>0){
-		// 	addInfo=info.addInfo.map(function(dom){
-		// 		return 	<li>
-		// 				  		<p>{dom.question}</p>
-		// 				  		<p className="add-voice">
-		// 						    <audio src={dom.answer} controls="controls" ref="record"/>
-		// 						    <span className="price" onTouchEnd={this.toDetail.bind(this,dom.orderId)}>免费听取</span>
-		// 						    <img src="img/xiaoxi.png"/>
-		// 					    </p>
-		// 				  	</li>
-		// 	}.bind(this))
-		// }
+		if(info.addInfo.length>0){
+			addInfo=info.addInfo.map(function(dom){
+				return 	<li>
+						  		<p>{dom.question}</p>
+						  		<p className="add-voice">
+								    <audio src={dom.answer} controls="controls" ref="record"/>
+								    <span className="price" onTouchEnd={this.toDetail.bind(this,dom.orderId)}>免费听取</span>
+								    <img src="img/xiaoxi.png"/>
+							    </p>
+						  	</li>
+			}.bind(this))
+		}
 		var star=[]
 		for(var i=0;i<info.star;i++){
 			star.push(<i className="fa fa-star col-yellow"></i>)

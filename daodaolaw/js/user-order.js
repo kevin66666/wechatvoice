@@ -280,15 +280,8 @@ var Evaluate=React.createClass({
   }
 })
 var Money=React.createClass({
-	// componentDidUpdate:function(){
-	// 	if(!this.props.isShowMoney){
-	// 		$('.money .pic')
-	// 			.animate({top:'160px'},1000)
-	// 			.animate({top:"70px"},{queue:false,duration:1000})
-	// 	}
-	// },
-	componentDidMount:function(){
-		if(!this.props.isShowMoney){
+	componentDidUpdate:function(){
+		if(this.props.isShowMoney){
 			$('.money .pic')
 				.animate({top:'30%'},1000)
 				.animate({top:"5%"})
@@ -299,6 +292,18 @@ var Money=React.createClass({
 				})
 		}
 	},
+	// componentDidMount:function(){
+	// 	if(!this.props.isShowMoney){
+	// 		$('.money .pic')
+	// 			.animate({top:'30%'},1000)
+	// 			.animate({top:"5%"})
+	// 			.animate({top:'30%'},1000)
+	// 			.animate({top:"20%"},function(){
+	// 				$('.pic>img').attr('src','img/money_open.jpg');
+	// 				$('.price').css('display','inline');
+	// 			})
+	// 	}
+	// },
   render:function(){
   	var isShowMoney=this.props.isShowMoney?'mcover':'dispN'; 
   	var money=this.props.money;	

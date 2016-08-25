@@ -3128,6 +3128,10 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 	response.IsPay = true
 	response.AddList = list
 	ret_str, _ := json.Marshal(response)
+	log.Println("===================================ret_str")
+	log.Println(string(ret_str))
+	log.Println("===================================ret_str")
+
 	return string(ret_str)
 }
 

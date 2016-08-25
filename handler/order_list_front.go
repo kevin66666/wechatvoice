@@ -710,7 +710,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.Type = k.Category
 		single.Time = k.CreateTime
 		single.Answer = k.VoicePath
-		single.AddNum = k.AppenQuestionTime
+		single.AddNum = 2 - k.AppenQuestionTime
 		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
 		single.Price = price
 		var a bool

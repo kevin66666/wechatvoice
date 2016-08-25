@@ -9,7 +9,8 @@ var Ask=React.createClass({
 			//parentOrderId:'',
 			// isShowType:false,
 			allType:[],
-			isAdd:''
+			isAdd:'',
+			orderId:''
 		}
 	},
 	componentWillMount:function(){
@@ -22,7 +23,7 @@ var Ask=React.createClass({
 		var data={
 			laywerId:laywerId,
 			typeId:typeId,
-			orderId:"774818196a0711e600163e1057898909" //-1 是搜索  其他是追问orderId 
+			orderId:orderId //-1 是搜索  其他是追问orderId 
 		}
 		$.ajax({
 			url:'http://www.mylvfa.com/voice/front/getbyid',
@@ -94,7 +95,8 @@ var Ask=React.createClass({
   		typeId:this.state.typeId,
   		typePrice:this.state.typePrice,
   		content:this.state.content,
-  		parentOrderId:this.state.parentOrderId
+  		parentOrderId:this.state.parentOrderId,
+  		orderId:this.state.orderId
   	}
   	$.ajax({
 			url:'http://www.mylvfa.com/voice/front/createsquestion', 

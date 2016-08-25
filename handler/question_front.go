@@ -2768,6 +2768,7 @@ type SpecialQuestionsReq struct {
 	TypePrice     string `json:"typePrice"`
 	Content       string `json:"content"`
 	ParentOrderId string `json:"parentOrderId"`
+	OrderId       string `json:"orderId"`
 }
 
 func AskSpecialQuestion(ctx *macaron.Context) string {
@@ -2901,7 +2902,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 	fmt.Println(sings)
 	signSelf := GetSigns(tStr)
 
-	if req.ParentOrderId == "-1" {
+	if req.OrderId == "-1" {
 
 		//指定提问
 		question.Important = "1"
@@ -2931,7 +2932,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 	} else {
 		//追加
 		question.Important = "1"
-		question.ParentQuestionId = req.ParentOrderId
+		question.ParentQuestionId = req.OrderId
 		createErr := question.GetConn().Create(&question).Error
 		if createErr != nil {
 			response.Code = CODE_ERROR
@@ -2941,16 +2942,6 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		}
 		response.Code = CODE_SUCCESS
 		response.Msg = MSG_SUCCESS
-		response.Appid = "wxac69efc11c5e182f"
-		response.NonceStr = nstr
-		response.Signature = signSelf
-		response.SignType = "MD5"
-		response.Package = "prepay_id=" + prepayId
-		response.TimeStamp = tStr
-		response.PaySign = sign
-		response.OrderId = orderNumber
-		response.Code = CODE_SUCCESS
-		response.Msg = "ok"
 		ret_str, _ := json.Marshal(response)
 		fmt.Println("=====================================>>>>>")
 		fmt.Println(string(ret_str))
@@ -3010,6 +3001,131 @@ func GetSignsInfo(timeStr, nstr string) string {
 	json.Unmarshal(resBody, resa)
 	fmt.Println(string(resBody))
 	return resa.Sign
+}
+
+type OrderDetailReq struct {
+	OrderId string `json:"orderId"`
+}
+
+/**
+{
+	"code":10000,
+	"msg":"ok",
+	"orderId":"100",
+	"laywerId":"100",
+	"question":"这是一段测试文字这是一段测试文字这是一段测试文字这是一段测试文字",
+	"name":"张三",
+	"selfIntr":"律师",
+	"pic":"img/a9.png",
+	"answer":"###",
+	"typeId":"100",
+	"typeName":"婚姻类型",
+	"typePrice":"1",
+	"star":5,
+	"addNum":2,
+	"isShow":false,
+	"isPay":false,
+	"addInfo":[
+		{
+			"orderId":"1001",
+			"question":"这是追问",
+			"answer":"###"
+		},
+		{
+			"orderId":"1002",
+			"question":"这是追问",
+			"answer":"###"
+		}
+	]
+}
+*/
+type DetailResponse struct {
+	Code      int64     `json:"code"`
+	Msg       string    `json:"msg"`
+	OrderId   string    `json:"orderId"`
+	LayerId   string    `json:"laywerId"`
+	Question  string    `json:"question"`
+	Name      string    `json:"name"`
+	SelfIntr  string    `json:"selfIntr"`
+	Pic       string    `json:"pic"`
+	Answer    string    `json:"answer"`
+	TypeId    string    `json:"typeId"`
+	TypeName  string    `json:"typeName"`
+	TypePrice string    `json:"typePrice"`
+	Star      int64     `json:"stat"`
+	AddNum    string    `json:"addNum"`
+	IsShow    bool      `json:"isShow"`
+	IsPay     bool      `json:"isPay"`
+	AddList   []AddInfo `json:"addInfo"`
+}
+
+type AddInfo struct {
+	OrderId  string `json:"orderId"`
+	Question string `json:"quesion"`
+	Answer   string `json:"answer"`
+}
+
+func GetQuestionDetailById(ctx *macaron.Context) string {
+	body, _ := ctx.Req.Body().String()
+	req := new(OrderDetailReq)
+	json.Unmarshal([]byte(body), req)
+	orderInfo := new(model.WechatVoiceQuestions)
+	orderErr := orderInfo.GetConn().Where("uuid = ?", req.OrderId).Find(&orderInfo).Error
+	response := new(DetailResponse)
+
+	if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = orderErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	orderList, listErr := model.GetChildAnsers(req.OrderId)
+	if listErr != nil && !strings.Contains(listErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = listErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	list := make([]AddInfo, 0)
+	if len(orderList) > 0 {
+		for _, k := range orderList {
+			single := new(AddInfo)
+			single.OrderId = k.Uuid
+			single.Question = k.Description
+			single.Answer = k.VoicePath
+			list = append(list, *single)
+		}
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = "ok"
+	response.OrderId = orderInfo.Uuid
+	response.LayerId = orderInfo.AnswerId
+	response.Question = orderInfo.Description
+	response.Name = orderInfo.AnswerName
+	id := orderInfo.AnswerId
+	law := new(model.LawyerInfo)
+	lawErr := law.GetConn().Where("uuid = ?", id).Find(&law).Error
+	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = lawErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	response.SelfIntr = law.FirstCategory
+	response.Pic = orderInfo.AnswerHeadImg
+	response.TypeId = orderInfo.CategoryId
+	response.TypeName = orderInfo.Category
+	response.TypePrice = orderInfo.PaymentInfo
+	rank := orderInfo.RankInfo
+	rankInt, _ := strconv.ParseInt(rank, 10, 64)
+	response.Star = rankInt
+	add := strconv.FormatInt(int64(len(orderList)), 10)
+	response.AddNum = add
+	response.IsShow = false
+	response.IsPay = true
+	response.AddList = list
+	ret_str, _ := json.Marshal(response)
+	return string(ret_str)
 }
 
 // func GetOrderDetailById(ctx)

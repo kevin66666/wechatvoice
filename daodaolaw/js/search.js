@@ -397,6 +397,7 @@ var Ask=React.createClass({
 		var isShow=this.props.isShowAsk?'question':'dispN'
 		var isShowType=this.state.isShowType?'type-select':'dispN'
 		var typeName=this.state.typeName?this.state.typeName:'选择类型'
+		var typePrice=this.state.typePrice?this.state.typePrice:'0'
 		var allType=this.state.allType;
 		var list=''
 		if(allType.length>0){
@@ -413,7 +414,7 @@ var Ask=React.createClass({
 					</ul>
 				</div>
 				<div className="content"><textarea rows="8" placeholder="最多100个字" onChange={this.handleChange} onKeyPress={this.limitNum}></textarea></div>
-				<p className="price">￥{this.state.typePrice}元</p>
+				<p className="price">￥{typePrice}元</p>
 				<div className="btn-ask"><p onTouchEnd={this.doAsk}>写好了</p></div>
 			</div>
 		)

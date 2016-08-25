@@ -149,14 +149,16 @@ var ResolvedList=React.createClass({
     	this.req(this,'json/userOrder.json','2')
     }
   },
-  getAnswer:function(orderId,canEval,answer,e){
+ getAnswer:function(orderId,canEval,answer,e){
   	this.props.getOrderId(orderId)
   	//听完语音后显示评价框
   	var _this=this
   	var $audio=$(e.target).prev()
-  	console.log(audio)
+  	console.log($audio)
   	$audio.prop({src:'http://www.w3school.com.cn/i/horse.ogg',autoplay:'autoplay'})
+  	console.log('src')
   	$audio.on('ended',function(){
+  		console.log(111)
   		if(canEval){
   			_this.props.changeEvaluate(true)
   		}

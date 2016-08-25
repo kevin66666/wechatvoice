@@ -153,7 +153,9 @@ var ResolvedList=React.createClass({
   	this.props.getOrderId(orderId)
   	//听完语音后显示评价框
   	var audio=$(e.target).prev()[0]
+  	console.log(audio)
   	var ms=audio.duration*1000
+  	console.log(ms)
   	audio.play()
   	setTimeout(function(){
   		if(audio.ended&&canEval){

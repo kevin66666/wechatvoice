@@ -228,24 +228,24 @@ var Evaluate=React.createClass({
 			orderId:this.props.orderId
 		}
 		if(this.state.number>0){
-			// $.ajx({
-			// 	url:'',
-			// 	type:'POST',
-			// 	data:JSON.stringify(data),
-			// 	dataType:'json',
-			// 	success:function(data){
-			// 		if(data.code===10000){
-			// 			//发红包 redPacket 接口
+			 $.ajax({
+			 	url:'http://www.mylvfa.com/voice/order/evaluate',
+			 	type:'POST',
+			 	data:JSON.stringify(data),
+			 	dataType:'json',
+			 	success:function(data){
+			 		if(data.code===10000){
+			 			//发红包 redPacket 接口
 						this.props.changeEvaluate(false)
 						this.props.changeMoney(true,data.redPacket)
-			// 		}else{
-			// 	    this.tips(data.msg)
-			//    }
-			// 	}.bind(this),
-			// 	error:function(data){
-			// 		console.log('评价失败:',data)
-			// 	}
-			// })
+			 		}else{
+				    this.tips(data.msg)
+			   }
+				}.bind(this),
+				error:function(data){
+					console.log('评价失败:',data)
+				}
+			})
 		}else{	
 			this.tips('您还没有进行评分')
 		}

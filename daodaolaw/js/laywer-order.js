@@ -95,7 +95,7 @@ var UnsolvedList=React.createClass({
   toAnswer:function(orderId){
   	var data={orderId:orderId}
   	$.ajax({
-  		url:'', //抢答接口
+  		url:'http://www.mylvfa.com/voice/order/getorder', //抢答接口
   		type:'POST',
   		data:JSON.stringify(data),
   		dataType:'json',

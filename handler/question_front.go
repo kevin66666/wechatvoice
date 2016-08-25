@@ -254,7 +254,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		rank, _ := strconv.ParseInt(k.RankInfo, 10, 64)
 		single.Star = rank
 		payment := new(model.WechatVoicePaymentInfo)
-		payErr := payment.GetConn().Where("uuid = ?", k.Uuid).Where("open_id = ?", openId).Find(&payment).Error
+		payErr := payment.GetConn().Where("question_id = ?", k.Uuid).Where("open_id = ?", openId).Find(&payment).Error
 
 		if payErr != nil && !strings.Contains(payErr.Error(), RNF) {
 			response.Code = CODE_ERROR
@@ -266,9 +266,10 @@ func QuestionQuery(ctx *macaron.Context) string {
 		if payment.Uuid != "" {
 			//说明有支付记录
 			log.Println("======>>>>", payment.Uuid)
-			payAble = false
-		} else {
 			payAble = true
+		} else {
+			log.Println("=======>>>>>没有付款")
+			payAble = false
 		}
 		single.IsPay = payAble
 		childList, childErr := model.GetChildAnsers(k.Uuid)
@@ -1346,7 +1347,7 @@ func AnswerQuestionInit(ctx *macaron.Context) string {
 	}*/
 	lock.Uuid = util.GenerateUuid()
 	lock.QuestionId = question.Uuid
-	lock.OpenIdFirst = openId
+	// lock.OpenIdFirst = openId
 	lock.LockedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
 	err := lock.GetConn().Create(&lock).Error
 	if err != nil {

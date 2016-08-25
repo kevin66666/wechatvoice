@@ -6,6 +6,7 @@ import (
 	"github.com/Unknwon/macaron"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"strings"
@@ -729,6 +730,188 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 	return string(ret_str)
 }
 
+type EvaluateAnswers struct {
+	OrderId string `json:"orderId"`
+	Number  string `json:"start"`
+}
+
+type RedpacketResponse struct {
+	Code      int64  `json:"code"`
+	Msg       string `json:"msg"`
+	RedPacket string `json:"redPacket"`
+}
+
 func EvalAnswers(ctx *macaron.Context) string {
-	return ""
+	body, _ := ctx.Req.Body().String()
+	req := new(EvaluateAnswers)
+	json.Unmarshal([]byte(body), req)
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	openId := strings.Split(cookieStr, "|")[0]
+	log.Println(openId)
+	response := new(RedpacketResponse)
+
+	orderInfo := new(model.WechatVoiceQuestions)
+	orderErr := orderInfo.GetConn().Where("uuid = ?", req.OrderId).Where("customer_open_id  = ?", openId).Find(&orderInfo).Error
+
+	if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = orderErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if orderInfo.Uuid == "" || orderInfo.IsRanked == "1" || orderInfo.IsSolved == "0" || orderInfo.IsSolved == "1" {
+		response.Code = CODE_ERROR
+		response.Msg = "error"
+		ret_Str, _ := json.Marshal(response)
+		return string(ret_Str)
+	}
+	cateId := orderInfo.CategoryId
+	setting := new(model.WechatVoiceQuestionSettings)
+	settingErr := setting.GetConn().Where("category_id = ?", cateId).Find(&setting).Error
+
+	if settingErr != nil && !strings.Contains(settingErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = settingErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	amount, _ := strconv.ParseFloat(orderInfo.PaymentInfo, 64)
+	log.Println(amount)
+
+	lp, _ := strconv.ParseFloat(setting.LawyerFeePercent, 64)
+	red := 100.00 - lp
+	amountLeft := (amount * red) / 100
+	amtInt := int64(amountLeft)
+	redint := rand.Int63n(amtInt)
+	redStr := strconv.FormatInt(redint, 64)
+
+	log.Println(redStr)
+
+	orderInfo.IsRanked = "1"
+	orderInfo.RankInfo = req.Number
+	updateErr := orderInfo.GetConn().Save(&orderInfo).Error
+	if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = updateErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	//给律师发红包
+	a := amount * lp
+	astr := strconv.FormatFloat(a, 'f', 2, 64)
+	reds := new(RedPackages)
+	reds.Act_name = "发送红包"
+	reds.Client_ip = "127.0.0.1"
+	reds.Remark = ""
+	reds.Re_openid = orderInfo.AnswerOpenId
+	reds.Nick_name = "叨叨律法"
+	reds.SendNickName = orderInfo.AnswerName
+	reds.Wishing = "您的订单已完成"
+	reds.Amount = int64(a)
+	reds.MpId = ""
+	suc, strsuc := SendRedPacket(reds)
+	fmt.Println("===========================", suc, strsuc)
+	//记录律师信息
+	law := new(model.LawyerInfo)
+	lawErr := law.GetConn().Where("uuid = ?", orderInfo.AnswerId).Find(&law).Error
+	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+		fmt.Println(lawErr.Error())
+	}
+	switch req.Number {
+	case "1":
+		law.RankFirst = law.RankFirst + 1
+	case "2":
+		law.RankSecond = law.RankSecond + 1
+	case "3":
+		law.RankThird = law.RankThird + 1
+	case "4":
+		law.RankFouth = law.RankFouth + 1
+	case "5":
+		law.RankLast = law.RankLast + 1
+	}
+	lawErr = law.GetConn().Save(&law).Error
+	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+		fmt.Println(lawErr)
+	}
+	//记录钱的信息
+	pay := new(model.OrderPaymentInfo)
+	pay.GetConn().Where("order_number = ?", req.OrderId).Where("open_id = ?", openId).Find(&pay)
+	payment := new(model.WechatVoicePaymentInfo)
+	payment.Uuid = util.GenerateUuid()
+	payment.SwiftNumber = pay.WeixinSwiftNumber
+	payment.MemberId = orderInfo.CustomerId
+	payment.OpenId = openId
+	payment.RedPacketAmount = redStr
+	payment.LawyerAmount = astr
+	payment.OrderId = req.OrderId
+	errPay := payment.GetConn().Create(&payment).Error
+	if errPay != nil {
+		fmt.Println(errPay)
+	}
+	// payment.SwiftNumber = orderInfo.
+	response.Code = CODE_SUCCESS
+	response.Msg = "ok"
+	response.RedPacket = redStr
+	ret_str, _ := json.Marshal(response)
+
+	return string(ret_str)
+}
+
+type QuestionId struct {
+	OrderId string `json:"orderId"`
+}
+
+type CheckResponse struct {
+	Code int64  `json:"code"`
+	Msg  string `json:"msg"`
+}
+
+func GetQuestionToAnswer(ctx *macaron.Context) string {
+	body, _ := ctx.Req.Body().String()
+	req := new(QuestionId)
+	json.Unmarshal([]byte(body), req)
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	openId := strings.Split(cookieStr, "|")[0]
+	log.Println(openId)
+
+	response := new(CheckResponse)
+	lock := new(model.AnswerLockInfo)
+	lockerr := lock.GetConn().Where("question_id = ?", req.OrderId).Where("open_id = ?", openId).Find(&lock).Error
+
+	if lockerr != nil && !strings.Contains(lockerr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = lockerr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	if lock.Uuid != "" {
+		response.Code = CODE_SUCCESS
+		response.Msg = "ok"
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	lockList, lockListErr := model.GetLockListById(req.OrderId)
+	if lockListErr != nil && !strings.Contains(lockListErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = lockListErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	if len(lockList) == 0 || len(lockList) == 1 {
+		response.Code = CODE_SUCCESS
+		response.Msg = "ok"
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	} else {
+		response.Code = CODE_ERROR
+		response.Msg = "error"
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
 }

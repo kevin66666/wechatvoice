@@ -7,13 +7,12 @@ import (
 
 type AnswerLockInfo struct {
 	gorm.Model
-	Uuid         string
-	QuestionId   string
-	OpenIdFirst  string //律师ID
-	OpenIdSecond string //律师ID
-	IsLocked     string //是否已经被锁 0 1
-	LockedTimes  string //被锁几次
-	LockedTime   string //被锁时间
+	Uuid        string
+	QuestionId  string
+	OpenId      string
+	IsLocked    string //是否已经被锁 0 1
+	LockedTimes string //被锁几次
+	LockedTime  string //被锁时间
 }
 
 func init() {

@@ -2614,7 +2614,7 @@ func PayPeekAnswer(ctx *macaron.Context) string {
 	response.Package = "prepay_id=" + prepayId
 	response.TimeStamp = tStr
 	response.PaySign = sign
-	response.OrderId = orderNumber
+	response.OrderId = req.OrderId
 	ret_str, _ := json.Marshal(response)
 	fmt.Println("=======================>>>")
 	fmt.Println(string(ret_str))

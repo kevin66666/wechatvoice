@@ -71,7 +71,7 @@ var UserOrder=React.createClass({
 		return (
 			<div>
 				<OrderNav/>
-				<OrderList changeEvaluate={this.changeEvaluate} getOrderId={this.getOrderId}/>
+				<OrderList changeEvaluate={this.changeEvaluate} getOrderId={this.getOrderId} changeLoad={this.changeLoad}/>
 				<Evaluate isShowEvaluate={this.state.isShowEvaluate} changeEvaluate={this.changeEvaluate} changeMoney={this.changeMoney} changeLoad={this.changeLoad} orderId={this.state.orderId}/>
 				<Money changeMoney={this.changeMoney} isShowMoney={this.state.isShowMoney} money={this.state.money}/>
 				<Loading load={this.state.load} tips={this.state.tips}/>
@@ -94,7 +94,7 @@ var OrderList=React.createClass({
 		return (
 			<div className="tab-content">
 				<UnsolvedList />
-				<ResolvedList changeEvaluate={this.props.changeEvaluate} getOrderId={this.props.getOrderId}/>
+				<ResolvedList changeEvaluate={this.props.changeEvaluate} getOrderId={this.props.getOrderId} changeLoad={this.props.changeLoad}/>
 			</div>
 		)
 	}
@@ -107,7 +107,7 @@ var UnsolvedList=React.createClass({
   addMore:function(){
     //点击加载更多
     if(this.state.isAddMore){
-    	this.req(this,'json/userOrder.json','-1')
+    	this.req(this,'json/userOrder.json','0')
     }
   },
   toAnswer:function(orderId){
@@ -146,30 +146,36 @@ var ResolvedList=React.createClass({
   },
   addMore:function(){
     if(this.state.isAddMore){
-    	this.req(this,'json/userOrder.json','-1')
+    	this.req(this,'json/userOrder.json','2')
     }
   },
-  getAnswer:function(orderId,canEval,e){
+  getAnswer:function(orderId,canEval,answer,e){
   	this.props.getOrderId(orderId)
   	//听完语音后显示评价框
-  	var audio=$(e.target).prev()[0]
+  	var _this=this
+  	var $audio=$(e.target).prev()
   	console.log(audio)
-  	var ms=audio.duration*1000
-  	console.log(ms)
-  	audio.play()
-  	setTimeout(function(){
-  		if(audio.ended&&canEval){
-	  		this.props.changeEvaluate(true)
-	  	}
-  	}.bind(this),ms)
+  	$audio.prop({src:'http://www.w3school.com.cn/i/horse.ogg',autoplay:'autoplay'})
+  	$audio.on('ended',function(){
+  		if(canEval){
+  			_this.props.changeEvaluate(true)
+  		}
+  	})
   },
   addOne:function(dom){
   	if(dom.addNum>0){
   		location.href="ask.html?laywerId="+dom.laywerId+'&typeId='+dom.typeId+'&orderId='+dom.orderId+'&isAdd=1';
   	}else{
-  		alert('不能再追问')
+  		this.tips('不能再追问')
   	}
   },
+  tips:function(text){
+		this.props.changeLoad('load',true)
+    this.props.changeLoad('tips',text)
+    setTimeout(function(){
+      this.props.changeLoad('load',false)
+    }.bind(this),2000)
+	},
 	render:function(){
 		var list=<p>没有相关信息</p>
 		var orderInfo=this.state.orderInfo
@@ -189,7 +195,7 @@ var ResolvedList=React.createClass({
 										<span className="user-add-num" onTouchEnd={this.addOne.bind(this,dom)}>可追问{dom.addNum}次</span>
 										<p className="voice pull-right">
 									    <audio src={dom.answer} controls="controls"/>
-									    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.orderId,dom.canEval)}>收听</span>
+									    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.orderId,dom.canEval,dom.answer)}>收听</span>
 									    <img src="img/xiaoxi.png"/>
 								    </p>
 									</div>

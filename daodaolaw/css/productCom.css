@@ -846,3 +846,32 @@ ul, li {
   border-radius: 5px;
   z-index: 10001;
 }
+/*支付失败*/
+.tip-page-success{
+  margin-top:25%;
+  text-align: center;
+}
+.exchange-success {
+  margin: 40px auto 10px;
+  font-weight: bold;
+}
+.color-wine-red {
+  color: #CC0000;
+}
+.bord-wine-red {
+  border: 1px solid #CC0000;
+}
+.bg-wine-red {
+  background: #CC0000;
+}
+.pad-lr-25 {
+  padding-left: 25px;
+  padding-right: 25px;
+}
+.bord-red {
+  border: 1px solid #f00;
+}
+.tip-icon-font{
+  font-size:60px;
+  font-weight: normal !important;
+}

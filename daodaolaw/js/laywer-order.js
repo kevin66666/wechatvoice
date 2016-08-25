@@ -89,7 +89,7 @@ var UnsolvedList=React.createClass({
   addMore:function(){
     //点击加载更多
     if(this.state.isAddMore){
-    	this.req(this,'json/laywerOrder.json','-1')
+    	this.req(this,'json/laywerOrder.json','0')
     }
   },
   toAnswer:function(orderId){
@@ -152,7 +152,7 @@ var ResolvedList=React.createClass({
   addMore:function(){
     //点击加载更多
     if(this.state.isAddMore){
-    	this.req(this,'json/laywerOrder.json','1')
+    	this.req(this,'json/laywerOrder.json','2')
     }
   },
 	render:function(){

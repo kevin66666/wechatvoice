@@ -814,7 +814,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 	reds.MpId = ""
 	fmt.Println(reds)
 	// suc, strsuc := SendRedPacket(reds)
-	fmt.Println("===========================", suc, strsuc)
+	// fmt.Println("===========================", suc, strsuc)
 	//记录律师信息
 	law := new(model.LawyerInfo)
 	lawErr := law.GetConn().Where("uuid = ?", orderInfo.AnswerId).Find(&law).Error

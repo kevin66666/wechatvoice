@@ -812,7 +812,8 @@ func EvalAnswers(ctx *macaron.Context) string {
 	reds.Wishing = "您的订单已完成"
 	reds.Amount = int64(a)
 	reds.MpId = ""
-	suc, strsuc := SendRedPacket(reds)
+	fmt.Println(reds)
+	// suc, strsuc := SendRedPacket(reds)
 	fmt.Println("===========================", suc, strsuc)
 	//记录律师信息
 	law := new(model.LawyerInfo)

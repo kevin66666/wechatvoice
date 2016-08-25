@@ -785,7 +785,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 	amountLeft := (amount * red) / 100
 	amtInt := int64(amountLeft)
 	redint := rand.Int63n(amtInt)
-	redStr := strconv.FormatInt(redint, 64)
+	redStr := strconv.FormatInt(redint, 10)
 
 	log.Println(redStr)
 

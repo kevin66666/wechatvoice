@@ -175,7 +175,7 @@ var EverySearch=React.createClass({
 		//调取支付接口
 		if(!info.isPay){
 			$.ajax({
-				url:'',//支付点击
+				url:'http://www.mylvfa.com/voice/front/peekanswer',//支付点击
 				type:'POST',
 				data:JSON.stringify(data),
 				contentType: "application/json",

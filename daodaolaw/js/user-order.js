@@ -44,7 +44,7 @@ var UserOrder=React.createClass({
 		return {
 			money:'',
 			isShowEvaluate:false,
-			isShowMoney:true,
+			isShowMoney:false,
 			orderId:'',
 			load:false,
       tips:'加载中,请稍等'

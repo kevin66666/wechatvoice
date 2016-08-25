@@ -233,7 +233,7 @@ var EverySearch=React.createClass({
 		var isAddNum=info.addNum>0?'text-center padding-md-t':'dispN';
 		var isShow=info.isShow?'padding-md-t add-Info':'dispN';
 		var addInfo=''
-		if(info.addInfo.length>0){
+		if(info.addInfo&&info.addInfo.length>0){
 			addInfo=info.addInfo.map(function(dom){
 				return 	<li>
 						  		<p>{dom.question}</p>

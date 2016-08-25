@@ -74,7 +74,7 @@ type QuestionInfo struct {
 	IsPay     bool       `json:"isPay"`
 	AddNum    int64      `json:"addNum"`
 	IsShow    bool       `json:"isShow"`
-	AddInfo   []AddInfos `json:""`
+	AddInfo   []AddInfos `json:"addInfo"`
 }
 
 type AddInfos struct {

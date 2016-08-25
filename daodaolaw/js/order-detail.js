@@ -54,7 +54,7 @@ var OrderDetail=React.createClass({
 			star.push(<i className="fa fa-star col-yellow"></i>)
 		}
 		return (
-			<div className="media">
+			<div className="media quest-list">
 			  <div className="media-body">
 			    <p>{info.question}</p>
 			    <p className="over-hidden">

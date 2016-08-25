@@ -109,7 +109,11 @@ var Answer=React.createClass({
 		var _this=this
 		wx.config(this.state.config)
 		wx.ready(function(){
-			wx.startRecord()
+			wx.startRecord({
+				cancel: function () {
+					_this.tips('用户拒绝授权录音')
+	      }
+			})
 			//监听录音自动停止接口
 			wx.onVoiceRecordEnd({
 			    // 录音时间超过一分钟没有停止的时候会执行 complete 回调

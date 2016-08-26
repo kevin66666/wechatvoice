@@ -3167,6 +3167,9 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
 	req := new(MediaId)
 	json.Unmarshal([]byte(body), req)
+	fmt.Println("================")
+	fmt.Println(body)
+	fmt.Println("================")
 	fmt.Println("media id is ....", req.MId)
 	var accessToken string
 	res, err1 := http.Get("http://www.mylvfa.com/getAccessToken")
@@ -3210,6 +3213,7 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	if err2 != nil {
 		fmt.Println("写文件出错")
 	}
+
 	questionInfo := new(model.WechatVoiceQuestions)
 	qErr := questionInfo.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfo).Error
 	if qErr != nil {

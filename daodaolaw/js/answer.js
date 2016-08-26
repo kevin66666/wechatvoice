@@ -39,7 +39,9 @@ var Answer=React.createClass({
 		//初始化时获取微信config
 		$.ajax({
 			url:'http://www.mylvfa.com/voice/front/getconfig',  //回答问题页面初始化订单信息
-			type:'GET',
+			type:'POST',
+			data:JSON.stringify({orderId:orderId}),
+			contentType: "application/json",
 			success:function(data){
 				alert(typeof(data));
 				data =JSON.parse(data)

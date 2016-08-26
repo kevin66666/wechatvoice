@@ -3224,6 +3224,10 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	//exec.Command(name, ...)
 	cmd := exec.Command("ffmepg", "-i", fileName, fileNameMp3)
 	errCmd := cmd.Run()
+	errStart := cmd.Start()
+	if errStart != nil {
+		fmt.Println(errStart)
+	}
 	if errCmd != nil {
 		fmt.Println(errCmd.Error())
 	}

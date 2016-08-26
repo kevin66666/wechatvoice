@@ -875,3 +875,8 @@ ul, li {
   font-size:60px;
   font-weight: normal !important;
 }
+.no-info {
+  text-align: center;
+  background: #fff;
+  padding: 12px 0;
+}

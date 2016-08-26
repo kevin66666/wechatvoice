@@ -12,7 +12,7 @@ var getDataMixin={
       orderType:type
     }
     $.ajax({
-      url:"http://www.mylvfa.com/voice/ucenter/userlist",
+      url:url,
       type:'POST',
        data:JSON.stringify(data),
       dataType:'json',
@@ -27,7 +27,7 @@ var getDataMixin={
           }else{
             that.setState({isAddMore:false})
           }
-        }else if(data.code=='10003'){
+        }else if(data.code===10003){
           location.href=data.msg
         }else{
           alert(data.msg)
@@ -107,14 +107,14 @@ var UnsolvedList=React.createClass({
   addMore:function(){
     //点击加载更多
     if(this.state.isAddMore){
-    	this.req(this,'json/userOrder.json','0')
+    	this.req(this,'http://www.mylvfa.com/voice/ucenter/userlist','0')
     }
   },
   toAnswer:function(orderId){
   	location.href='answer.html?orderId='+orderId;
   },
 	render:function(){
-		var list=<p>没有相关信息</p>
+		var list=<p className="no-info">没有相关信息</p>
 		var orderInfo=this.state.orderInfo
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
@@ -146,28 +146,64 @@ var ResolvedList=React.createClass({
   },
   addMore:function(){
     if(this.state.isAddMore){
-    	this.req(this,'json/userOrder.json','2')
+    	this.req(this,'http://www.mylvfa.com/voice/ucenter/userlist','2')
     }
   },
-  getAnswer:function(orderId,canEval,answer,e){
-  	this.props.getOrderId(orderId)
-  	//听完语音后显示评价框
-  	var _this=this
-  	var $audio=$(e.target).prev()
-  	$audio.prop({src:answer,autoplay:'autoplay'})
-  	$audio.on('ended',function(){
-  		console.log(canEval)
-  		if(canEval){
-  			_this.props.changeEvaluate(true)
-  		}
-  	})
-  },
-  addOne:function(dom){
+	render:function(){
+		var list=<p className="no-info">没有相关信息</p>
+		var orderInfo=this.state.orderInfo
+		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
+		if(orderInfo&&orderInfo.length>0){
+			list=orderInfo.map(function(dom){
+				return  <PerOrder dom={dom} changeLoad={this.props.changeLoad} getOrderId={this.props.getOrderId} changeEvaluate={this.props.changeEvaluate}/>
+			}.bind(this))
+		}
+		return (
+			<div className="tab-pane resolved">
+				{list}
+				<a href="javascript:void(0)" className="wBtn-showMore clr-gray" onTouchEnd={this.addMore}>{isAddMore}</a>
+			</div>
+		)
+	}
+})
+var PerOrder=React.createClass({
+	getInitialState:function(){
+		return {
+			imgIndex:0
+		}
+	},
+	addOne:function(dom){
   	if(dom.addNum>0){
   		location.href="ask.html?laywerId="+dom.laywerId+'&typeId='+dom.typeId+'&orderId='+dom.orderId+'&isAdd=1';
   	}else{
   		this.tips('不能再追问')
   	}
+  },
+  getAnswer:function(orderId,canEval,answer,e){
+  	this.props.getOrderId(orderId)
+  	//听完语音后显示评价框
+  	var _this=this
+  	var imgIndex=this.state.imgIndex;
+  	var $audio=$(e.target).prev()
+  	$audio.prop({src:answer,autoplay:'autoplay'})
+  	var timer=''
+  	$audio.on('play',function(){
+  		_this.setState({imgIndex:0})
+  		timer=setInterval(function(){
+  			if(imgIndex<=2){
+  				_this.setState({imgIndex:imgIndex+1})
+  			}else{
+  				_this.setState({imgIndex:0})
+  			}
+  		},1000)
+  	})
+  	$audio.on('ended',function(){
+  		clearInterval(timer)
+  		_this.setState({imgIndex:0})
+  		if(canEval){
+  			_this.props.changeEvaluate(true)
+  		}
+  	})
   },
   tips:function(text){
 		this.props.changeLoad('load',true)
@@ -177,35 +213,26 @@ var ResolvedList=React.createClass({
     }.bind(this),2000)
 	},
 	render:function(){
-		var list=<p>没有相关信息</p>
-		var orderInfo=this.state.orderInfo
-		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
-		if(orderInfo&&orderInfo.length>0){
-			list=orderInfo.map(function(dom){
-				return  <div className="laywer-order-list user-order">
-									<p className="over-hidden">
-										<span className="pull-left">订单号: {dom.orderId}</span>
-									</p>
-									<p>详情: {dom.content}</p>
-									<p className="over-hidden">
-										<span className="pull-left">类型: {dom.typeName}</span>
-										<span className="pull-right">时间: {dom.time}</span>
-									</p>
-									<div className="over-hidden padding-md-b">
-										<span className="user-add-num" onTouchEnd={this.addOne.bind(this,dom)}>可追问{dom.addNum}次</span>
-										<p className="voice pull-right">
-									    <audio src={dom.answer} controls="controls"/>
-									    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.orderId,dom.canEval,dom.answer)}>收听</span>
-									    <img src="img/xiaoxi.png"/>
-								    </p>
-									</div>
-								</div>
-			}.bind(this))
-		}
+		var dom=this.props.dom;
+		var src=['img/xiaoxi.png','img/dian.png','img/half.png'][imgIndex]
 		return (
-			<div className="tab-pane resolved">
-				{list}
-				<a href="javascript:void(0)" className="wBtn-showMore clr-gray" onTouchEnd={this.addMore}>{isAddMore}</a>
+			<div className="laywer-order-list user-order">
+				<p className="over-hidden">
+					<span className="pull-left">订单号: {dom.orderId}</span>
+				</p>
+				<p>详情: {dom.content}</p>
+				<p className="over-hidden">
+					<span className="pull-left">类型: {dom.typeName}</span>
+					<span className="pull-right">时间: {dom.time}</span>
+				</p>
+				<div className="over-hidden padding-md-b">
+					<span className="user-add-num" onTouchEnd={this.addOne.bind(this,dom)}>可追问{dom.addNum}次</span>
+					<p className="voice pull-right">
+				    <audio src={dom.answer} controls="controls"/>
+				    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.orderId,dom.canEval,dom.answer)}>收听</span>
+				    <img src={src}/>
+			    </p>
+				</div>
 			</div>
 		)
 	}

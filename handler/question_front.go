@@ -3184,11 +3184,17 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	if err != nil {
 		fmt.Println(err)
 	}
+	// resp1.Header
 
 	a, _ := ioutil.ReadAll(resp1.Body)
 	defer resp1.Body.Close()
 	fmt.Println("=================================================================================================")
+	fmt.Println(resp1.ContentLength)
+	fmt.Println(resp1.Header)
+	fmt.Println(resp1.Header["Content-Type"])
+	fmt.Println(resp1.Header["Content-disposition"])
 	fmt.Println(string(a))
+	// fmt.Println(resp1.)
 	fmt.Println("=================================================================================================")
 	return ""
 }

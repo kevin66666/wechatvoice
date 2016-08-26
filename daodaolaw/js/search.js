@@ -80,11 +80,10 @@ var Search=React.createClass({
 			$.ajax({
 				url:'/voice/front/questionquery',
 			//http://www.mylvfa.com/wechatvoice/ 搜索页面初始化接口
-			type:'POST',
-			data:JSON.stringify(data),
-			contentType: "application/json",
-			dataType:'json',
+				type:'POST',
+				data:JSON.stringify(data),
 				contentType: "application/json",
+				dataType:'json',
 				success:function(data){
 					if(data.code===10000){
 						if(data.list.length>0){

@@ -12,7 +12,7 @@ var getDataMixin={
       orderType:type
     }
     $.ajax({
-      url:"http://www.mylvfa.com/voice/ucenter/lawyerlist",
+      url:url,
       type:'POST',
       data:JSON.stringify(data),
       dataType:'json',
@@ -76,7 +76,7 @@ var OrderList=React.createClass({
 		return (
 			<div className="tab-content">
 				<UnsolvedList changeLoad={this.props.changeLoad}/>
-				<ResolvedList/>
+				<ResolvedList changeLoad={this.props.changeLoad}/>
 			</div>
 		)
 	}
@@ -89,7 +89,7 @@ var UnsolvedList=React.createClass({
   addMore:function(){
     //点击加载更多
     if(this.state.isAddMore){
-    	this.req(this,'json/laywerOrder.json','0')
+    	this.req(this,'http://www.mylvfa.com/voice/ucenter/lawyerlist','0')
     }
   },
   toAnswer:function(orderId){
@@ -117,7 +117,7 @@ var UnsolvedList=React.createClass({
     }.bind(this),2000)
 	},
 	render:function(){
-		var list=<p>没有相关信息</p>
+		var list=<p className="no-info">没有相关信息</p>
 		var orderInfo=this.state.orderInfo
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
@@ -152,32 +152,16 @@ var ResolvedList=React.createClass({
   addMore:function(){
     //点击加载更多
     if(this.state.isAddMore){
-    	this.req(this,'json/laywerOrder.json','2')
+    	this.req(this,'http://www.mylvfa.com/voice/ucenter/lawyerlist','2')
     }
   },
 	render:function(){
-		var list=<p>没有相关信息</p>
+		var list=<p className="no-info">没有相关信息</p>
 		var orderInfo=this.state.orderInfo
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
 			list=orderInfo.map(function(dom){
-				return  <div className="laywer-order-list">
-									<p className="over-hidden">
-										<span className="pull-left">订单号: {dom.orderId}</span>
-									</p>
-									<p>{dom.content}</p>
-									<p className="over-hidden">
-										<span className="pull-left">类型: {dom.type}</span>
-										<span className="pull-right">时间: {dom.time}</span>
-									</p>
-									<div className="over-hidden padding-md-b">
-										<p className="voice pull-right">
-									    <audio src={dom.answer} controls="controls"/>
-									    <span className="price">查听</span>
-									    <img src="img/xiaoxi.png"/>
-								    </p>
-							    </div>
-								</div>
+				return <PerOrder dom={dom} changeLoad={this.props.changeLoad} getOrderId={this.props.getOrderId} changeEvaluate={this.props.changeEvaluate}/>
 			}.bind(this))
 		}
 		return (
@@ -188,4 +172,59 @@ var ResolvedList=React.createClass({
 		)
 	}
 })
+
+var PerOrder=React.createClass({
+	getInitialState:function(){
+		return {
+			imgIndex:0
+		}
+	},
+  getAnswer:function(answer,e){
+  	//听完语音后显示评价框
+  	var _this=this
+  	var imgIndex=this.state.imgIndex;
+  	var $audio=$(e.target).prev()
+  	$audio.prop({src:answer,autoplay:'autoplay'})
+  	var timer=''
+  	$audio.on('play',function(){
+  		_this.setState({imgIndex:0})
+  		timer=setInterval(function(){
+  			if(imgIndex<=2){
+  				_this.setState({imgIndex:imgIndex+1})
+  			}else{
+  				_this.setState({imgIndex:0})
+  			}
+  		},1000)
+  	})
+  	$audio.on('ended',function(){
+  		clearInterval(timer)
+  		_this.setState({imgIndex:0})
+  	})
+  },
+	render:function(){
+		var dom=this.props.dom;
+		var src=['img/xiaoxi.png','img/dian.png','img/half.png'][imgIndex]
+		return (
+			  <div className="laywer-order-list">
+					<p className="over-hidden">
+						<span className="pull-left">订单号: {dom.orderId}</span>
+					</p>
+					<p>{dom.content}</p>
+					<p className="over-hidden">
+						<span className="pull-left">类型: {dom.type}</span>
+						<span className="pull-right">时间: {dom.time}</span>
+					</p>
+					<div className="over-hidden padding-md-b">
+						<p className="voice pull-right">
+					    <audio src={dom.answer} controls="controls"/>
+					    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.answer)}>查听</span>
+					    <img src={src}/>
+				    </p>
+			    </div>
+				</div>
+		)
+	}
+})
+
+var Per
 React.render(<LaywerOrder/>,document.getElementById('laywer-order'))

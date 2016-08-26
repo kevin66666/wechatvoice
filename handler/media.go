@@ -15,7 +15,7 @@ const URL = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token="
 
 type MediaId struct {
 	MId        string `json:"mediaId"`
-	QuestionId string `json:"questionId"`
+	QuestionId string `json:"orderId"`
 }
 
 func GetWechatVoiceInfoFromWechatServer(ctx *macaron.Context) string {

@@ -12,7 +12,8 @@
 			"answer":"#",
 			"addNum":1,
 			"price":"1",
-			"canEval":true
+			"canEval":true,
+			"imgIndex":0
 		},
 		{
 			"orderId":"101",
@@ -24,7 +25,8 @@
 			"answer":"##",
 			"addNum":2,
 			"price":"2",
-			"canEval":false
+			"canEval":false,
+			"imgIndex":0
 		},
 		{
 			"orderId":"102",
@@ -36,7 +38,8 @@
 			"answer":"###",
 			"addNum":0,
 			"price":"3",
-			"canEval":true
+			"canEval":true,
+			"imgIndex":0
 		}
 	]
 }

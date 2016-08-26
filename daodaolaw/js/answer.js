@@ -21,6 +21,7 @@ var Answer=React.createClass({
 		// 	type:'POST',
 		// 	data:JSON.stringify(orderId),
 		// 	contentType: "application/json",
+		//  dataType:'json',
 		// 	success:function(data){
 		// 		if(data.code===10000){
 		// 			this.setState({
@@ -42,9 +43,8 @@ var Answer=React.createClass({
 			type:'POST',
 			data:JSON.stringify({orderId:orderId}),
 			contentType: "application/json",
+			dataType:'json',
 			success:function(data){
-				// alert(typeof(data));
-				data =JSON.parse(data)
 				if(data.code===10000){  
 					wx.config({
 							debug: false,
@@ -92,7 +92,7 @@ var Answer=React.createClass({
 		    }
 		})
 		wx.error(function(res){
-		  _this.tips('微信录音接口调取失败1')
+		  _this.tips('微信录音接口调取失败')
 		})
 	},
 	stop:function(){
@@ -105,7 +105,7 @@ var Answer=React.createClass({
 	    }
 		})
 		wx.error(function(res){
-		  _this.tips('微信录音接口调取失败2')
+		  _this.tips('微信录音接口调取失败')
 		})
 	},
 	reset:function(){
@@ -124,40 +124,42 @@ var Answer=React.createClass({
 		  localId: _this.state.answer 
 	  })
 	  wx.error(function(res){
-		  _this.tips('微信播放录音接口调取失败4')
+		  _this.tips('微信播放录音接口调取失败')
 		})
 	},
 	save:function(){
-		var data={};
 		var _this=this;
 		wx.uploadVoice({
 	    localId: _this.state.answer, 
 	    isShowProgressTips: 1, // 默认为1，显示进度提示
       success: function (res) {
-      	data.serverId = res.serverId; // 返回音频的服务器端ID
-      	_this.doSave(data) 
+      	var serverId = res.serverId; // 返回音频的服务器端ID
+      	_this.doSave(serverId) 
     	}
 		})
 	},
-	doSave:function(data){
-    alert(data.serverId)
-
-		// $.ajax({
-		// 	url:'', //保存录音--服务器端ID{serverId:"serverId"}
-		// 	type:'POST',
-		// 	data:JSON.stringify(data),
-		// 	contentType: "application/json",
-		// 	success:function(data){
-		// 		if(data.code===10000){
-		// 			this.tips('音频保存成功')
-		// 		}else{
-		// 			this.tips(data.msg)
-		// 		}
-		// 	}.bind(this),
-		// 	error:function(data){
-		// 		console.log('初始化信息失败:',data)
-		// 	}
-		// })
+	doSave:function(serverId){
+		var data={
+			orderId:this.state.orderId,
+			mediaId:serverId
+		}
+		$.ajax({
+			url:'http://www.mylvfa.com/voice/order/uploadmedia', //保存录音--服务器端ID{serverId:"serverId"}
+			type:'POST',
+			data:JSON.stringify(data),
+			contentType: "application/json",
+			dataType:'json',
+			success:function(data){
+				if(data.code===10000){
+					this.tips('音频保存成功')
+				}else{
+					this.tips(data.msg)
+				}
+			}.bind(this),
+			error:function(data){
+				console.log('初始化信息失败:',data)
+			}
+		})
 	},
 	render:function(){
 		var info=this.state.info;

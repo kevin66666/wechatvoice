@@ -839,7 +839,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 	}
 	//记录钱的信息
 	pay := new(model.OrderPaymentInfo)
-	pay.GetConn().Where("order_number = ?", req.OrderId).Where("open_id = ?", openId).Find(&pay)
+	pay.GetConn().Where("order_number = ?", req.OrderId).Where("open_id = ?", openId).Where("is_first = 1").Find(&pay)
 	payment := new(model.WechatVoicePaymentInfo)
 	payment.Uuid = util.GenerateUuid()
 	payment.SwiftNumber = pay.WeixinSwiftNumber

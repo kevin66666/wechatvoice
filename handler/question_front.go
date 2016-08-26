@@ -2509,15 +2509,20 @@ func GetWxVoiceConfig(ctx *macaron.Context) string {
 	nstr := util.GenerateUuid()
 
 	timeStamp := time.Now().Format("20060102150405")
-	str := "jsapi_ticket=" + ticker + "&noncestr=" + nstr + "&timestamp=" + timeStamp + "&url=http://mp.weixin.qq.com?params=value"
-	str = Sha1(str)
+	configMap := make(map[string]string, 0)
+	configList := []string{"jsapi_ticket", "timestamp", "noncestr"}
+	configMap["jsapi_ticket"] = ticker
+	configMap["timestamp"] = timeStamp
+	configMap["noncestr"] = nstr
+	signstr := GeneratePageSign(configMap, configList)
+
 	response := new(ConfigResponssss)
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
 	response.Appid = "wxac69efc11c5e182f"
 	response.TimeStamp = timeStamp
 	response.NonceStr = nstr
-	response.Sing = str
+	response.Sing = signstr
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }

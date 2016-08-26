@@ -183,19 +183,18 @@ var PerOrder=React.createClass({
   	this.props.getOrderId(orderId)
   	//听完语音后显示评价框
   	var _this=this
-  	var imgIndex=this.state.imgIndex;
   	var $audio=$(e.target).prev()
   	$audio.prop({src:answer,autoplay:'autoplay'})
   	var timer=''
   	$audio.on('play',function(){
-  		_this.setState({imgIndex:0})
   		timer=setInterval(function(){
+  			var imgIndex=this.state.imgIndex;
   			if(imgIndex<=2){
   				_this.setState({imgIndex:imgIndex+1})
   			}else{
   				_this.setState({imgIndex:0})
   			}
-  		},1000)
+  		},500)
   	})
   	$audio.on('ended',function(){
   		clearInterval(timer)

@@ -3207,6 +3207,9 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	//
 	fileName := req.QuestionId + ".amr"
 	err2 := ioutil.WriteFile(fileName, abs, 0666)
+	if err2 != nil {
+		fmt.Println("写文件出错")
+	}
 	questionInfo := new(model.WechatVoiceQuestions)
 	qErr := questionInfo.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfo).Error
 	if qErr != nil {

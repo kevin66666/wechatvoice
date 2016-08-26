@@ -58,6 +58,7 @@ View 241  接口.txt
  -部署问题  源码OR二进制文件   需要去配置服务器环境
  -
  -NGINX配置
+ scp root@60.205.4.26:/home/workspace_go/src/wechatvoice/daodaolaw/bc19eb666a0911e600163e105789833c.mp3 /Users/zhangrui1/Documents/workspace/workspace_go/src
  -
  -
  -服务器信息  IP： 60.205.4.26    pwd：18522279381-zjy 
@@ -393,4 +394,150 @@ http {
         }
 }
                                                
-                                                                                                                                            1,0-1         Top
+                                                                                                                                            1,0package main
+ 
+import (
+    "io/ioutil"
+    "os"
+    "strings"
+    "time"
+ 
+    "./command"
+)
+ 
+const (
+    //最大处理的文件请求数
+    MAX_RSIZE int = 100
+    //请求转换的目录
+    CONFFILE string = "/tmp/"
+)
+ 
+func main() {
+    for {
+        arm2mp3_control()
+        time.Sleep(1e9)
+    }
+}
+ 
+//arm转mp3控制函数
+func arm2mp3_control() {
+    //读取目录下的文件信息
+    filelist := getDirFiles(CONFFILE)
+    if filelist == nil {
+        return
+    }
+ 
+    //遍历文件
+    for _, file := range filelist {
+        //获取文件的内容
+        rfilepath := CONFFILE + file.Name()
+        content := getFileContent(rfilepath)
+        if content == "" {
+            continue
+        }
+ 
+        //对文件内容进行分割
+        sarr := splitFileContent(content)
+        if sarr == nil {
+            continue
+        }
+ 
+        //进行amr到mp3的转换
+        rs := arm2mp3(sarr)
+ 
+        if rs {
+            //转换成功之后，删除请求的文件信息
+            os.Remove(rfilepath)
+            //转换成功之后，删除请求的amr文件信息
+            os.Remove(sarr[0])
+        }
+    }
+}
+ 
+//进行amr到mp3音频格式的转换
+//farr 文件信息：0arm文件名；1mp3文件名
+//返回是否成功：true成功，false失败
+func arm2mp3(farr []string) bool {
+    //执行命令ffmpeg -i 1.amr 1.mp3
+    params := [...]string{"-i", farr[0], farr[1]}
+    rs := command.ExecCommand("ffmpeg", params[0:3])
+ 
+    return rs
+}
+ 
+//对文件内容进行分片
+//content 文件的内容
+//返回分割的切片[0:armfilename, 1:mp3filename]
+func splitFileContent(content string) []string {
+    var sarr [2]string
+    var i int = 0
+ 
+    splitArr := strings.Split(content, "\r\n")
+    for _, val := range splitArr {
+        tmpstr := strings.TrimSpace(val)
+        if tmpstr == "" {
+            continue
+        }
+        sarr[i] = tmpstr
+        i++
+    }
+ 
+    //内容不符合要求
+    if i < 1 {
+        return nil
+    }
+ 
+    return sarr[0:2]
+}
+ 
+//读取文件的内容
+//filename 读取文件名
+//返回读取到的文件内容或者nil
+func getFileContent(filename string) string {
+    bytes, err := ioutil.ReadFile(filename)
+    if err != nil {
+        return ""
+    }
+ 
+    str := string(bytes)
+    str = strings.TrimSpace(str)
+ 
+    if str == "" {
+        return ""
+    }
+ 
+    return str
+}
+ 
+//遍历目录下的文件
+//path 遍历的目录
+//返回文件记录的切片
+func getDirFiles(path string) []os.FileInfo {
+    var filelist [MAX_RSIZE]os.FileInfo
+    var i int = 0
+ 
+    dir, err := ioutil.ReadDir(path)
+    if err != nil {
+        return nil
+    }
+ 
+    for _, file := range dir {
+        if file.IsDir() {
+            continue
+        }
+ 
+        if i >= MAX_RSIZE {
+            break
+        }
+ 
+        filelist[i] = file
+        i++
+    }
+ 
+    if i == 0 {
+        return nil
+    }
+ 
+    return filelist[0:i]
+}
+-1         Top

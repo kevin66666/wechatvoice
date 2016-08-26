@@ -12,6 +12,8 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+
+	"os/exec"
 	//"os"
 	//"sort"
 	"strconv"
@@ -3162,6 +3164,8 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 	return string(ret_str)
 }
 
+var dirName = "daodaolaw/voicepath"
+
 func GetFileFrontWx(ctx *macaron.Context) string {
 	result := new(model.GeneralResponse)
 	body, _ := ctx.Req.Body().String()
@@ -3210,17 +3214,25 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	//
 	// fileName := req.QuestionId + ".amr"
 	fileName := "bc19eb666a0911e600163e105789833c.amr"
+	fileNameMp3 := "bc19eb666a0911e600163e105789833c.mp3"
 	err2 := ioutil.WriteFile(fileName, abs, 0666)
 	if err2 != nil {
 		fmt.Println("写文件出错")
 	}
-
+	//params := [...]string{"-i", fileName, fileNameMp3}
+	str1 := "ffmpeg -i " + fileName + " " + fileNameMp3
+	//exec.Command(name, ...)
+	cmd := exec.Command(str1)
+	errCmd := cmd.Run()
+	if errCmd != nil {
+		fmt.Println(errCmd.Error())
+	}
 	questionInfo := new(model.WechatVoiceQuestions)
 	qErr := questionInfo.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfo).Error
 	if qErr != nil {
 		fmt.Println(qErr.Error(), "line 3213")
 	}
-	questionInfo.VoicePath = fileName
+	// questionInfo.VoicePath = fileName
 	updateErr := questionInfo.GetConn().Save(&questionInfo).Error
 	if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
 		fmt.Println(updateErr.Error(), "line 3218")

@@ -3222,7 +3222,7 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	//params := [...]string{"-i", fileName, fileNameMp3}
 	//str1 := "ffmpeg -i " + fileName + " " + fileNameMp3
 	//exec.Command(name, ...)
-	cmd := exec.Command("/usr/local/ffmpeg/bin/ffmepg", "-i", fileName, fileNameMp3)
+	cmd := exec.Command("./usr/local/ffmpeg/bin/ffmepg", "-i", fileName, fileNameMp3)
 	errCmd := cmd.Run()
 	errStart := cmd.Start()
 	if errStart != nil {

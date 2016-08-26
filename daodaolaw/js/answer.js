@@ -140,7 +140,7 @@ var Answer=React.createClass({
 	},
 	doSave:function(serverId){
 		var data={
-			orderId:orderId,
+			orderId:this.state.orderId,
 			mediaId:serverId
 		}
 		$.ajax({

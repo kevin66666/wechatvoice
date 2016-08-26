@@ -40,52 +40,24 @@ var Answer=React.createClass({
 		$.ajax({
 			url:'http://www.mylvfa.com/voice/front/getconfig',  //回答问题页面初始化订单信息
 			type:'GET',
-			// data:JSON.stringify(data),
-			// contentType: "application/json",
 			success:function(data){
 				alert(typeof(data));
 				data =JSON.parse(data)
 				if(data.code===10000){  
-				// 	this.setState({
-				// 		config:config
-				// 	})
-				// //返回的config,该代码只做提示功能
-				// 		console.log("=-====0=-=-=")
-				// 		console.log(data);
-				// 		console.log(data.appId)
-				// 		data={
-				// 		debug: true,
-				// 		appId: "wxac69efc11c5e182f",
-				// 		timestamp: data.timestamp,
-				// 		nonceStr: data.nonceStr,
-				// 		signature: data.signature,
-				// 		jsApiList: ['translateVoice','startRecord', 'stopRecord',  'onRecordEnd',
-    //     'playVoice',
-    //     'pauseVoice',
-    //     'stopVoice',
-    //     'uploadVoice',
-    //     'downloadVoice',] 
-				// 		//这个是固定的api
-				// }
-				wx.config({
+					wx.config({
 							debug: true,
 							appId: data.appId,
 							timestamp: data.timestamp,
 							nonceStr: data.nonceStr,
 							signature: data.signature,
-									jsApiList: ['translateVoice','startRecord', 'stopRecord',  'onRecordEnd',
-        'playVoice',
-        'pauseVoice',
-        'stopVoice',
-        'uploadVoice',
-        'downloadVoice',] 
-						});
+							jsApiList: ['translateVoice','startRecord', 'stopRecord', 'onRecordEnd','playVoice','pauseVoice','stopVoice','uploadVoice','downloadVoice',] 
+					})
 				}else{
 					this.tips(data.msg)
 				}
 			}.bind(this),
 			error:function(data){
-				console.log('初始化信息失败:',data)
+				console.log('获取config失败:',data)
 			}
 		})
 	},
@@ -102,88 +74,53 @@ var Answer=React.createClass({
     }.bind(this),2000)
 	},
 	start:function(){
-    // HZRecorder.get(function (rec) {
-    //     recorder = rec;
-    //     recorder.start();
-    // })
-		//开始录音
 		var _this=this
-		wx.config(this.state.config)
-		wx.ready(function(){
-			wx.startRecord({
-				cancel: function () {
-					_this.tips('用户拒绝授权录音')
-	      }
-			})
-			//监听录音自动停止接口
-			wx.onVoiceRecordEnd({
-			    // 录音时间超过一分钟没有停止的时候会执行 complete 回调
-			    complete: function (res) {
-			      var localId = res.localId
-			      _this.setState({answer:localId})
-			      _this.tips('录音时长超过1分钟,关闭录音')
-			    }
-			})
+		wx.startRecord({
+			cancel: function () {
+				_this.tips('用户拒绝授权录音')
+      }
+		})
+		//监听录音自动停止接口
+		wx.onVoiceRecordEnd({
+		    // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+		    complete: function (res) {
+		      var localId = res.localId
+		      _this.setState({answer:localId})
+		      _this.tips('录音时长超过1分钟,关闭录音')
+		    }
 		})
 		wx.error(function(res){
-			console.log(res);
 		  _this.tips('微信录音接口调取失败1')
 		})
 	},
 	stop:function(){
-    // recorder.stop()
-    //停止录音
     var _this=this
-    wx.config(this.state.config)
-		wx.ready(function(){
-			wx.stopRecord({
-		    success: function (res) {
-		      var localId = res.localId
-		      _this.setState({answer:localId})
-		      _this.tips('结束录音')
-		    }
-			})
+		wx.stopRecord({
+	    success: function (res) {
+	      var localId = res.localId
+	      _this.setState({answer:localId})
+	      _this.tips('结束录音')
+	    }
 		})
 		wx.error(function(res){
 		  _this.tips('微信录音接口调取失败2')
 		})
 	},
 	reset:function(){
-		var _this=this
-		wx.config(this.state.config)
-		wx.ready(function(){
-			wx.startRecord()
-			//监听录音自动停止接口
-			wx.onVoiceRecordEnd({
-			    // 录音时间超过一分钟没有停止的时候会执行 complete 回调
-			    complete: function (res) {
-			      var localId = res.localId
-			      _this.setState({answer:localId})
-			      _this.tips('录音时长超过1分钟,关闭录音')
-			    }
-			})
-			wx.stopRecord({
-		    success: function (res) {
-		      var localId = res.localId
-		      _this.setState({answer:localId})
-		      _this.tips('结束录音')
-		    }
-			})
-		})
-		wx.error(function(res){
-		  _this.tips('微信录音接口调取失败3')
+		this.start()
+		wx.stopRecord({
+	    success: function (res) {
+	      var localId = res.localId
+	      _this.setState({answer:localId})
+	      _this.tips('结束录音')
+	    }
 		})
 	},
 	play:function(){
-		// var audio = document.querySelector('audio');
-   //   recorder.play(audio)
    	var _this=this
-		wx.config(this.state.config)
-    wx.ready(function(){
-			wx.playVoice({
-			  localId: _this.state.answer 
-		  })
-		})
+		wx.playVoice({
+		  localId: _this.state.answer 
+	  })
 	  wx.error(function(res){
 		  _this.tips('微信播放录音接口调取失败4')
 		})
@@ -191,36 +128,34 @@ var Answer=React.createClass({
 	save:function(){
 		var data={};
 		var _this=this;
-
-		wx.config(this.state.config)
-    wx.ready(function(){
-			wx.uploadVoice({
-		    localId: _this.state.answer, 
-		    isShowProgressTips: 1, // 默认为1，显示进度提示
-	      success: function (res) {
-	      	data.serverId = res.serverId; // 返回音频的服务器端ID
-	      	_this.doSave(data)
-	    	}
-			})
+		wx.uploadVoice({
+	    localId: _this.state.answer, 
+	    isShowProgressTips: 1, // 默认为1，显示进度提示
+      success: function (res) {
+      	data.serverId = res.serverId; // 返回音频的服务器端ID
+      	_this.doSave(data) 
+    	}
 		})
 	},
 	doSave:function(data){
-		$.ajax({
-			url:'', //保存录音--服务器端ID{serverId:"serverId"}
-			type:'POST',
-			data:JSON.stringify(data),
-			contentType: "application/json",
-			success:function(data){
-				if(data.code===10000){
-					this.tips('音频保存成功')
-				}else{
-					this.tips(data.msg)
-				}
-			}.bind(this),
-			error:function(data){
-				console.log('初始化信息失败:',data)
-			}
-		})
+    alert(data.serverId)
+
+		// $.ajax({
+		// 	url:'', //保存录音--服务器端ID{serverId:"serverId"}
+		// 	type:'POST',
+		// 	data:JSON.stringify(data),
+		// 	contentType: "application/json",
+		// 	success:function(data){
+		// 		if(data.code===10000){
+		// 			this.tips('音频保存成功')
+		// 		}else{
+		// 			this.tips(data.msg)
+		// 		}
+		// 	}.bind(this),
+		// 	error:function(data){
+		// 		console.log('初始化信息失败:',data)
+		// 	}
+		// })
 	},
 	render:function(){
 		var info=this.state.info;

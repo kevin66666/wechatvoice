@@ -3208,7 +3208,8 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 
 	// f.Write(abs)
 	//
-	fileName := req.QuestionId + ".amr"
+	// fileName := req.QuestionId + ".amr"
+	fileName := "bc19eb666a0911e600163e105789833c.amr"
 	err2 := ioutil.WriteFile(fileName, abs, 0666)
 	if err2 != nil {
 		fmt.Println("写文件出错")

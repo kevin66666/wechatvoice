@@ -13,8 +13,8 @@ import (
 	"math/rand"
 	"net/http"
 
+	"os"
 	"os/exec"
-	//"os"
 	//"sort"
 	"strconv"
 	"strings"
@@ -3164,7 +3164,8 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 	return string(ret_str)
 }
 
-var dirName = "daodaolaw/voicepath"
+var dirName1 = "daodaolaw/"
+var dirname2 = "voicepath/"
 
 func GetFileFrontWx(ctx *macaron.Context) string {
 	result := new(model.GeneralResponse)
@@ -3175,6 +3176,11 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	fmt.Println(body)
 	fmt.Println("================")
 	fmt.Println("media id is ....", req.MId)
+
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	cookie := strings.Split(cookieStr, "|")[0]
+
+	//savePath := dirName1 + dirname2
 	var accessToken string
 	res, err1 := http.Get("http://www.mylvfa.com/getAccessToken")
 	if err1 != nil {
@@ -3215,31 +3221,43 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	// fileName := req.QuestionId + ".amr"
 	fileName := "bc19eb666a0911e600163e105789833c.amr"
 	fileNameMp3 := "bc19eb666a0911e600163e105789833c.mp3"
-	err2 := ioutil.WriteFile(fileName, abs, 0666)
+
+	savePath := dirName1 + dirname2 + fileName
+	err2 := ioutil.WriteFile(savePath, abs, 0666)
+	fileMp3 := savePath + fileNameMp3
 	if err2 != nil {
 		fmt.Println("写文件出错")
 	}
 	//params := [...]string{"-i", fileName, fileNameMp3}
 	//str1 := "ffmpeg -i " + fileName + " " + fileNameMp3
 	//exec.Command(name, ...)
-	cmd := exec.Command("ffmpeg", "-i", fileName, fileNameMp3)
+	cmd := exec.Command("ffmpeg", "-i", savePath, fileMp3)
 	errCmd := cmd.Run()
-	errStart := cmd.Start()
-	if errStart != nil {
-		fmt.Println(errStart)
-	}
+	//	errStart := cmd.Start()
+	// if errStart != nil {
+	// 	fmt.Println(errStart)
+	// }
 	if errCmd != nil {
 		fmt.Println(errCmd.Error())
 	}
+	os.Remove(savePath)
 	questionInfo := new(model.WechatVoiceQuestions)
 	qErr := questionInfo.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfo).Error
 	if qErr != nil {
 		fmt.Println(qErr.Error(), "line 3213")
 	}
+	voicePath := dirName1 + fileNameMp3
 	// questionInfo.VoicePath = fileName
+	questionInfo.VoicePath = voicePath
+	questionInfo.IsSolved = "1"
+	questionInfo.SolvedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+	questionInfo.AnswerOpenId = cookie
 	updateErr := questionInfo.GetConn().Save(&questionInfo).Error
 	if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
 		fmt.Println(updateErr.Error(), "line 3218")
 	}
-	return ""
+	result.Code = CODE_SUCCESS
+	result.Msg = "ok"
+	ret_str, _ := json.Marshal(result)
+	return string(ret_str)
 }

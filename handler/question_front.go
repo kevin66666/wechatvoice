@@ -2496,7 +2496,7 @@ func GetSigns(timeStr string) string {
 }
 
 func GetVoiceSign(timeStr, nstr string) string {
-	url := "http://60.205.4.26:22334/configSign?noncestr=" + nstr + "&timestamp=" + timeStr + "&url=http://www.mylvfa.com/daodaolaw/search.html"
+	url := "http://60.205.4.26:22334/configSign?noncestr=" + nstr + "&timestamp=" + timeStr + "&url=http://www.mylvfa.com/daodaolaw/answer.html"
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err.Error())

@@ -3161,4 +3161,34 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 	return string(ret_str)
 }
 
-// func GetOrderDetailById(ctx)
+func GetFileFrontWx(ctx *macaron.Context) string {
+	result := new(model.GeneralResponse)
+	body, _ := ctx.Req.Body().String()
+	req := new(MediaId)
+	json.Unmarshal([]byte(body), req)
+	fmt.Println("media id is ....", req.MId)
+	var accessToken string
+	res, err1 := http.Get("http://www.mylvfa.com/getAccessToken")
+	if err1 != nil {
+		result.Code = CODE_ERROR
+		result.Msg = err1.Error()
+		ret_str, _ := json.Marshal(result)
+		return string(ret_str)
+	}
+	resBody, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(resBody))
+	defer res.Body.Close()
+	accessToken = string(resBody)
+	url := "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=" + accessToken + "&media_id=" + req.MId
+	resp1, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	a, _ := ioutil.ReadAll(resp1.Body)
+	defer resp1.Body.Close()
+	fmt.Println("=================================================================================================")
+	fmt.Println(string(a))
+	fmt.Println("=================================================================================================")
+	return ""
+}

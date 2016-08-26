@@ -31,7 +31,7 @@ func (this *AnswerLockInfo) CloseConn(db *gorm.DB) {
 
 func GetLockListById(questionId string) ([]AnswerLockInfo, error) {
 	conn := dbpool.OpenConn()
-	defer conn.Close()
+	defer dbpool.CloseConn(&conn)
 	list := make([]AnswerLockInfo, 0)
 	err := conn.Where("question_id = ?", questionId).Find(&list).Error
 	return list, err

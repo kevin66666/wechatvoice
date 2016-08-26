@@ -2522,6 +2522,9 @@ type ConfigResponssss struct {
 func GetWxVoiceConfig(ctx *macaron.Context) string {
 	// ticker := JsapiTicker12()
 	nstr := util.GenerateUuid()
+	// body, _ := ctx.Req.Body().String()
+	// req := new(VoiceConfig)
+	// json.Unmarshal([]byte(body), req)
 
 	timeStamp := time.Now().Format("20060102150405")
 	sign := GetVoiceSign(timeStamp, nstr)
@@ -2987,13 +2990,16 @@ type JsConfig struct {
 }
 
 func GetJsConfig(ctx *macaron.Context) string {
+	bodu, _ := ctx.Req.Body().String()
+	req := new(VoiceConfig)
+	json.Unmarshal([]byte(bodu), req)
 	response := new(JsConfig)
 	appId := "wxac69efc11c5e182f"
 	nstr := util.GenerateUuid()
 	timeStamp := time.Now().Unix()
 	fmt.Println(timeStamp)
 	tStr := strconv.FormatInt(timeStamp, 10)
-	sig := GetSignsInfo(tStr, nstr)
+	sig := GetSignsInfo(tStr, nstr, req.OrderId)
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
 	response.AppId = appId
@@ -3005,10 +3011,14 @@ func GetJsConfig(ctx *macaron.Context) string {
 	return string(ret_str)
 }
 
-func GetSignsInfo(timeStr, nstr string) string {
+type VoiceConfig struct {
+	OrderId string `json:"orderId"`
+}
+
+func GetSignsInfo(timeStr, nstr, orderId string) string {
 	// signs := time.Now().Unix()
 	// signsStr := strconv.FormatInt(signs, 10)
-	url := "http://60.205.4.26:22334/configSign?noncestr=" + nstr + "&timestamp=" + timeStr + "&url=http://www.mylvfa.com/daodaolaw/answer.html"
+	url := "http://60.205.4.26:22334/configSign?noncestr=" + nstr + "&timestamp=" + timeStr + "&url=http://www.mylvfa.com/daodaolaw/answer.html?orderId=" + orderId
 	res, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err.Error())

@@ -12,6 +12,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	//"os"
 	//"sort"
 	"strconv"
 	"strings"
@@ -3186,15 +3187,35 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	}
 	// resp1.Header
 
-	a, _ := ioutil.ReadAll(resp1.Body)
+	abs, _ := ioutil.ReadAll(resp1.Body)
 	defer resp1.Body.Close()
 	fmt.Println("=================================================================================================")
 	fmt.Println(resp1.ContentLength)
 	fmt.Println(resp1.Header)
 	fmt.Println(resp1.Header["Content-Type"])
 	fmt.Println(resp1.Header["Content-disposition"])
-	fmt.Println(string(a))
+
+	//fmt.Println(string(a))
 	// fmt.Println(resp1.)
 	fmt.Println("=================================================================================================")
+	// f, errF := os.Create(req.QuestionId + ".amr")
+	// if errF != nil {
+	// 	fmt.Println("=====创建文件出错")
+	// }
+
+	// f.Write(abs)
+	//
+	fileName := req.QuestionId + ".amr"
+	err2 := ioutil.WriteFile(fileName, abs, 0666)
+	questionInfo := new(model.WechatVoiceQuestions)
+	qErr := questionInfo.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfo).Error
+	if qErr != nil {
+		fmt.Println(qErr.Error(), "line 3213")
+	}
+	questionInfo.VoicePath = fileName
+	updateErr := questionInfo.GetConn().Save(&questionInfo).Error
+	if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
+		fmt.Println(updateErr.Error(), "line 3218")
+	}
 	return ""
 }

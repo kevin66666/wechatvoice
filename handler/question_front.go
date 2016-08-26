@@ -3224,7 +3224,7 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 
 	savePath := dirName1 + dirname2 + fileName
 	err2 := ioutil.WriteFile(savePath, abs, 0666)
-	fileMp3 := savePath + fileNameMp3
+	fileMp3 := dirName1 + dirname2 + fileNameMp3
 	if err2 != nil {
 		fmt.Println("写文件出错")
 	}

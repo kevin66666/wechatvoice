@@ -43,7 +43,7 @@ var Answer=React.createClass({
 			data:JSON.stringify({orderId:orderId}),
 			contentType: "application/json",
 			success:function(data){
-				alert(typeof(data));
+				// alert(typeof(data));
 				data =JSON.parse(data)
 				if(data.code===10000){  
 					wx.config({

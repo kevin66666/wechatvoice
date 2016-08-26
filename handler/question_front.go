@@ -2495,6 +2495,21 @@ func GetSigns(timeStr string) string {
 	return resa.Sign
 }
 
+func GetVoiceSign(timeStr, nstr string) string {
+	url := "http://60.205.4.26:22334/configSign?noncestr=" + nstr + "&timestamp=" + timeStr + "&url=http://www.mylvfa.com/daodaolaw/search.html"
+	res, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	defer res.Body.Close()
+	resa := new(AResponse)
+	resBody, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(resBody, resa)
+	fmt.Println(string(resBody))
+	return resa.Sign
+}
+
 type ConfigResponssss struct {
 	Code      int64  `json:"code"`
 	Msg       string `json:"msg"`
@@ -2505,24 +2520,18 @@ type ConfigResponssss struct {
 }
 
 func GetWxVoiceConfig(ctx *macaron.Context) string {
-	ticker := JsapiTicker12()
+	// ticker := JsapiTicker12()
 	nstr := util.GenerateUuid()
 
 	timeStamp := time.Now().Format("20060102150405")
-	configMap := make(map[string]string, 0)
-	configList := []string{"jsapi_ticket", "timestamp", "noncestr"}
-	configMap["jsapi_ticket"] = ticker
-	configMap["timestamp"] = timeStamp
-	configMap["noncestr"] = nstr
-	signstr := GeneratePageSign(configMap, configList)
-
+	sign := GetVoiceSign(timeStamp, nstr)
 	response := new(ConfigResponssss)
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
 	response.Appid = "wxac69efc11c5e182f"
 	response.TimeStamp = timeStamp
 	response.NonceStr = nstr
-	response.Sing = signstr
+	response.Sing = sign
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
 }

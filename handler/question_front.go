@@ -2981,7 +2981,7 @@ type JsConfig struct {
 	Code      int64  `json:"code"`
 	Msg       string `json:"msg"`
 	AppId     string `json:"appId"`
-	TimeStamp string `json:"timestamp"`
+	TimeStamp int64  `json:"timestamp"`
 	NonceStr  string `json:"nonceStr"`
 	Signature string `json:"signature"`
 }
@@ -2997,7 +2997,7 @@ func GetJsConfig(ctx *macaron.Context) string {
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
 	response.AppId = appId
-	response.TimeStamp = tStr
+	response.TimeStamp = timeStamp
 	response.NonceStr = nstr
 	response.Signature = sig
 	ret_str, _ := json.Marshal(response)

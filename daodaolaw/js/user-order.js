@@ -214,7 +214,7 @@ var PerOrder=React.createClass({
 	},
 	render:function(){
 		var dom=this.props.dom;
-		var src=['img/xiaoxi.png','img/dian.png','img/half.png'][imgIndex]
+		var src=['img/xiaoxi.png','img/dian.png','img/half.png'][this.state.imgIndex]
 		return (
 			<div className="laywer-order-list user-order">
 				<p className="over-hidden">

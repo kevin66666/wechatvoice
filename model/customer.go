@@ -1,9 +1,10 @@
 package model
 
 import (
-	"database/sql"
+	//"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/xormplus/xorm"
 )
 
 type Customer struct {
@@ -20,19 +21,14 @@ type Customer struct {
 }
 
 func GetInfo() {
-	db, err := sql.Open("mysql", "root:7de2cd9b31@tcp(localhost:3306)/mylawyerfriend")
+	engin, err := xorm.NewMySQL("mysql", "root:7de2cd9b31@tcp(localhost:3306)/mylawyerfriend")
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println(err)
 	}
-	defer db.Close()
-	stmp, _ := db.Prepare("select * from customer where customerID =?")
-	row, ss := stmp.Exec("o-u0Nv8ydozIYnNVzca_C0frKwgI")
-	bbbb := stmp.QueryRow()
-	fmt.Println("ashdkahsdkjahsdjkahsdkjahksdhj")
-	fmt.Println(&row)
-	fmt.Println("====================================")
-	fmt.Println(bbbb)
-	if ss != nil {
-		fmt.Println(ss.Error())
+	res, err1 := engin.Query("select * from customer where customerID = o-u0Nv8ydozIYnNVzca_C0frKwgI")
+	if err1 != nil {
+		fmt.Println(err1)
 	}
+	fmt.Println("==asajksdhahsdjkahdskjahsdk")
+	fmt.Println(res)
 }

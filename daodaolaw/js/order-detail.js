@@ -30,6 +30,9 @@ var OrderDetail=React.createClass({
 	},
 	getAnswer:function(answer,e){
   	var _this=this
+  	var $img=$(e.target).next()
+  	var $audio=$(e.target).prev()
+  	$('audio').prop({src:'img/xiaoxi.png'})
 	$('audio').prop({'src':''})
   	var $audio=$(e.target).prev()
   	$audio.prop({src:answer,autoplay:'autoplay'})

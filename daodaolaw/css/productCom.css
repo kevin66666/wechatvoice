@@ -712,6 +712,8 @@ ul, li {
 }
 .answer p>img {
   width: 20%;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
 }
 .answer .save {
   text-align: center;

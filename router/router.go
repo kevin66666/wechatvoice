@@ -60,4 +60,5 @@ func SetRouter(m *macaron.Macaron) {
 	m.Post("/order/getorder", c.GetQuestionToAnswer)
 	m.Post("/order/evaluate", c.EvalAnswers)
 	m.Post("/order/uploadmedia", c.GetFileFrontWx)
+	m.Post("/order/getdetail", c.GetAswerResponseById)
 }

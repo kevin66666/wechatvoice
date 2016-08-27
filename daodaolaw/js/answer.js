@@ -8,6 +8,7 @@ var Answer=React.createClass({
 			answer:'',
 			typeId:'',           
 			typeName:'',
+			content:'',
 			load:false,
       		tips:'加载中,请稍等'
 		}
@@ -25,8 +26,8 @@ var Answer=React.createClass({
 				if(data.code===10000){
 					this.setState({
 						info:data,
-						typeId:data.typeId,
-						typeName:data.typeName
+						typeName:data.typeName,
+						content:data.content
 					})
 				}else{
 					this.tips(data.msg)

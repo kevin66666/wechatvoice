@@ -3257,5 +3257,27 @@ func GetAswerResponseById(ctx *macaron.Context) string {
 	req := new(AnswerConfig)
 	body, _ := ctx.Req.Body().String()
 	json.Unmarshal([]byte(body), req)
-	return ""
+	response := new(ResponseOrderDetail)
+	wechatInfo := new(model.WechatVoiceQuestions)
+	err := wechatInfo.GetConn().Where("uuid = ?", req.OrderId).Find(&wechatInfo).Error
+	if err != nil && !strings.Contains(err.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = "ok"
+	response.TypeName = wechatInfo.Category
+	response.Content = wechatInfo.Description
+	ret_Str, _ := json.Marshal(response)
+	return string(ret_Str)
+	// return ""
+}
+
+type ResponseOrderDetail struct {
+	Code     int64  `json:"code"`
+	Msg      string `json:"msg"`
+	Content  string `json:"content"`
+	TypeName string `json:"typeName"`
 }

@@ -33,6 +33,10 @@ type LawyerInfo struct {
 	RankThird  int64
 	RankFouth  int64
 	RankLast   int64
+	Cet        string
+	GroupPhoto string
+	LawFirm    string
+	Desc       string
 }
 
 func init() {

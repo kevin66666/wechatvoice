@@ -37,6 +37,7 @@ func GetInfo() {
 	if err22 != nil {
 		fmt.Println(err22.Error())
 	}
+	defer engin.Close()
 	fmt.Println(res2222)
 	//engin.Insert(sql1, "1", "1", "1")
 	for _, k := range res {
@@ -69,7 +70,7 @@ func GetUserInfoByID(openId string) Customer {
 		customer.SelCity = string(k["selfCity"])
 
 	}
-
+	defer engin.Close()
 	return customer
 }
 

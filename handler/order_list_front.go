@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"os/exec"
 	"strconv"
 	"strings"
 	"time"
@@ -286,6 +287,7 @@ func ToUserOrders(ctx *macaron.Context) {
 }
 
 var userLawList = "http://www.mylvfa.com/daodaolaw/laywer-order.html"
+var front = "http://www.mylvfa.com/voice/front/toindex"
 
 func ToLawOrders(ctx *macaron.Context) {
 	fmt.Println("=================进入方法")
@@ -312,25 +314,90 @@ func ToLawOrders(ctx *macaron.Context) {
 		fmt.Println("==========>>>>")
 		res1 := new(OpenIdResponse)
 		json.Unmarshal(resBody, res1)
-		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
-		member := new(model.MemberInfo)
-		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
-		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
-			fmt.Println(memberErr.Error(), "=====会员出错")
-		}
-		if member.Uuid == "" {
-			fmt.Println("新的用户")
-			user := GetUserInfo(res1.OpenId, res1.AccessToken)
-			member.Uuid = util.GenerateUuid()
-			member.HeadImgUrl = user.HeadImgUrl
-			member.OpenId = user.OpenId
-			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
-			member.NickName = user.NickName
-			err := member.GetConn().Create(&member).Error
-			if err != nil {
-				fmt.Println(err.Error(), "xxxxx")
+		openId := res1.OpenId
+		u := new(model.LawyerInfo)
+		u.GetConn().Where("open_id = ?", openId).Find(&u)
+		if u.Uuid == "" {
+			//说明这个人已经注册进来了
+		} else {
+			list1, err1 := model.GetUserInfoByOpenId(openId)
+			if err1 != nil {
+				fmt.Print(err1.Error())
+			}
+			var userid string
+			for _, k := range list1 {
+				userid = string(k["userID"])
+			}
+
+			fmt.Println("userid is ====>>>", userid)
+
+			list2, err2 := model.GetLawerInfoById(userid)
+			if err2 != nil {
+				fmt.Println(err2.Error())
+			}
+			if len(list2) == 0 {
+				fmt.Println("律师表中没有这个人")
+				ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + front + "\"</script>"))
+			} else {
+				//把律师信息拉到我这边
+				var lawerId, lawyerName, lawyerPhone, cert, groupPhoto, singlePhoto, province, city, lawFirm, business, desc, createDate string
+				for _, k := range list2 {
+					lawerId = string(k["lawyerId"])
+					lawyerName = string(k["lawyerName"])
+					lawyerPhone = string(k["lawyerPhone"])
+					cert = string(k["lawyerCertificateNo"])
+					groupPhoto = string(k["groupPhoto"])
+					singlePhoto = string(k["singlePhoto"])
+					province = string(k["selProvince"])
+					city = string(k["selCity"])
+					lawFirm = string(k["lawFirm"])
+					business = string(k["goodAtBusiness"])
+					desc = string(k["description"])
+					createDate = string(k["createDate"])
+
+				}
+				fmt.Println(province, city)
+				lawInfo := new(model.LawyerInfo)
+				lawInfo.Uuid = lawerId
+				lawInfo.RegistTime = createDate
+				lawInfo.OpenId = openId
+				lawInfo.PhoneNumber = lawyerPhone
+				photo := strings.Split(singlePhoto, "/")[2]
+				lawInfo.HeadImgUrl = "images/" + photo
+				lawInfo.Name = lawyerName
+				lawInfo.FirstCategory = business
+				lawInfo.Cet = cert
+				lawInfo.GroupPhoto = groupPhoto
+				lawInfo.LawFirm = lawFirm
+				lawInfo.Desc = desc
+				from := "/usr/local/apache-tomcat-6.0.32/webapps/mylawyerfriend" + singlePhoto
+				to := "/home/workspace_go/src/wechatvoice/daodaolaw/images"
+				exec.Command("cp", from, to)
+				err := lawInfo.GetConn().Create(&lawInfo)
+				if err != nil {
+					fmt.Println(err.Error)
+				}
 			}
 		}
+		// ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		// member := new(model.MemberInfo)
+		// memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		// if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+		// 	fmt.Println(memberErr.Error(), "=====会员出错")
+		// }
+		// if member.Uuid == "" {
+		// 	fmt.Println("新的用户")
+		// 	user := GetUserInfo(res1.OpenId, res1.AccessToken)
+		// 	member.Uuid = util.GenerateUuid()
+		// 	member.HeadImgUrl = user.HeadImgUrl
+		// 	member.OpenId = user.OpenId
+		// 	member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+		// 	member.NickName = user.NickName
+		// 	err := member.GetConn().Create(&member).Error
+		// 	if err != nil {
+		// 		fmt.Println(err.Error(), "xxxxx")
+		// 	}
+		// }
 		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 	}
 	fmt.Println(cookieStr)

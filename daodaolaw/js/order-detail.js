@@ -92,7 +92,7 @@ var OrderDetail=React.createClass({
 		for(var i=0;i<info.star;i++){
 			star.push(<i className="fa fa-star col-yellow"></i>)
 		}
-		var src=['img/xiaoxi.png','img/dian.png','img/half.png'][imgIndex]
+		var src=['img/xiaoxi.png','img/dian.png','img/half.png'][this.state.imgIndex]
 		return (
 			<div className="media quest-list margin-lg-t padding-vertical-md">
 			  <div className="media-body">

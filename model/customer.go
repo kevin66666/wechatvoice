@@ -6,7 +6,7 @@ import (
 )
 
 type Customer struct {
-	CustomerId    string
+	CustomerID    string
 	CustomerName  string
 	CustomerPwd   string
 	CustomerPhone string
@@ -26,4 +26,14 @@ func (this *Customer) GetConn() *gorm.DB {
 
 func (this *Customer) CloseConn(db *gorm.DB) {
 	dbpool.CloseConn(db)
+}
+
+func GetCustInfo(id string) Customer {
+	db := dbpool.OpenConn()
+
+	defer dbpool.CloseConn(&db)
+
+	var cs Customer
+	db.Raw("select * from customer where customerID = ?", id).Find(&cs)
+	return cs
 }

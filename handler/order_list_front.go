@@ -392,6 +392,8 @@ func ToLawOrders(ctx *macaron.Context) {
 					var a string
 					if photo != "" {
 						list := strings.Split("lawyer", photo)
+						b := photo[14:]
+						fmt.Println(b)
 						fmt.Println(list)
 					}
 					lawInfo.HeadImgUrl = "images/" + photo

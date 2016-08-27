@@ -1037,12 +1037,37 @@ func GetQuestionToAnswer(ctx *macaron.Context) string {
 	}
 
 	if len(lockList) == 0 || len(lockList) == 1 {
-		response.Code = CODE_SUCCESS
-		response.Msg = "ok"
-		ret_str, _ := json.Marshal(response)
-		fmt.Print(string(ret_str), "4")
+		question := new(model.WechatVoiceQuestions)
+		qErr := question.GetConn().Where("order_id =?", req.OrderId).Find(&question).Error
+		if qErr != nil && !strings.Contains(qErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = qErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		if question.IsLocked == "0" {
+			response.Code = CODE_SUCCESS
+			response.Msg = "ok"
 
-		return string(ret_str)
+			question.IsLocked = "1"
+			errsss := question.GetConn().Save(&question).Error
+			if errsss != nil {
+				response.Msg = errsss.Error()
+				response.Code = CODE_ERROR
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+			ret_str, _ := json.Marshal(response)
+			fmt.Print(string(ret_str), "4")
+
+			return string(ret_str)
+		} else {
+			response.Code = CODE_ERROR
+			response.Msg = ""
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+
 	} else {
 		response.Code = CODE_ERROR
 		response.Msg = "error"

@@ -7,19 +7,19 @@ import (
 
 type WechatVoiceQuestions struct {
 	gorm.Model
-	Uuid           string
-	Category       string //分类名称
-	CategoryId     string //分类名称ID
-	CategoryIdInt  int64  //分类名称ID int
-	Description    string //问题描述
-	CreateTime     string //创建时间
-	CustomerId     string //用户ID
-	CustomerName   string //用户姓名
-	CustomerOpenId string //用户OPENID
-	AskTime        string //提问时间
-	AskerHeadImg   string //用户头像
-	AnswerId       string
-
+	Uuid              string
+	Category          string //分类名称
+	CategoryId        string //分类名称ID
+	CategoryIdInt     int64  //分类名称ID int
+	Description       string //问题描述
+	CreateTime        string //创建时间
+	CustomerId        string //用户ID
+	CustomerName      string //用户姓名
+	CustomerOpenId    string //用户OPENID
+	AskTime           string //提问时间
+	AskerHeadImg      string //用户头像
+	AnswerId          string
+	IsLocked          string
 	AnswerName        string
 	AnswerOpenId      string
 	NeedId            string

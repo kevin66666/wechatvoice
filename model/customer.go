@@ -9,7 +9,7 @@ import (
 	core "github.com/xormplus/core"
 )
 
-type Customer struct {
+type customer struct {
 	CustomerID    string `xorm:"'customerID'"`
 	CustomerName  string `xorm:"'customerName'"`
 	CustomerPwd   string `xorm:"'customerPwd'"`
@@ -36,7 +36,7 @@ func GetInfo() {
 	//
 	// engine.SetMapper(core.SameMapper{})
 	engin.SetMapper(core.SameMapper{})
-	custo := new(Customer)
+	custo := new(customer)
 	custo.CustomerID = "xxxxx"
 	iddd, ddd := engin.Insert(&custo)
 	if ddd != nil {

@@ -888,12 +888,15 @@ func GetQuestionToAnswer(ctx *macaron.Context) string {
 		response.Code = CODE_ERROR
 		response.Msg = lockerr.Error()
 		ret_str, _ := json.Marshal(response)
+		fmt.Print(string(ret_str), "1")
 		return string(ret_str)
 	}
 	if lock.Uuid != "" {
 		response.Code = CODE_SUCCESS
 		response.Msg = "ok"
 		ret_str, _ := json.Marshal(response)
+		fmt.Print(string(ret_str), "2")
+
 		return string(ret_str)
 	}
 
@@ -902,6 +905,8 @@ func GetQuestionToAnswer(ctx *macaron.Context) string {
 		response.Code = CODE_ERROR
 		response.Msg = lockListErr.Error()
 		ret_str, _ := json.Marshal(response)
+		fmt.Print(string(ret_str), "3")
+
 		return string(ret_str)
 	}
 
@@ -909,11 +914,15 @@ func GetQuestionToAnswer(ctx *macaron.Context) string {
 		response.Code = CODE_SUCCESS
 		response.Msg = "ok"
 		ret_str, _ := json.Marshal(response)
+		fmt.Print(string(ret_str), "4")
+
 		return string(ret_str)
 	} else {
 		response.Code = CODE_ERROR
 		response.Msg = "error"
 		ret_str, _ := json.Marshal(response)
+		fmt.Print(string(ret_str), "5")
+
 		return string(ret_str)
 	}
 

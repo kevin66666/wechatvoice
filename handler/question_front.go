@@ -52,6 +52,10 @@ const (
 	WECHAT_PREPAY_URL = "/wechatvoice/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
 )
 
+func init() {
+
+}
+
 var merchantIndexUrl = "http://www.mylvfa.com/daodaolaw/search.html"
 
 //查询问题返回

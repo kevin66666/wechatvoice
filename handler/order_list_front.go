@@ -14,7 +14,37 @@ import (
 	"time"
 	"wechatvoice/model"
 	"wechatvoice/tool/util"
+
+	"github.com/robfig/cron"
 )
+
+func init() {
+	c := cron.New()
+	c.AddFunc("@every 10m", func() { UpdateAllQuestions() })
+}
+
+func UpdateAllQuestions() {
+	list, err := model.GetAllLocked()
+	if err != nil && !strings.Contains(err.Error(), RNF) {
+		fmt.Println(err.Error())
+	}
+	if len(list) > 0 {
+
+		for _, k := range list {
+			go UpdateInfo(k)
+		}
+	}
+}
+func UpdateInfo(info model.WechatVoiceQuestions) {
+	now := time.Now().Unix()
+	b4 := info.LockTime
+	a := now - b4
+	times := a / 1000 / 60
+	if times > 10 {
+		info.IsLocked = "0"
+		info.GetConn().Update(&info)
+	}
+}
 
 type OrderListFrontRequest struct {
 	StartLine   int64  `json:"startLine"`

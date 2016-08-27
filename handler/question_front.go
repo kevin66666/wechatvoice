@@ -2758,22 +2758,24 @@ func GetOrderInfoById(ctx *macaron.Context) string {
 	req := new(GetInfo)
 	json.Unmarshal([]byte(body), req)
 	response := new(GetInfoResponse)
-	order := new(model.WechatVoiceQuestions)
+	// order := new(model.WechatVoiceQuestions)
 	Print("post请求数据为", body)
-	orderErr := order.GetConn().Where("uuid = ?", req.OrderId).Find(&order).Error
-	if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
-		response.Code = CODE_ERROR
-		response.Msg = orderErr.Error()
-		ret_str, _ := json.Marshal(response)
-		return string(ret_str)
-	}
+	// orderErr := order.GetConn().Where("uuid = ?", req.OrderId).Find(&order).Error
+	// // fmt.Pri
+	// if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
+	// 	response.Code = CODE_ERROR
+	// 	response.Msg = orderErr.Error()
+	// 	ret_str, _ := json.Marshal(response)
+	// 	return string(ret_str)
+	// }
 	// lId := order.AnswerId
 	law := new(model.LawyerInfo)
 	lc := new(model.LawCatgory)
 	ctSet := new(model.WechatVoiceQuestionSettings)
-	err := law.GetConn().Where("uuid = ?", order.AnswerId).Find(&law).Error
-	err = lc.GetConn().Where("uuid = ?", order.CategoryId).Find(&lc).Error
-	err = ctSet.GetConn().Where("category_id = ?", order.CategoryId).Find(&ctSet).Error
+	err := law.GetConn().Where("uuid = ?", req.LawId).Find(&law).Error
+	fmt.Println(law)
+	err = lc.GetConn().Where("uuid = ?", req.TypeId).Find(&lc).Error
+	err = ctSet.GetConn().Where("category_id = ?", req.TypeId).Find(&ctSet).Error
 	if err != nil && !strings.Contains(err.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = err.Error()

@@ -3206,8 +3206,8 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	// f.Write(abs)
 	//
 	// fileName := req.QuestionId + ".amr"
-	fileName := "bc19eb666a0911e600163e105789833c.amr"
-	fileNameMp3 := "bc19eb666a0911e600163e105789833c.mp3"
+	fileName := req.QuestionId + ".amr"
+	fileNameMp3 := req.QuestionId + ".mp3"
 
 	savePath := dirName1 + dirname2 + fileName
 	err2 := ioutil.WriteFile(savePath, abs, 0666)

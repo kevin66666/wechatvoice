@@ -186,7 +186,7 @@ var PerOrder=React.createClass({
   	var $img=$(e.target).next()
   	var $audio=$(e.target).prev()
   	$('audio').prop({src:'img/xiaoxi.png'})
-	$img.prop('src',)
+	// $img.prop('src',)
   	$audio.prop({src:answer,autoplay:'autoplay'})
   	var timer=''
   	$audio.on('play',function(){

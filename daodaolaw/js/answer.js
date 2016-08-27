@@ -96,7 +96,7 @@ var Answer=React.createClass({
 		})
 	},
 	stop:function(){
-    var _this=this
+      var _this=this
 		wx.stopRecord({
 	    success: function (res) {
 	      var localId = res.localId
@@ -118,24 +118,39 @@ var Answer=React.createClass({
 	    }
 		})
 	},
-	play:function(){
-   	var _this=this
+	play:function(e){
+		var $play=$(e.target)
+		$play.addClass('bg-answer')
+	   	var _this=this
 		wx.playVoice({
-		  localId: _this.state.answer 
-	  })
-	  wx.error(function(res){
+			localId: _this.state.answer 
+		})
+		wx.onVoicePlayEnd({
+		    success: function (res) {
+		    	$play.remove('bg-answer')
+		        var localId = res.localId; // 返回音频的本地ID
+		    }
+		})
+	    wx.error(function(res){
+	      $play.remove('bg-answer')
 		  _this.tips('微信播放录音接口调取失败')
 		})
 	},
 	save:function(){
+		var $save=$(e.target)
+		$save.addClass('bg-answer')
 		var _this=this;
 		wx.uploadVoice({
-	    localId: _this.state.answer, 
-	    isShowProgressTips: 1, // 默认为1，显示进度提示
-      success: function (res) {
-      	var serverId = res.serverId; // 返回音频的服务器端ID
-      	_this.doSave(serverId) 
-    	}
+		    localId: _this.state.answer, 
+		    isShowProgressTips: 1, // 默认为1，显示进度提示
+	      	success: function (res) {
+	      	var serverId = res.serverId; // 返回音频的服务器端ID
+	      		_this.doSave(serverId) 
+	    	}
+		})
+		wx.error(function(res){
+	      $save.remove('bg-answer')
+		  _this.tips('微信播放录音接口调取失败')
 		})
 	},
 	doSave:function(serverId){
@@ -172,8 +187,8 @@ var Answer=React.createClass({
 				<p>(按住开始回答)</p>
 				<audio controls autoplay></audio>
 				<div className="save">
-					<span className="margin-md-r" onTouchEnd={this.reset}>重新录音</span>
-					<span onTouchEnd={this.play}>播放录音</span>
+					<span className="margin-md-r dispN" onTouchEnd={this.reset}>重新录音</span>
+					<p onTouchEnd={this.play}>播放录音</p>
 					<p onTouchEnd={this.save}>确认发送</p>
 				</div>
 				<Loading load={this.state.load} tips={this.state.tips}/>

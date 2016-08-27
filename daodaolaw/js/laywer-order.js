@@ -182,6 +182,7 @@ var PerOrder=React.createClass({
   getAnswer:function(answer,e){
   	//听完语音后显示评价框
   	var _this=this
+    $('audio').prop({src:''})
   	var $audio=$(e.target).prev()
   	$audio.prop({src:answer,autoplay:'autoplay'})
   	var timer=''

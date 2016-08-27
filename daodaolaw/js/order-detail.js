@@ -30,6 +30,7 @@ var OrderDetail=React.createClass({
 	},
 	getAnswer:function(answer,e){
   	var _this=this
+	$('audio').prop({'src':''})
   	var $audio=$(e.target).prev()
   	$audio.prop({src:answer,autoplay:'autoplay'})
   	var timer=''
@@ -49,26 +50,27 @@ var OrderDetail=React.createClass({
   	})
   },
 	play:function(answer,e){
+		$('audio').prop({'src':''})
 		var $audio=$(e.target).prev()
 		var $img=$(e.target).next()
-  	$audio.prop({src:answer,autoplay:'autoplay'})
-  	var timer=''
-  	$audio.on('play',function(){
-  		var imgIndex=0;
-  		timer=setInterval(function(){
-  			var src=['img/xiaoxi.png','img/dian.png','img/half.png'][imgIndex]
-  			if(imgIndex<=2){
-  				$img.prop({src:src})
-  				imgIndex+=1
-  			}else{
-  				imgIndex=0;
-  			}
-  		},1000)
-  	})
-  	$audio.on('ended',function(){
-  		clearInterval(timer)
-  		$img.prop({src:'img/xiaoxi.png'})
-  	})
+  		$audio.prop({src:answer,autoplay:'autoplay'})
+  		var timer=''
+  		$audio.on('play',function(){
+  			var imgIndex=0;
+  			timer=setInterval(function(){
+  				var src=['img/xiaoxi.png','img/dian.png','img/half.png'][imgIndex]
+  				if(imgIndex<=2){
+  					$img.prop({src:src})
+  					imgIndex+=1
+  				}else{
+  					imgIndex=0;
+  				}
+  			},1000)
+  		})
+	  	$audio.on('ended',function(){
+	  		clearInterval(timer)
+	  		$img.prop({src:'img/xiaoxi.png'})
+	  	})
 	},
 	render:function(){
 		var info=this.state.info;
@@ -82,7 +84,7 @@ var OrderDetail=React.createClass({
 						  		<p>{dom.question}</p>
 						  		<p className="add-voice">
 								    <audio src={dom.answer} controls="controls" ref="record"/>
-								    <span className="price" onTouchEnd={this.play}>免费听取</span>
+								    <span className="price" onTouchEnd={this.play.bind(this,dom.answer)}>免费听取</span>
 								    <img src="img/xiaoxi.png"/>
 							    </p>
 						  	</li>

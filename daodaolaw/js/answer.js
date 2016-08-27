@@ -15,7 +15,7 @@ var Answer=React.createClass({
 	},
 	componentDidMount:function(){
 		var orderId=location.search?location.search.slice(1).split('=')[1]:''
-		// this.setState({orderId:orderId})
+		 this.setState({orderId:orderId})
 		// $.ajax({
 		// 	url:'http://www.mylvfa.com/voice/',  //回答问题页面初始化订单信息
 		// 	type:'POST',

@@ -87,9 +87,15 @@ type AddInfos struct {
 }
 
 //查询问题方法
-
+func Print(args ...string) {
+	log.Println("==================================================")
+	for _, k := range args {
+		log.Println(k)
+	}
+	log.Println("==================================================")
+}
 func ToIndex(ctx *macaron.Context) {
-	fmt.Println("=================进入方法")
+	Print("进入index页面方法")
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 
 	if cookieStr == "" && ctx.Query("code") == "" {
@@ -99,13 +105,12 @@ func ToIndex(ctx *macaron.Context) {
 		ctx.Redirect(url)
 	}
 	code := ctx.Query("code")
-	fmt.Println("============code is ")
+	Print("获取到的code为==========>>>", code)
 	if code != "" {
 		url := "http://60.205.4.26:22334/getOpenid?code=" + code
 		res, err := http.Get(url)
 		if err != nil {
-			fmt.Println("=========xxxxx")
-			fmt.Println(err.Error())
+			Print("获取openId 出错", err.Error())
 		}
 		resBody, _ := ioutil.ReadAll(res.Body)
 		fmt.Println(string(resBody))
@@ -117,10 +122,10 @@ func ToIndex(ctx *macaron.Context) {
 		member := new(model.MemberInfo)
 		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
 		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
-			fmt.Println(memberErr.Error(), "=====会员出错")
+			Print("获取会员信息出错", memberErr.Error())
 		}
 		if member.Uuid == "" {
-			fmt.Println("新的用户")
+			Print("这是一个新的用户")
 			user := GetUserInfo(res1.OpenId, res1.AccessToken)
 			member.Uuid = util.GenerateUuid()
 			member.HeadImgUrl = user.HeadImgUrl
@@ -129,12 +134,12 @@ func ToIndex(ctx *macaron.Context) {
 			member.NickName = user.NickName
 			err := member.GetConn().Create(&member).Error
 			if err != nil {
-				fmt.Println(err.Error(), "xxxxx")
+				Print("创建新用户出错", err.Error())
 			}
 		}
 		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 	}
-	fmt.Println(cookieStr)
+	Print("客户端存的cookie值为", cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	// userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId)
@@ -143,7 +148,7 @@ func ToIndex(ctx *macaron.Context) {
 
 func QuestionQuery(ctx *macaron.Context) string {
 	response := new(QuestionQueryResponse)
-	fmt.Println("=================进入方法")
+	Print("进入查询问题方法")
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 
 	if cookieStr == "" && ctx.Query("code") == "" {
@@ -153,7 +158,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		ctx.Redirect(url)
 	}
 	code := ctx.Query("code")
-	fmt.Println("============code is ")
+	Print("获取到的code为==========>>>", code)
 	if code != "" {
 		url := "http://60.205.4.26:22334/getOpenid?code=" + code
 		res, err := http.Get(url)
@@ -162,9 +167,9 @@ func QuestionQuery(ctx *macaron.Context) string {
 			fmt.Println(err.Error())
 		}
 		resBody, _ := ioutil.ReadAll(res.Body)
-		fmt.Println(string(resBody))
+		// fmt.Println(string(resBody))
 		defer res.Body.Close()
-		fmt.Println("==========>>>>")
+		// fmt.Println("==========>>>>")
 		res1 := new(OpenIdResponse)
 		json.Unmarshal(resBody, res1)
 		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
@@ -177,11 +182,11 @@ func QuestionQuery(ctx *macaron.Context) string {
 			return string(ret_str)
 		}
 		if member.Uuid == "" {
-			fmt.Println("新的用户")
+			Print("新的用户")
 			user := GetUserInfo(res1.OpenId, res1.AccessToken)
-			log.Println("=========")
-			log.Println(user)
-			log.Println(user.HeadImgUrl)
+			// log.Println("=========")
+			// log.Println(user)
+			// log.Println(user.HeadImgUrl)
 			member.Uuid = util.GenerateUuid()
 			member.HeadImgUrl = user.HeadImgUrl
 			member.OpenId = user.OpenId
@@ -189,6 +194,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 			member.NickName = user.NickName
 			err := member.GetConn().Create(&member).Error
 			if err != nil {
+				Print("创建新用户出错", err.Error())
 				response.Code = CODE_ERROR
 				response.Msg = err.Error()
 				ret_str, _ := json.Marshal(response)
@@ -197,7 +203,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		}
 		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 	}
-	fmt.Println(cookieStr)
+	Print("客户端存的cookie值为", cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	// userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId)
@@ -207,6 +213,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 	marshallErr := json.Unmarshal([]byte(body), req)
 
 	if marshallErr != nil {
+		Print("unmarshall出错", marshallErr.Error())
 		response.Code = CODE_ERROR
 		response.Msg = marshallErr.Error()
 		ret_str, _ := json.Marshal(response)
@@ -223,7 +230,8 @@ func QuestionQuery(ctx *macaron.Context) string {
 	}
 
 	retList := make([]QuestionInfo, 0)
-	for _, k := range questionList {
+	for v, k := range questionList {
+		log.Println("这是第", v, "个问题列表中的问题")
 		single := new(QuestionInfo)
 		lawyer := new(model.LawyerInfo)
 		lawyerErr := lawyer.GetConn().Where("uuid = ?", k.AnswerId).Find(&lawyer).Error
@@ -245,9 +253,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		cateInfo := new(model.WechatVoiceQuestionSettings)
 		cateErr := cateInfo.GetConn().Where("category_id = ?", k.CategoryId).Find(&cateInfo).Error
 		if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
-			fmt.Println("=================>>>>>cateErr")
-			fmt.Println(cateErr.Error())
-			fmt.Println("=================>>>>>")
+			Print("获取分类信息错误", cateErr.Error())
 			response.Code = CODE_ERROR
 			response.Msg = cateErr.Error()
 			ret_str, _ := json.Marshal(response)
@@ -260,6 +266,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		payErr := payment.GetConn().Where("question_id = ?", k.Uuid).Where("open_id = ?", openId).Find(&payment).Error
 
 		if payErr != nil && !strings.Contains(payErr.Error(), RNF) {
+			Print("获取已支付信息错误", payErr.Error())
 			response.Code = CODE_ERROR
 			response.Msg = payErr.Error()
 			ret_str, _ := json.Marshal(response)
@@ -268,10 +275,10 @@ func QuestionQuery(ctx *macaron.Context) string {
 		var payAble bool
 		if payment.Uuid != "" {
 			//说明有支付记录
-			log.Println("======>>>>", payment.Uuid)
+			Print("用户已对Id为", k.Uuid, "的订单进行支付，无需再支付")
 			payAble = true
 		} else {
-			log.Println("=======>>>>>没有付款")
+			Print("用户未对Id为", k.Uuid, "的订单进行支付，需要支付")
 			payAble = false
 		}
 		single.IsPay = payAble

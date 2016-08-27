@@ -378,6 +378,7 @@ func ToLawOrders(ctx *macaron.Context) {
 						createDate = string(k["createDate"])
 
 					}
+					fmt.Println(list2)
 					fmt.Println(province, city)
 					lawInfo := new(model.LawyerInfo)
 					lawInfo.Uuid = lawerId

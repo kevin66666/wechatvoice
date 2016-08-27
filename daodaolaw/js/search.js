@@ -13,8 +13,8 @@ var Search=React.createClass({
 	componentDidMount:function(){
 		var data={
 			keywords:'',
-			startNum:this.state.searchList.length,
-			endNum:this.state.searchList.length+10
+			startNum:1,//this.state.searchList.length,
+			endNum:10//this.state.searchList.length+10
 		}
 		$.ajax({
 			//url:'json/init.json',

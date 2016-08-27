@@ -3053,6 +3053,8 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
 	req := new(OrderDetailReq)
 	json.Unmarshal([]byte(body), req)
+	fmt.Println("订单详情页面")
+	fmt.Println(body)
 	orderInfo := new(model.WechatVoiceQuestions)
 	orderErr := orderInfo.GetConn().Where("uuid = ?", req.OrderId).Find(&orderInfo).Error
 	response := new(DetailResponse)

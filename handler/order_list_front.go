@@ -292,129 +292,145 @@ var front = "http://www.mylvfa.com/voice/front/toindex"
 func ToLawOrders(ctx *macaron.Context) {
 	fmt.Println("=================进入方法")
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-
-	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/order/tolaworder"
-		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
-		//cookieStr = "1|2"
-		ctx.Redirect(url)
-	}
-	code := ctx.Query("code")
-	fmt.Println("============code is ")
-	if code != "" {
-		url := "http://60.205.4.26:22334/getOpenid?code=" + code
-		res, err := http.Get(url)
-		if err != nil {
-			fmt.Println("=========xxxxx")
-			fmt.Println(err.Error())
-		}
-		resBody, _ := ioutil.ReadAll(res.Body)
-		fmt.Println(string(resBody))
-		defer res.Body.Close()
-		fmt.Println("==========>>>>")
-		res1 := new(OpenIdResponse)
-		json.Unmarshal(resBody, res1)
-		openId := res1.OpenId
+	if cookieStr != "" {
+		openId := strings.Split(cookieStr, "|")[0]
+		fmt.Println(openId)
 		u := new(model.LawyerInfo)
 		erru := u.GetConn().Where("open_id = ?", openId).Find(&u).Error
 		if erru != nil && !strings.Contains(erru.Error(), RNF) {
 			fmt.Println(erru.Error)
 		}
 		if u.Uuid == "" {
-			//说明这个人已经注册进来了
-			list1, err1 := model.GetUserInfoByOpenId(openId)
-			if err1 != nil {
-				fmt.Print(err1.Error())
-			}
-			var userid string
-			fmt.Println(len(list1))
-			if len(list1) == 0 {
-				fmt.Println("律师表中没有这个人")
-				ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + front + "\"</script>"))
-			}
-			for _, k := range list1 {
-				userid = string(k["userID"])
-			}
+			//如果有cookie 可能是用户 可能是律师 需要做区分
+			ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + front + "\"</script>"))
+		} else {
+			ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + userLawList + "\"</script>"))
+		}
+	} else {
+		if cookieStr == "" && ctx.Query("code") == "" {
+			re := "http://www.mylvfa.com/voice/order/tolaworder"
+			url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+			//cookieStr = "1|2"
+			ctx.Redirect(url)
 
-			fmt.Println("userid is ====>>>", userid)
-
-			list2, err2 := model.GetLawerInfoById(userid)
-			if err2 != nil {
-				fmt.Println(err2.Error())
+		}
+		code := ctx.Query("code")
+		fmt.Println("============code is ")
+		if code != "" {
+			url := "http://60.205.4.26:22334/getOpenid?code=" + code
+			res, err := http.Get(url)
+			if err != nil {
+				fmt.Println("=========xxxxx")
+				fmt.Println(err.Error())
 			}
-			if len(list2) == 0 {
-				fmt.Println("律师表中没有这个人")
-				ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + front + "\"</script>"))
+			resBody, _ := ioutil.ReadAll(res.Body)
+			fmt.Println(string(resBody))
+			defer res.Body.Close()
+			fmt.Println("==========>>>>")
+			res1 := new(OpenIdResponse)
+			json.Unmarshal(resBody, res1)
+			openId := res1.OpenId
+			u := new(model.LawyerInfo)
+			erru := u.GetConn().Where("open_id = ?", openId).Find(&u).Error
+			if erru != nil && !strings.Contains(erru.Error(), RNF) {
+				fmt.Println(erru.Error)
+			}
+			if u.Uuid == "" {
+				//说明这个人已经注册进来了
+				list1, err1 := model.GetUserInfoByOpenId(openId)
+				if err1 != nil {
+					fmt.Print(err1.Error())
+				}
+				var userid string
+				fmt.Println(len(list1))
+				if len(list1) == 0 {
+					fmt.Println("律师表中没有这个人")
+					ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + front + "\"</script>"))
+				}
+				for _, k := range list1 {
+					userid = string(k["userID"])
+				}
+
+				fmt.Println("userid is ====>>>", userid)
+
+				list2, err2 := model.GetLawerInfoById(userid)
+				if err2 != nil {
+					fmt.Println(err2.Error())
+				}
+				if len(list2) == 0 {
+					fmt.Println("律师表中没有这个人")
+					ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + front + "\"</script>"))
+				} else {
+					//把律师信息拉到我这边
+					var lawerId, lawyerName, lawyerPhone, cert, groupPhoto, singlePhoto, province, city, lawFirm, business, desc, createDate string
+					for _, k := range list2 {
+						lawerId = string(k["lawyerId"])
+						lawyerName = string(k["lawyerName"])
+						lawyerPhone = string(k["lawyerPhone"])
+						cert = string(k["lawyerCertificateNo"])
+						groupPhoto = string(k["groupPhoto"])
+						singlePhoto = string(k["singlePhoto"])
+						province = string(k["selProvince"])
+						city = string(k["selCity"])
+						lawFirm = string(k["lawFirm"])
+						business = string(k["goodAtBusiness"])
+						desc = string(k["description"])
+						createDate = string(k["createDate"])
+
+					}
+					fmt.Println(province, city)
+					lawInfo := new(model.LawyerInfo)
+					lawInfo.Uuid = lawerId
+					lawInfo.RegistTime = createDate
+					lawInfo.OpenId = openId
+					lawInfo.PhoneNumber = lawyerPhone
+					photo := strings.Split(singlePhoto, "/")[2]
+					lawInfo.HeadImgUrl = "images/" + photo
+					lawInfo.Name = lawyerName
+					lawInfo.FirstCategory = business
+					lawInfo.Cet = cert
+					lawInfo.GroupPhoto = groupPhoto
+					lawInfo.LawFirm = lawFirm
+					lawInfo.Desc = desc
+					from := "/usr/local/apache-tomcat-6.0.32/webapps/mylawyerfriend" + singlePhoto
+					to := "/home/workspace_go/src/wechatvoice/daodaolaw/images"
+					exec.Command("cp", from, to)
+					err := lawInfo.GetConn().Create(&lawInfo)
+					if err != nil {
+						fmt.Println(err.Error)
+					}
+					ctx.SetSecureCookie("userloginstatus", openId+"|0")
+				}
 			} else {
-				//把律师信息拉到我这边
-				var lawerId, lawyerName, lawyerPhone, cert, groupPhoto, singlePhoto, province, city, lawFirm, business, desc, createDate string
-				for _, k := range list2 {
-					lawerId = string(k["lawyerId"])
-					lawyerName = string(k["lawyerName"])
-					lawyerPhone = string(k["lawyerPhone"])
-					cert = string(k["lawyerCertificateNo"])
-					groupPhoto = string(k["groupPhoto"])
-					singlePhoto = string(k["singlePhoto"])
-					province = string(k["selProvince"])
-					city = string(k["selCity"])
-					lawFirm = string(k["lawFirm"])
-					business = string(k["goodAtBusiness"])
-					desc = string(k["description"])
-					createDate = string(k["createDate"])
-
-				}
-				fmt.Println(province, city)
-				lawInfo := new(model.LawyerInfo)
-				lawInfo.Uuid = lawerId
-				lawInfo.RegistTime = createDate
-				lawInfo.OpenId = openId
-				lawInfo.PhoneNumber = lawyerPhone
-				photo := strings.Split(singlePhoto, "/")[2]
-				lawInfo.HeadImgUrl = "images/" + photo
-				lawInfo.Name = lawyerName
-				lawInfo.FirstCategory = business
-				lawInfo.Cet = cert
-				lawInfo.GroupPhoto = groupPhoto
-				lawInfo.LawFirm = lawFirm
-				lawInfo.Desc = desc
-				from := "/usr/local/apache-tomcat-6.0.32/webapps/mylawyerfriend" + singlePhoto
-				to := "/home/workspace_go/src/wechatvoice/daodaolaw/images"
-				exec.Command("cp", from, to)
-				err := lawInfo.GetConn().Create(&lawInfo)
-				if err != nil {
-					fmt.Println(err.Error)
-				}
 				ctx.SetSecureCookie("userloginstatus", openId+"|0")
 			}
-		} else {
-			ctx.SetSecureCookie("userloginstatus", openId+"|0")
+			// ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+			// member := new(model.MemberInfo)
+			// memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+			// if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			// 	fmt.Println(memberErr.Error(), "=====会员出错")
+			// }
+			// if member.Uuid == "" {
+			// 	fmt.Println("新的用户")
+			// 	user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			// 	member.Uuid = util.GenerateUuid()
+			// 	member.HeadImgUrl = user.HeadImgUrl
+			// 	member.OpenId = user.OpenId
+			// 	member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			// 	member.NickName = user.NickName
+			// 	err := member.GetConn().Create(&member).Error
+			// 	if err != nil {
+			// 		fmt.Println(err.Error(), "xxxxx")
+			// 	}
+			// }
+			//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
 		}
-		// ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
-		// member := new(model.MemberInfo)
-		// memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
-		// if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
-		// 	fmt.Println(memberErr.Error(), "=====会员出错")
-		// }
-		// if member.Uuid == "" {
-		// 	fmt.Println("新的用户")
-		// 	user := GetUserInfo(res1.OpenId, res1.AccessToken)
-		// 	member.Uuid = util.GenerateUuid()
-		// 	member.HeadImgUrl = user.HeadImgUrl
-		// 	member.OpenId = user.OpenId
-		// 	member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
-		// 	member.NickName = user.NickName
-		// 	err := member.GetConn().Create(&member).Error
-		// 	if err != nil {
-		// 		fmt.Println(err.Error(), "xxxxx")
-		// 	}
-		// }
-		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+		fmt.Println(cookieStr)
+		openId := strings.Split(cookieStr, "|")[0]
+		// userType := strings.Split(cookieStr, "|")[1]
+		fmt.Println(openId)
+		ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + userLawList + "\"</script>"))
 	}
-	fmt.Println(cookieStr)
-	openId := strings.Split(cookieStr, "|")[0]
-	// userType := strings.Split(cookieStr, "|")[1]
-	fmt.Println(openId)
-	ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + userLawList + "\"</script>"))
 }
 
 func GetOrderDetailById(ctx *macaron.Context) string {

@@ -482,10 +482,10 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 
 	question.IsAnswerd = "0"
 	question.Pv = 0
-	typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
-	typepriceNew := typePriceInt * 100
-	typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)
-	question.PaymentInfo = typePriceNewStr
+	// typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
+	// typepriceNew := typePriceInt * 100
+	// typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)
+	question.PaymentInfo = typePrice
 	question.IsSolved = "0"
 
 	payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)

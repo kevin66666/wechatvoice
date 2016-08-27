@@ -4,7 +4,9 @@ import (
 	//"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/xormplus/xorm"
+	xorm "github.com/xormplus/xorm"
+
+	core "github.com/xormplus/core"
 )
 
 type Customer struct {
@@ -32,6 +34,8 @@ func GetInfo() {
 	}
 	// engin.Insert()
 	//
+	// engine.SetMapper(core.SameMapper{})
+	engin.SetMapper(core.SameMapper{})
 	custo := new(Customer)
 	custo.CustomerID = "xxxxx"
 	iddd, ddd := engin.Insert(&custo)

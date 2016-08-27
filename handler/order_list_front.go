@@ -411,7 +411,7 @@ func ToLawOrders(ctx *macaron.Context) {
 					if errcmd != nil {
 						fmt.Println(errcmd.Error())
 					}
-					toP := "/images" + a
+					toP := "images" + a
 					lawInfo.HeadImgUrl = toP
 					err := lawInfo.GetConn().Create(&lawInfo)
 					if err != nil {

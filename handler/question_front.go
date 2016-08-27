@@ -3174,7 +3174,6 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	cookie := strings.Split(cookieStr, "|")[0]
-
 	//savePath := dirName1 + dirname2
 	var accessToken string
 	res, err1 := http.Get("http://www.mylvfa.com/getAccessToken")
@@ -3243,10 +3242,17 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	}
 	voicePath := dirname2 + fileNameMp3
 	// questionInfo.VoicePath = fileName
+	law := new(model.LawyerInfo)
+	lawErr := law.GetConn().Where("open_id = ?", cookie).Find(&law).Error
+	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+		fmt.Println(lawErr.Error())
+	}
 	questionInfo.VoicePath = voicePath
 	questionInfo.IsSolved = "2"
 	questionInfo.SolvedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
 	questionInfo.AnswerOpenId = cookie
+	questionInfo.AnswerName = law.Name
+	questionInfo.AnswerdTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
 	updateErr := questionInfo.GetConn().Save(&questionInfo).Error
 	if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
 		fmt.Println(updateErr.Error(), "line 3218")

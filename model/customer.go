@@ -27,8 +27,11 @@ func GetInfo() {
 	defer db.Close()
 	stmp, _ := db.Prepare("select * from customer where customerID =?")
 	row, ss := stmp.Exec("o-u0Nv8ydozIYnNVzca_C0frKwgI")
-	fmt.Println(row)
+	bbbb := stmp.QueryRow()
+	fmt.Println("ashdkahsdkjahsdjkahsdkjahksdhj")
+	fmt.Println(&row)
 	fmt.Println("====================================")
+	fmt.Println(bbbb)
 	if ss != nil {
 		fmt.Println(ss.Error())
 	}

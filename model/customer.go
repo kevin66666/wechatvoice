@@ -32,8 +32,8 @@ func GetInfo() {
 	}
 	for _, k := range res {
 		id := k["customerID"]
+		fmt.Println("xxxxxxxx")
 		fmt.Println(string(id))
 	}
-	fmt.Println("==asajksdhahsdjkahdskjahsdk")
-	fmt.Println(res)
+
 }

@@ -8,16 +8,16 @@ import (
 )
 
 type Customer struct {
-	CustomerID    string
-	CustomerName  string
-	CustomerPwd   string
-	CustomerPhone string
-	SelProvince   string
-	SelCity       string
-	CreateBy      string
-	CreateDate    string
-	UpdateBy      string
-	UpdateDate    string
+	CustomerID    string `xorm:"customerID"`
+	CustomerName  string `xorm:"customerName"`
+	CustomerPwd   string `xorm:"customerPwd"`
+	CustomerPhone string `xorm:"customerPhone"`
+	SelProvince   string `xorm:"selProvince"`
+	SelCity       string `xorm:"selCity"`
+	CreateBy      string `xorm:"createBy"`
+	CreateDate    string `xorm:"createDate"`
+	UpdateBy      string `xorm:"updateBy"`
+	UpdateDate    string `xorm:"updateDate"`
 }
 
 func GetInfo() {
@@ -31,8 +31,19 @@ func GetInfo() {
 		fmt.Println(err1)
 	}
 	// engin.Insert()
-	sql1 := "insert into customer where customerID =?,customerName =?,selCity =?"
-	engin.Sql(sql1, "1", "1", "1").Insert()
+	//
+	custo := new(Customer)
+	custo.CustomerID = "xxxxx"
+	iddd, ddd := engin.Insert(&custo)
+	if ddd != nil {
+		fmt.Println(ddd.Error())
+	}
+	fmt.Println(iddd)
+	fmt.Println("xxxxxxxx")
+
+	fmt.Println("xxxxxxxx")
+	fmt.Println("xxxxxxxx")
+	fmt.Println("xxxxxxxx")
 	//engin.Insert(sql1, "1", "1", "1")
 	for _, k := range res {
 		id := k["customerID"]

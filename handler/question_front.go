@@ -2744,12 +2744,16 @@ func GetOrderInfoById(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
+	amt := ctSet.PayAmount
+	amtInt, _ := strconv.ParseInt(amt, 10, 64)
+	amta := amtInt / 100
+	amtaStr := strconv.FormatInt(amta, 10)
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
 	response.Name = law.Name
 	response.SelfIntr = law.FirstCategory
 	response.Pic = law.HeadImgUrl
-	response.TypePrice = ctSet.PayAmount
+	response.TypePrice = amtaStr
 	response.TypeId = req.TypeId
 	response.TypeName = lc.CategoryName
 	response.ParentOrderId = ""

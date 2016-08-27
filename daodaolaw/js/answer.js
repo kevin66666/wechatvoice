@@ -75,7 +75,8 @@ var Answer=React.createClass({
       this.changeLoad('load',false)
     }.bind(this),2000)
 	},
-	start:function(){
+	start:function(e){
+		e.preventDefault()||window.event.returnValue = false
 		var _this=this
 		wx.startRecord({
 			cancel: function () {

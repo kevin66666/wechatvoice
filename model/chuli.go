@@ -27,7 +27,7 @@ func GetLawerInfoById(userId string) ([]map[string][]byte, error) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	sql := "select * from userinfo lawyer where userID =?"
+	sql := "select * from  lawyer where userID =?"
 	res, err1 := engin.Query(sql, userId)
 	if err1 != nil {
 		fmt.Println(err1)

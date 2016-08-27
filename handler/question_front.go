@@ -2821,9 +2821,10 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 	fmt.Println("here.....1")
+	uuid := util.GenerateUuid()
 	orderNumber := util.GenerateOrderNumber()
 	question := new(model.WechatVoiceQuestions)
-	question.Uuid = util.GenerateUuid()
+	question.Uuid = uuid
 	question.CategoryId = cateId
 	question.Category = cate.CategoryName
 	question.CategoryIdInt = int64(cate.Model.ID)
@@ -2862,7 +2863,21 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 	}
 	fmt.Println(sings)
 	signSelf := GetSigns(tStr)
+	pay := new(model.WechatVoicePaymentInfo)
+	pay.Uuid = util.GenerateUuid()
+	pay.QuestionId = uuid
+	pay.OpenId = openId
+	pay.OrderNumber = orderNumber
+	pay.IsPaied = "0"
+	err := pay.GetConn().Create(&pay).Error
 
+	if err != nil && !strings.Contains(err.Error(), RNF) {
+		Print("创建支付信息出错", err.Error())
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
 	if req.OrderId == "-1" {
 
 		//指定提问

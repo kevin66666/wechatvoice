@@ -157,6 +157,13 @@ func QuestionQuery(ctx *macaron.Context) string {
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
 	}
+	cust := new(model.Customer)
+	custErr := cust.GetConn().Where("cusomerId = ?", "u0Nv8ydozIYnNVzca_C0frKwgI").Find(&cust).Error
+	if custErr != nil {
+		fmt.Print(custErr.Error())
+	}
+	fmt.Print(cust)
+
 	code := ctx.Query("code")
 	Print("获取到的code为==========>>>", code)
 	if code != "" {
@@ -3053,6 +3060,7 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
 	req := new(OrderDetailReq)
 	json.Unmarshal([]byte(body), req)
+
 	fmt.Println("订单详情页面")
 	fmt.Println(body)
 	orderInfo := new(model.WechatVoiceQuestions)
@@ -3214,4 +3222,15 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	result.Msg = "ok"
 	ret_str, _ := json.Marshal(result)
 	return string(ret_str)
+}
+
+type AnswerConfig struct {
+	OrderId string `json:"orderId"`
+}
+
+func GetAswerResponseById(ctx *macaron.Context) string {
+	req := new(AnswerConfig)
+	body, _ := ctx.Req.Body().String()
+	json.Unmarshal([]byte(body), req)
+	return ""
 }

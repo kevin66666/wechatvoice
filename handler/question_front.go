@@ -3147,6 +3147,7 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 	response.AddNum = add
 	response.IsShow = false
 	response.IsPay = true
+	response.Answer = orderInfo.VoicePath
 	response.AddList = list
 	ret_str, _ := json.Marshal(response)
 	log.Println("===================================ret_str")

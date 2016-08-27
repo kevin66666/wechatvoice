@@ -127,12 +127,12 @@ var Answer=React.createClass({
 		})
 		wx.onVoicePlayEnd({
 		    success: function (res) {
-		    	$play.remove('bg-answer')
+		    	$play.removeClass('bg-answer')
 		        var localId = res.localId; // 返回音频的本地ID
 		    }
 		})
 	    wx.error(function(res){
-	      $play.remove('bg-answer')
+	      $play.removeClass('bg-answer')
 		  _this.tips('微信播放录音接口调取失败')
 		})
 	},
@@ -149,7 +149,7 @@ var Answer=React.createClass({
 	    	}
 		})
 		wx.error(function(res){
-	      $save.remove('bg-answer')
+	      $save.removeClass('bg-answer')
 		  _this.tips('微信播放录音接口调取失败')
 		})
 	},

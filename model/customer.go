@@ -10,16 +10,16 @@ import (
 )
 
 type customer struct {
-	CustomerID    string `xorm:"'customerID'"`
-	CustomerName  string `xorm:"'customerName'"`
-	CustomerPwd   string `xorm:"'customerPwd'"`
-	CustomerPhone string `xorm:"'customerPhone'"`
-	SelProvince   string `xorm:"'selProvince'"`
-	SelCity       string `xorm:"'selCity'"`
-	CreateBy      string `xorm:"'createBy'"`
-	CreateDate    string `xorm:"'createDate'"`
-	UpdateBy      string `xorm:"'updateBy'"`
-	UpdateDate    string `xorm:"'updateDate'"`
+	customerID    string `xorm:"'customerID'"`
+	customerName  string `xorm:"'customerName'"`
+	customerPwd   string `xorm:"'customerPwd'"`
+	customerPhone string `xorm:"'customerPhone'"`
+	selProvince   string `xorm:"'selProvince'"`
+	selCity       string `xorm:"'selCity'"`
+	createBy      string `xorm:"'createBy'"`
+	createDate    string `xorm:"'createDate'"`
+	updateBy      string `xorm:"'updateBy'"`
+	updateDate    string `xorm:"'updateDate'"`
 }
 
 func GetInfo() {
@@ -37,7 +37,7 @@ func GetInfo() {
 	// engine.SetMapper(core.SameMapper{})
 	engin.SetMapper(core.SameMapper{})
 	custo := new(customer)
-	custo.CustomerID = "xxxxx"
+	custo.customerID = "xxxxx"
 	iddd, ddd := engin.Insert(&custo)
 	if ddd != nil {
 		fmt.Println(ddd.Error())

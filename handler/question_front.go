@@ -3244,7 +3244,7 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	voicePath := dirname2 + fileNameMp3
 	// questionInfo.VoicePath = fileName
 	questionInfo.VoicePath = voicePath
-	questionInfo.IsSolved = "1"
+	questionInfo.IsSolved = "2"
 	questionInfo.SolvedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
 	questionInfo.AnswerOpenId = cookie
 	updateErr := questionInfo.GetConn().Save(&questionInfo).Error

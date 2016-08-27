@@ -76,8 +76,7 @@ var Answer=React.createClass({
     }.bind(this),2000)
 	},
 	start:function(e){
-		// e.preventDefault()
-		// e.returnValue = false
+
 		var _this=this
 		wx.startRecord({
 			cancel: function () {
@@ -96,6 +95,8 @@ var Answer=React.createClass({
 		wx.error(function(res){
 		  _this.tips('微信录音接口调取失败')
 		})
+		e.preventDefault()
+		e.returnValue = false
 	},
 	stop:function(){
       var _this=this

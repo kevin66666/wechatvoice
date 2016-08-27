@@ -273,6 +273,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 			return string(ret_str)
 		}
 		payAmount := cateInfo.PayAmount
+
 		payAmountF, _ := strconv.ParseFloat(payAmount, 64)
 		payAmountF = payAmountF / 100
 		amountStr := strconv.FormatFloat(payAmountF, 'f', 2, 64)
@@ -422,7 +423,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	userType := strings.Split(cookieStr, "|")[1]
 	fmt.Println(openId, userType)
 	body, _ := ctx.Req.Body().String()
-
+	fmt.Println(body)
 	req := new(NewQuestionRequest)
 
 	unmarshallErr := json.Unmarshal([]byte(body), req)
@@ -482,6 +483,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	question.CustomerOpenId = openId
 
 	question.IsAnswerd = "0"
+
 	question.Pv = 0
 	// typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
 	// typepriceNew := typePriceInt * 100

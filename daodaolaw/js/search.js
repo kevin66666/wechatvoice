@@ -214,7 +214,7 @@ var EverySearch=React.createClass({
 			})
 		}else{
 			// 提取录音
-			location.href = 'order-detail.html?orderId='+orderId
+			location.href = 'order-detail.html?orderId='+data.orderId
 		}
 	},
 	tips:function(text){

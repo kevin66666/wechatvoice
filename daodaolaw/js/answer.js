@@ -14,14 +14,13 @@ var Answer=React.createClass({
 	},
 	componentDidMount:function(){
 		var orderId=location.search?location.search.slice(1).split('=')[1]:''
-		console.log(orderId)
 		 this.setState({orderId:orderId})
 		$.ajax({
 			url:'http://www.mylvfa.com/voice/front/getdetailbyid',  //回答问题页面初始化订单信息
 			type:'POST',
 			data:JSON.stringify(orderId),
 			contentType: "application/json",
-		 dataType:'json',
+		 	dataType:'json',
 			success:function(data){
 				if(data.code===10000){
 					this.setState({

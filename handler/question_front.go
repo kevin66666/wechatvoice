@@ -157,7 +157,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
 	}
-	model.GetInfo()
+	// model.GetInfo()
 	// cust := new(model.Customer)
 	// custErr := cust.GetConn().Where("customerID = ?", "o-u0Nv8ydozIYnNVzca_C0frKwgI").Find(&cust).Error
 	// if custErr != nil {
@@ -190,6 +190,10 @@ func QuestionQuery(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(res)
 			return string(ret_str)
 		}
+		userInfo := model.GetUserInfoByID(res1.OpenId)
+		fmt.Println(userInfo)
+		lawInfo := model.GetLaywerInfos(res1.OpenId)
+		fmt.Println(lawInfo)
 		if member.Uuid == "" {
 			Print("新的用户")
 			user := GetUserInfo(res1.OpenId, res1.AccessToken)
@@ -268,7 +272,11 @@ func QuestionQuery(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
-		single.TypePrice = cateInfo.PayAmount
+		payAmount := cateInfo.PayAmount
+		payAmountF, _ := strconv.ParseFloat(payAmount, 64)
+		payAmountF = payAmountF / 100
+		amountStr := strconv.FormatFloat(payAmountF, 'f', 2, 64)
+		single.TypePrice = amountStr
 		rank, _ := strconv.ParseInt(k.RankInfo, 10, 64)
 		single.Star = rank
 		payment := new(model.WechatVoicePaymentInfo)
@@ -474,7 +482,10 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 
 	question.IsAnswerd = "0"
 	question.Pv = 0
-	question.PaymentInfo = typePrice
+	typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
+	typepriceNew := typePriceInt * 100
+	typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)
+	question.PaymentInfo = typePriceNewStr
 	question.IsSolved = "0"
 
 	payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
@@ -501,7 +512,8 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	timeStamp := time.Now().Unix()
 	fmt.Println(timeStamp)
 	tStr := strconv.FormatInt(timeStamp, 10)
-	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
+
+	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, typePriceNewStr, tStr)
 	if signErr != nil {
 		fmt.Println(signErr.Error())
 		response.Code = CODE_ERROR
@@ -839,7 +851,10 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
-		single.CatePaymentInfo = price.PayAmount
+		amountInt, _ := strconv.ParseFloat(price.PayAmount, 64)
+		amountInt = amountInt / 100
+		amountStr := strconv.FormatFloat(amountInt, 'f', 2, 64)
+		single.CatePaymentInfo = amountStr
 		fmt.Println(single)
 		list = append(list, *single)
 	}
@@ -2542,7 +2557,11 @@ func PayPeekAnswer(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 	signSelf := GetSigns(tStr)
-	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
+	pays := orderInfo.PaymentInfo
+	payF, _ := strconv.ParseFloat(pays, 64)
+	payF = payF / 100
+	payFs := strconv.FormatFloat(payF, 'f', 2, 64)
+	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, payFs, tStr)
 	fmt.Println(sings)
 	if signErr != nil {
 		fmt.Println(signErr.Error())
@@ -2844,19 +2863,23 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 	question.CustomerId = customer.Uuid
 	question.CustomerName = customer.Name
 	question.CustomerOpenId = openId
-	question.PaymentInfo = typePrice
+	typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
+	typepriceNew := typePriceInt * 100
+	typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)
+	question.PaymentInfo = typePriceNewStr
+	//question.PaymentInfoInt = typePriceInt
+	//
 	question.IsSolved = "0"
 	question.AskerHeadImg = customer.HeadImgUrl
 	payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
 	question.OrderNumber = orderNumber
+	question.PaymentInfoInt = payInt
 	if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = transferErr.Error()
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-
-	question.PaymentInfoInt = payInt
 
 	nstr := util.GenerateUuid()
 	nSt := util.GenerateUuid()

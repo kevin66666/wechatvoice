@@ -9,12 +9,12 @@ var Answer=React.createClass({
 			typeId:'',           
 			typeName:'',
 			load:false,
-      tips:'加载中,请稍等',
-      config:{}
+      		tips:'加载中,请稍等'
 		}
 	},
 	componentDidMount:function(){
 		var orderId=location.search?location.search.slice(1).split('=')[1]:''
+		console.log(orderId)
 		 this.setState({orderId:orderId})
 		$.ajax({
 			url:'http://www.mylvfa.com/voice/front/getdetailbyid',  //回答问题页面初始化订单信息

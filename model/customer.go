@@ -9,16 +9,16 @@ import (
 )
 
 type Customer struct {
-	customerID    string `xorm:"'customerID'"`
-	customerName  string `xorm:"'customerName'"`
-	customerPwd   string `xorm:"'customerPwd'"`
-	customerPhone string `xorm:"'customerPhone'"`
-	selProvince   string `xorm:"'selProvince'"`
-	selCity       string `xorm:"'selCity'"`
-	createBy      string `xorm:"'createBy'"`
-	createDate    string `xorm:"'createDate'"`
-	updateBy      string `xorm:"'updateBy'"`
-	updateDate    string `xorm:"'updateDate'"`
+	CustomerID    string `xorm:"'customerID'"`
+	CustomerName  string `xorm:"'customerName'"`
+	CustomerPwd   string `xorm:"'customerPwd'"`
+	CustomerPhone string `xorm:"'customerPhone'"`
+	SelProvince   string `xorm:"'selProvince'"`
+	SelCity       string `xorm:"'selCity'"`
+	CreateBy      string `xorm:"'createBy'"`
+	CreateDate    string `xorm:"'createDate'"`
+	UpdateBy      string `xorm:"'updateBy'"`
+	UpdateDate    string `xorm:"'updateDate'"`
 }
 
 func GetInfo() {
@@ -31,28 +31,7 @@ func GetInfo() {
 	if err1 != nil {
 		fmt.Println(err1)
 	}
-	// engin.Insert()
-	//
-	// engine.SetMapper(core.SameMapper{})
-	// engin.SetMapper(core.SameMapper{})
-	// custo := new(customer)
-	// custo.customerID = "xxxxx"
-	// iddd, ddd := engin.Insert(&custo)
-	// if ddd != nil {
-	// 	fmt.Println(ddd.Error())
-	// }
-	// fmt.Println(iddd)
-	// fmt.Println("xxxxxxxx")
 
-	// fmt.Println("xxxxxxxx")
-	// fmt.Println("xxxxxxxx")
-	// fmt.Println("xxxxxxxx")
-	/*
-
-	 INSERT INTO `wechat_voice_questions` (`category_id_int`,`ask_time`,`answer_id`,`pv`,`is_ranked`,`payment_info`,`important`,`updated_at`,`answer_open_id`,`answer_name`,`asker_head_img`,`payment_info_int`,`appen_question_time`,`have_append_child`,`deleted_at`,`answer_head_img`,`back_rank_point`,`created_at`,`create_time`,`customer_id`,`description`,`uuid`,`voice_path`,`customer_open_id`,`rank_info`,`is_send_to_back`,`solved_time`,`answerd_count`,`is_solved`,`parent_question_id`,`category`,`customer_name`,`is_answerd`,`answerd_time`,`order_number`,`question_type`,`is_paied`,`category_id`) VALUES ('0','2016-08-27 11:03:58','','0','','200','','2016-08-27T11:03:58+08:00','','','','200','0','','<nil>','','0','2016-08-27T11:03:58+08:00','2016-08-27 11:03:58','d06398fc6a6611e600163e105789ad4f','哈哈','e5f8356f6c0211e600163e1057899cd2','','o-u0Nv5Rjxrw2EdmYXqzLXi_uTVo','','','','0','0','','','','0','','1472267038','','','b52725f1670e11e600163e105789bb97')
-
-		**/
-	// sql = "update `userinfo` set username=? where id=?"
 	sqls := "insert into customer (customerID,customerName) values (?,?)"
 	res2222, err22 := engin.Exec(sqls, "xiaolun", "2")
 	if err22 != nil {
@@ -67,3 +46,71 @@ func GetInfo() {
 	}
 
 }
+
+func GetUserInfoByID(openId string) Customer {
+	engin, err := xorm.NewMySQL("mysql", "root:7de2cd9b31@tcp(localhost:3306)/mylawyerfriend")
+	if err != nil {
+		fmt.Println(err)
+	}
+	sql := "select * from customer where customerID =?"
+	res, err1 := engin.Query(sql, openId)
+	if err1 != nil {
+		fmt.Println(err1)
+	}
+
+	var customer Customer
+	// customer.CustomerID = res
+	for _, k := range res {
+		customer.CustomerID = string(k["customerID"])
+		customer.CustomerName = string(k["customerName"])
+		customer.CustomerPwd = string(k["customerPwd"])
+		customer.CustomerPhone = string(k["customerPhone"])
+		customer.SelProvince = string(k["selfProvince"])
+		customer.SelCity = string(k["selfCity"])
+
+	}
+
+	return customer
+}
+
+// func SetUserInfo(customerId,customerName,customerPwd,suctomer)
+
+type Lawyer struct {
+	LawerId             string
+	lawyerPhone         string
+	LawyerName          string
+	LawyerCertificateNo string
+	GroupPhoto          string
+	SinglePhoto         string
+	SelfProvince        string
+	SecCity             string
+	LawFirm             string
+	GoodAtBusiness      string
+	Description         string
+	UserId              string //openId
+}
+
+func GetLaywerInfos(openId string) Lawyer {
+	engin, err := xorm.NewMySQL("mysql", "root:7de2cd9b31@tcp(localhost:3306)/mylawyerfriend")
+	if err != nil {
+		fmt.Println(err)
+	}
+	sql := "select * from customer where userID =?"
+	res, err1 := engin.Query(sql, openId)
+	if err1 != nil {
+		fmt.Println(err1)
+	}
+	var law Lawyer
+	for _, k := range res {
+		law.LawerId = string(k["lawyerId"])
+		law.UserId = string(k["userID"])
+		law.GoodAtBusiness = string(k["gooAtBusiness"])
+	}
+	return law
+}
+
+/**
+这里其实对用户抽取数据影响不大 主要是说 如果新的用户进来以后  需要到他那边继续注册一次
+
+然而律师要拿到自己的东西的话就必须拿着自己的OpenId 去查询一次数据  然后同步数据过来
+*/

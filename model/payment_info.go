@@ -16,6 +16,8 @@ type WechatVoicePaymentInfo struct {
 	LawyerAmount    string
 	Left            string
 	OrderId         string
+	OrderNumber     string
+	IsPaied         string
 }
 
 func init() {

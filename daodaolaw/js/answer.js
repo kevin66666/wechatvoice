@@ -76,8 +76,8 @@ var Answer=React.createClass({
     }.bind(this),2000)
 	},
 	start:function(e){
-		e.preventDefault()
-		e.returnValue = false
+		// e.preventDefault()
+		// e.returnValue = false
 		var _this=this
 		wx.startRecord({
 			cancel: function () {

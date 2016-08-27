@@ -17,7 +17,7 @@ var Answer=React.createClass({
 		var orderId=location.search?location.search.slice(1).split('=')[1]:''
 		 this.setState({orderId:orderId})
 		$.ajax({
-			url:'http://www.mylvfa.com/voice/front/getdetail',  //回答问题页面初始化订单信息
+			url:'http://www.mylvfa.com/voice/order/getdetail',  //回答问题页面初始化订单信息
 			type:'POST',
 			data:JSON.stringify(orderId),
 			contentType: "application/json",

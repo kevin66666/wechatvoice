@@ -19,7 +19,7 @@ var Answer=React.createClass({
 		$.ajax({
 			url:'http://www.mylvfa.com/voice/order/getdetail',  //回答问题页面初始化订单信息
 			type:'POST',
-			data:JSON.stringify(orderId),
+			data:JSON.stringify({orderId:orderId}),
 			contentType: "application/json",
 		 	dataType:'json',
 			success:function(data){

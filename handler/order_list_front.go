@@ -779,17 +779,27 @@ func EvalAnswers(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 
-	amount, _ := strconv.ParseFloat(orderInfo.PaymentInfo, 64)
-	log.Println(amount)
+	// amount, _ := strconv.ParseFloat(orderInfo.PaymentInfo, 64)
+	// log.Println(amount)
 
+	// lp, _ := strconv.ParseFloat(setting.LawyerFeePercent, 64)
+	// red := 100.00 - lp
+	// amountLeft := (amount * red) / 100
+	// amtInt := int64(amountLeft)
+	// redint := rand.Int63n(amtInt)
+	// redStr := strconv.FormatInt(redint, 10)
+	amountF, _ := strconv.ParseFloat(orderInfo.PaymentInfo, 64)
+	amountF = amountF * 100
 	lp, _ := strconv.ParseFloat(setting.LawyerFeePercent, 64)
 	red := 100.00 - lp
-	amountLeft := (amount * red) / 100
-	amtInt := int64(amountLeft)
-	redint := rand.Int63n(amtInt)
-	redStr := strconv.FormatInt(redint, 10)
-
-	log.Println(redStr)
+	amountLeft := (amountF * red) / 100
+	amount := int64(amountLeft)
+	redint := rand.Int63n(amount)
+	// log.Println(redStr)
+	redIntStr := strconv.FormatInt(redint, 10)
+	redF, _ := strconv.ParseFloat(redIntStr, 64)
+	redFr := redF / 100
+	redStr := strconv.FormatFloat(redFr, 'f', 2, 64)
 
 	orderInfo.IsRanked = "1"
 	orderInfo.RankInfo = req.Number
@@ -802,7 +812,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 	}
 
 	//给律师发红包
-	a := amount * lp
+	a := amountF * lp
 	astr := strconv.FormatFloat(a, 'f', 2, 64)
 	reds := new(RedPackages)
 	reds.Act_name = "发送红包"

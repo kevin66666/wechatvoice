@@ -494,6 +494,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	payI := int64(payInt)
 	question.OrderNumber = orderNumber
 	if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {
+		Print(transferErr.Error())
 		response.Code = CODE_ERROR
 		response.Msg = transferErr.Error()
 		ret_str, _ := json.Marshal(response)
@@ -505,6 +506,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	createErr := question.GetConn().Create(&question).Error
 
 	if createErr != nil {
+
 		response.Code = CODE_ERROR
 		response.Msg = createErr.Error()
 		ret_str, _ := json.Marshal(response)

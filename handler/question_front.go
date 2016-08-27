@@ -2633,6 +2633,7 @@ func AfterPay(ctx *macaron.Context) string {
 			fmt.Println(payErr)
 		}
 		pay.SwiftNumber = a.TransactionId
+		pay.IsPaied = "1"
 		payErr = pay.GetConn().Save(&pay).Error
 		if payErr != nil && !strings.Contains(payErr.Error(), RNF) {
 			fmt.Println("payerr")

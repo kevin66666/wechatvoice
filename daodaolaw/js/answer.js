@@ -140,8 +140,8 @@ var Answer=React.createClass({
 		})
 	},
 	save:function(){
-		var $save=$(e.target)
-		$save.addClass('bg-answer')
+		//var $save=$(e.target)
+		//$save.addClass('bg-answer')
 		var _this=this;
 		wx.uploadVoice({
 		    localId: _this.state.answer, 
@@ -152,7 +152,7 @@ var Answer=React.createClass({
 	    	}
 		})
 		wx.error(function(res){
-	      $save.removeClass('bg-answer')
+	      //$save.removeClass('bg-answer')
 		  _this.tips('微信播放录音接口调取失败')
 		})
 	},

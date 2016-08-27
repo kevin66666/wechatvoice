@@ -25,7 +25,8 @@ func GetInfo() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	res, err1 := engin.Query("select * from customer where customerID = o-u0Nv8ydozIYnNVzca_C0frKwgI")
+	sql := "select * from customer where customerID =?"
+	res, err1 := engin.Query(sql, "o-u0Nv8ydozIYnNVzca_C0frKwgI")
 	if err1 != nil {
 		fmt.Println(err1)
 	}

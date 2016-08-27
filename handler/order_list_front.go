@@ -384,7 +384,9 @@ func ToLawOrders(ctx *macaron.Context) {
 					lawInfo.RegistTime = createDate
 					lawInfo.OpenId = openId
 					lawInfo.PhoneNumber = lawyerPhone
-					photo := strings.Split(singlePhoto, "/")[2]
+
+					photo := singlePhoto
+					fmt.Println(singlePhoto)
 					lawInfo.HeadImgUrl = "images/" + photo
 					lawInfo.Name = lawyerName
 					lawInfo.FirstCategory = business

@@ -396,6 +396,7 @@ func ToLawOrders(ctx *macaron.Context) {
 						//fmt.Println(b)
 						fmt.Println(list)
 					}
+					lawInfo.Uuid = util.GenerateUuid()
 					lawInfo.HeadImgUrl = "images/" + photo
 					lawInfo.Name = lawyerName
 					lawInfo.FirstCategory = business

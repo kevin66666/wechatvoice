@@ -118,8 +118,8 @@ func QueryLawyerQuestions(startLine int64, endLine int64, userOpenId string) ([]
 	l1 := make([]WechatVoiceQuestions, 0)
 	var err error
 	var count int64
-	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_solved =?", "2").Find(&l1).Count(&count).Error
-	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_solved =?", "2").Offset(startLine - 1).Limit(endLine - startLine + 1).Find(&list).Error
+	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Find(&l1).Count(&count).Error
+	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Offset(startLine - 1).Limit(endLine - startLine + 1).Find(&list).Error
 	return list, count, err
 }
 
@@ -158,7 +158,7 @@ func GetLawyerQs(cateId, status string, startLine, endLien int64) ([]WechatVoice
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("category_id = ?", cateId).Where("is_solved = ?", status).Offset(startLine - 1).Limit(endLien - startLine + 1).Find(&list).Order("important").Find(&list).Error
+	err := conn.Where("category_id = ?", cateId).Where("is_solved = ?", status).Where("is_paied = 1").Offset(startLine - 1).Limit(endLien - startLine + 1).Find(&list).Order("important").Find(&list).Error
 	return list, err
 }
 

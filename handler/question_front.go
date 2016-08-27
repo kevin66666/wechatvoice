@@ -158,7 +158,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		ctx.Redirect(url)
 	}
 	cust := new(model.Customer)
-	custErr := cust.GetConn().Where("customerID = ?", "u0Nv8ydozIYnNVzca_C0frKwgI").Find(&cust).Error
+	custErr := cust.GetConn().Where("customerID = ?", "o-u0Nv8ydozIYnNVzca_C0frKwgI").Find(&cust).Error
 	if custErr != nil {
 		fmt.Print(custErr.Error())
 	}

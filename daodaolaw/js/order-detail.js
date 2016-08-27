@@ -10,7 +10,7 @@ var OrderDetail=React.createClass({
 		var orderId=location.search?location.search.slice(1).split('=')[1]:'';
 		var data={orderId:orderId}
 		$.ajax({
-			url:'http://www.mylvfa.com/voice/front/getdetail',
+			url:'http://www.mylvfa.com/voice/front/getdetailbyid',
 			type:'POST',
 			data:JSON.stringify(data),
 			dataType:'json',

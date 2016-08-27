@@ -8,16 +8,16 @@ import (
 )
 
 type Customer struct {
-	CustomerID    string `xorm:"customerID"`
-	CustomerName  string `xorm:"customerName"`
-	CustomerPwd   string `xorm:"customerPwd"`
-	CustomerPhone string `xorm:"customerPhone"`
-	SelProvince   string `xorm:"selProvince"`
-	SelCity       string `xorm:"selCity"`
-	CreateBy      string `xorm:"createBy"`
-	CreateDate    string `xorm:"createDate"`
-	UpdateBy      string `xorm:"updateBy"`
-	UpdateDate    string `xorm:"updateDate"`
+	CustomerID    string `xorm:"'customerID'"`
+	CustomerName  string `xorm:"'customerName'"`
+	CustomerPwd   string `xorm:"'customerPwd'"`
+	CustomerPhone string `xorm:"'customerPhone'"`
+	SelProvince   string `xorm:"'selProvince'"`
+	SelCity       string `xorm:"'selCity'"`
+	CreateBy      string `xorm:"'createBy'"`
+	CreateDate    string `xorm:"'createDate'"`
+	UpdateBy      string `xorm:"'updateBy'"`
+	UpdateDate    string `xorm:"'updateDate'"`
 }
 
 func GetInfo() {

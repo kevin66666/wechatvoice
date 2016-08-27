@@ -561,7 +561,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 				list = append(list, k)
 			}
 		}
-	case "1":
+	case "2":
 		list, _, err = model.QueryLawyerQuestions(req.StartLine, req.EndLine, openId)
 	}
 	retList := make([]LawOrder, 0)

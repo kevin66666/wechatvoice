@@ -2860,71 +2860,72 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	fmt.Println("here.....1")
-	uuid := util.GenerateUuid()
-	orderNumber := util.GenerateOrderNumber()
 	question := new(model.WechatVoiceQuestions)
-	question.Uuid = uuid
-	question.CategoryId = cateId
-	question.Category = cate.CategoryName
-	question.CategoryIdInt = int64(cate.Model.ID)
-	question.Description = content
-	today := time.Unix(time.Now().Unix(), 0).String()[0:19]
-	question.CreateTime = today
-	question.CustomerId = customer.Uuid
-	question.CustomerName = customer.Name
-	question.CustomerOpenId = openId
-	typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
-	typepriceNew := typePriceInt * 100
-	typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)
-	question.PaymentInfo = typePriceNewStr
-	//question.PaymentInfoInt = typePriceInt
-	//
-	question.IsSolved = "0"
-	question.AskerHeadImg = customer.HeadImgUrl
-	payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
-	question.OrderNumber = orderNumber
-	question.PaymentInfoInt = payInt
-	if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {
-		response.Code = CODE_ERROR
-		response.Msg = transferErr.Error()
-		ret_str, _ := json.Marshal(response)
-		return string(ret_str)
-	}
-
-	nstr := util.GenerateUuid()
-	nSt := util.GenerateUuid()
-	timeStamp := time.Now().Unix()
-	fmt.Println(timeStamp)
-	tStr := strconv.FormatInt(timeStamp, 10)
-	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
-	if signErr != nil {
-		fmt.Println(signErr.Error())
-		response.Code = CODE_ERROR
-		response.Msg = signErr.Error()
-		ret_str, _ := json.Marshal(response)
-		return string(ret_str)
-	}
-	fmt.Println(sings)
-	signSelf := GetSigns(tStr)
-	pay := new(model.WechatVoicePaymentInfo)
-	pay.Uuid = util.GenerateUuid()
-	pay.QuestionId = uuid
-	pay.OpenId = openId
-	pay.OrderNumber = orderNumber
-	pay.IsPaied = "0"
-	err := pay.GetConn().Create(&pay).Error
-
-	if err != nil && !strings.Contains(err.Error(), RNF) {
-		Print("创建支付信息出错", err.Error())
-		response.Code = CODE_ERROR
-		response.Msg = err.Error()
-		ret_str, _ := json.Marshal(response)
-		return string(ret_str)
-	}
+	fmt.Println("here.....1")
 	if req.OrderId == "-1" {
+		uuid := util.GenerateUuid()
+		orderNumber := util.GenerateOrderNumber()
 
+		question.Uuid = uuid
+		question.CategoryId = cateId
+		question.Category = cate.CategoryName
+		question.CategoryIdInt = int64(cate.Model.ID)
+		question.Description = content
+		today := time.Unix(time.Now().Unix(), 0).String()[0:19]
+		question.CreateTime = today
+		question.CustomerId = customer.Uuid
+		question.CustomerName = customer.Name
+		question.CustomerOpenId = openId
+		typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
+		typepriceNew := typePriceInt * 100
+		typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)
+		question.PaymentInfo = typePriceNewStr
+		//question.PaymentInfoInt = typePriceInt
+		//
+		question.IsSolved = "0"
+		question.AskerHeadImg = customer.HeadImgUrl
+		payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
+		question.OrderNumber = orderNumber
+		question.PaymentInfoInt = payInt
+		if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = transferErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+
+		nstr := util.GenerateUuid()
+		nSt := util.GenerateUuid()
+		timeStamp := time.Now().Unix()
+		fmt.Println(timeStamp)
+		tStr := strconv.FormatInt(timeStamp, 10)
+		sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
+		if signErr != nil {
+			fmt.Println(signErr.Error())
+			response.Code = CODE_ERROR
+			response.Msg = signErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		fmt.Println(sings)
+		signSelf := GetSigns(tStr)
+		pay := new(model.WechatVoicePaymentInfo)
+		pay.Uuid = util.GenerateUuid()
+		pay.QuestionId = uuid
+		pay.OpenId = openId
+		pay.OrderNumber = orderNumber
+		pay.IsPaied = "0"
+		err := pay.GetConn().Create(&pay).Error
+
+		if err != nil && !strings.Contains(err.Error(), RNF) {
+			Print("创建支付信息出错", err.Error())
+			response.Code = CODE_ERROR
+			response.Msg = err.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
 		//指定提问
+
 		question.Important = "1"
 		createErr := question.GetConn().Create(&question).Error
 		if createErr != nil {
@@ -2951,6 +2952,33 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 
 	} else {
 		//追加
+		uuid := util.GenerateUuid()
+		orderNumber := util.GenerateOrderNumber()
+		question := new(model.WechatVoiceQuestions)
+		question.Uuid = uuid
+		question.CategoryId = cateId
+		question.Category = cate.CategoryName
+		question.CategoryIdInt = int64(cate.Model.ID)
+		question.Description = content
+		today := time.Unix(time.Now().Unix(), 0).String()[0:19]
+		question.CreateTime = today
+		question.CustomerId = customer.Uuid
+		question.CustomerName = customer.Name
+		question.CustomerOpenId = openId
+		typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
+		typepriceNew := typePriceInt * 100
+		typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)
+		question.PaymentInfo = typePriceNewStr
+		//question.PaymentInfoInt = typePriceInt
+		//
+		question.IsSolved = "0"
+		question.AskerHeadImg = customer.HeadImgUrl
+		payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
+		if transferErr != nil {
+			fmt.Println(transferErr)
+		}
+		question.OrderNumber = orderNumber
+		question.PaymentInfoInt = payInt
 		question.Important = "1"
 		question.ParentQuestionId = req.OrderId
 		createErr := question.GetConn().Create(&question).Error
@@ -2968,6 +2996,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		fmt.Println("=====================================>>>>>")
 		return string(ret_str)
 	}
+
 	// fmt.Println("here............")
 
 }

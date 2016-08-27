@@ -325,6 +325,10 @@ func ToLawOrders(ctx *macaron.Context) {
 				fmt.Print(err1.Error())
 			}
 			var userid string
+			if len(list1) == 0 {
+				fmt.Println("律师表中没有这个人")
+				ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + front + "\"</script>"))
+			}
 			for _, k := range list1 {
 				userid = string(k["userID"])
 			}

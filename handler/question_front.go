@@ -2759,6 +2759,7 @@ func GetOrderInfoById(ctx *macaron.Context) string {
 	json.Unmarshal([]byte(body), req)
 	response := new(GetInfoResponse)
 	order := new(model.WechatVoiceQuestions)
+	Print("post请求数据为", body)
 	orderErr := order.GetConn().Where("uuid = ?", req.OrderId).Find(&order).Error
 	if orderErr != nil && !strings.Contains(orderErr.Error(), RNF) {
 		response.Code = CODE_ERROR

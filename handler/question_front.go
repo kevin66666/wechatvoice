@@ -2872,6 +2872,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		question.CategoryIdInt = int64(cate.Model.ID)
 		question.Description = content
 		today := time.Unix(time.Now().Unix(), 0).String()[0:19]
+		question.NeedId = req.LaywerId
 		question.CreateTime = today
 		question.CustomerId = customer.Uuid
 		question.CustomerName = customer.Name
@@ -2962,6 +2963,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		question.Description = content
 		today := time.Unix(time.Now().Unix(), 0).String()[0:19]
 		question.CreateTime = today
+		question.NeedId = req.LaywerId
 		question.CustomerId = customer.Uuid
 		question.CustomerName = customer.Name
 		question.CustomerOpenId = openId

@@ -649,10 +649,15 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
+	law := new(model.LawyerInfo)
+	lawErr := law.GetConn().Where("open_id = ?", openId).Find(&law).Error
+	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+		fmt.Println(lawErr)
+	}
 	switch req.OrderType {
 	case "0":
 		//带解答
-		list, err = model.GetLawyerQs(lawyer.FirstCategoryId, req.OrderType, req.StartLine, req.EndLine)
+		list, err = model.GetLawyerQs(lawyer.FirstCategoryId, req.OrderType, law.Uuid, req.StartLine, req.EndLine)
 		if err != nil && !strings.Contains(err.Error(), RNF) {
 			response.Code = CODE_ERROR
 			response.Msg = err.Error()

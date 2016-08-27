@@ -7,20 +7,22 @@ import (
 
 type WechatVoiceQuestions struct {
 	gorm.Model
-	Uuid              string
-	Category          string //分类名称
-	CategoryId        string //分类名称ID
-	CategoryIdInt     int64  //分类名称ID int
-	Description       string //问题描述
-	CreateTime        string //创建时间
-	CustomerId        string //用户ID
-	CustomerName      string //用户姓名
-	CustomerOpenId    string //用户OPENID
-	AskTime           string //提问时间
-	AskerHeadImg      string //用户头像
-	AnswerId          string
+	Uuid           string
+	Category       string //分类名称
+	CategoryId     string //分类名称ID
+	CategoryIdInt  int64  //分类名称ID int
+	Description    string //问题描述
+	CreateTime     string //创建时间
+	CustomerId     string //用户ID
+	CustomerName   string //用户姓名
+	CustomerOpenId string //用户OPENID
+	AskTime        string //提问时间
+	AskerHeadImg   string //用户头像
+	AnswerId       string
+
 	AnswerName        string
 	AnswerOpenId      string
+	NeedId            string
 	AnswerHeadImg     string
 	IsAnswerd         string //是否已经做出回答
 	VoicePath         string //服务器保留MP3文件路径
@@ -154,11 +156,11 @@ func GetChildAnsers(questionId string) ([]WechatVoiceQuestions, error) {
 	err := conn.Where("parent_question_id = ?", questionId).Find(&list).Error
 	return list, err
 }
-func GetLawyerQs(cateId, status string, startLine, endLien int64) ([]WechatVoiceQuestions, error) {
+func GetLawyerQs(cateId, status, openId string, startLine, endLien int64) ([]WechatVoiceQuestions, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("category_id = ?", cateId).Where("is_solved = ?", status).Where("is_paied = 1").Offset(startLine - 1).Limit(endLien - startLine + 1).Find(&list).Order("important").Find(&list).Error
+	err := conn.Where("category_id = ?", cateId).Where("is_solved = ?", status).Where("is_paied = 1").Offset(startLine-1).Limit(endLien-startLine+1).Find(&list).Where("need_id = ?", openId).Find(&list).Error
 	return list, err
 }
 

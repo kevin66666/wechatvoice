@@ -400,6 +400,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(res)
 			return string(ret_str)
 		}
+
 		if member.Uuid == "" {
 			fmt.Println("新的用户")
 			user := GetUserInfo(res1.OpenId, res1.AccessToken)
@@ -483,6 +484,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	question.CustomerOpenId = openId
 
 	question.IsAnswerd = "0"
+	question.IsLocked = "0"
 
 	question.Pv = 0
 	// typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
@@ -2877,6 +2879,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		question.CustomerId = customer.Uuid
 		question.CustomerName = customer.Name
 		question.CustomerOpenId = openId
+		question.IsLocked = "0"
 		typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
 		typepriceNew := typePriceInt * 100
 		typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)
@@ -2974,6 +2977,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		//question.PaymentInfoInt = typePriceInt
 		//
 		question.IsSolved = "0"
+		question.IsLocked = "0"
 		question.AskerHeadImg = customer.HeadImgUrl
 		payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
 		if transferErr != nil {

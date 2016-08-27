@@ -1050,6 +1050,7 @@ func GetQuestionToAnswer(ctx *macaron.Context) string {
 			response.Msg = "ok"
 
 			question.IsLocked = "1"
+			question.LockTime = time.Now().Unix()
 			errsss := question.GetConn().Save(&question).Error
 			if errsss != nil {
 				response.Msg = errsss.Error()

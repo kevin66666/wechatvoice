@@ -20,6 +20,7 @@ type WechatVoiceQuestions struct {
 	AskerHeadImg      string //用户头像
 	AnswerId          string
 	IsLocked          string
+	LockTime          int64
 	AnswerName        string
 	AnswerOpenId      string
 	NeedId            string

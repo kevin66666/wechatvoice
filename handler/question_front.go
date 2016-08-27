@@ -162,7 +162,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 	if custErr != nil {
 		fmt.Print(custErr.Error())
 	}
-	fmt.Print(cust)
+	fmt.Print(&cust)
 
 	code := ctx.Query("code")
 	Print("获取到的code为==========>>>", code)

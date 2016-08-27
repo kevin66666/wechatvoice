@@ -464,6 +464,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 	fmt.Println("here.....")
+
 	orderNumber := util.GenerateOrderNumber()
 	question := new(model.WechatVoiceQuestions)
 	uuid := util.GenerateUuid()
@@ -488,7 +489,9 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	question.PaymentInfo = typePrice
 	question.IsSolved = "0"
 
-	payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
+	payInt, transferErr := strconv.ParseFloat(typePrice, 64)
+	// payInt = int64(payInt)
+	payI := int64(payInt)
 	question.OrderNumber = orderNumber
 	if transferErr != nil && !strings.Contains(transferErr.Error(), RNF) {
 		response.Code = CODE_ERROR
@@ -497,7 +500,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 
-	question.PaymentInfoInt = payInt
+	question.PaymentInfoInt = payI
 	fmt.Println("here............")
 	createErr := question.GetConn().Create(&question).Error
 

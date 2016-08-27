@@ -308,13 +308,18 @@ var Evaluate=React.createClass({
 var Money=React.createClass({
 	componentDidUpdate:function(){
 		if(this.props.isShowMoney){
+			var _this = this
 			$('.money .pic')
-				.animate({top:'30%'},1000)
+				.animate({top:'30%'},800)
 				.animate({top:"5%"})
-				.animate({top:'30%'},1000)
+				.animate({top:'30%'},800)
 				.animate({top:"20%"},function(){
 					$('.pic>img').attr('src','img/money_open.jpg');
 					$('.price').css('display','inline');
+					setTimeout(function(){
+					_	this.props.changeMoney(false,'')	
+
+					},2000)
 				})
 		}
 	},

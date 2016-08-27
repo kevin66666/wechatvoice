@@ -30,6 +30,10 @@ func GetInfo() {
 	if err1 != nil {
 		fmt.Println(err1)
 	}
+	for _, k := range res {
+		id := k["customerID"]
+		fmt.Println(string(id))
+	}
 	fmt.Println("==asajksdhahsdjkahdskjahsdk")
 	fmt.Println(res)
 }

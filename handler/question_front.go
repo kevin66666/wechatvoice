@@ -513,7 +513,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	fmt.Println(timeStamp)
 	tStr := strconv.FormatInt(timeStamp, 10)
 
-	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, typePriceNewStr, tStr)
+	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
 	if signErr != nil {
 		fmt.Println(signErr.Error())
 		response.Code = CODE_ERROR
@@ -3233,7 +3233,7 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	if qErr != nil {
 		fmt.Println(qErr.Error(), "line 3213")
 	}
-	voicePath := dirName1 + fileNameMp3
+	voicePath := dirname2 + fileNameMp3
 	// questionInfo.VoicePath = fileName
 	questionInfo.VoicePath = voicePath
 	questionInfo.IsSolved = "1"

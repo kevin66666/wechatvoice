@@ -152,6 +152,7 @@ var Answer=React.createClass({
 			success:function(data){
 				if(data.code===10000){
 					this.tips('音频保存成功')
+					location.href='laywer-order.html'
 				}else{
 					this.tips(data.msg)
 				}

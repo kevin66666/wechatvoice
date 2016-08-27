@@ -100,14 +100,7 @@
     </navigator>
     <panes>
       <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="wechatvoice" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
+        <subPane />
       </pane>
       <pane id="Scratches" />
       <pane id="Scope" />
@@ -605,12 +598,12 @@
       <workItem from="1472043753636" duration="102000" />
       <workItem from="1472043877751" duration="11000" />
       <workItem from="1472270024682" duration="2000" />
-      <workItem from="1472270034624" duration="12000" />
+      <workItem from="1472270034624" duration="219000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="29240000" />
+    <option name="totallyTimeSpent" value="29447000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="803" extended-state="6" />

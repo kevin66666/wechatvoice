@@ -385,7 +385,9 @@ func ToLawOrders(ctx *macaron.Context) {
 					lawInfo.RegistTime = createDate
 					lawInfo.OpenId = openId
 					lawInfo.PhoneNumber = lawyerPhone
-
+					fmt.Println("==============>>>>>")
+					fmt.Println(singlePhoto)
+					fmt.Println("====================>>>>")
 					photo := singlePhoto
 					var a string
 					if photo != "" {

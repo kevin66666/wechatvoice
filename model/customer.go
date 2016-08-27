@@ -1,8 +1,9 @@
 package model
 
 import (
-	"github.com/jinzhu/gorm"
-	"wechatvoice/tool/db"
+	"database/sql"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Customer struct {
@@ -18,22 +19,15 @@ type Customer struct {
 	UpdateDate    string
 }
 
-//o-u0Nv8ydozIYnNVzca_C0frKwgI
-func (this *Customer) GetConn() *gorm.DB {
-	db := dbpool.OpenConn()
-	return db.Model(&Customer{})
-}
-
-func (this *Customer) CloseConn(db *gorm.DB) {
-	dbpool.CloseConn(db)
-}
-
-func GetCustInfo(id string) Customer {
-	db := dbpool.OpenConn()
-
-	defer dbpool.CloseConn(&db)
-
-	var cs Customer
-	db.Raw("select * from customer where customerID = ?", id).Find(&cs)
-	return cs
+func GetInfo() {
+	db, err := sql.Open("mysql", "root:7de2cd9b31@tcp(localhost:3306)/mylawyerfriend")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	stmp, _ := db.Prepare("select * from customer where customerID =?")
+	row, ss := stmp.Exec("o-u0Nv8ydozIYnNVzca_C0frKwgI")
+	fmt.Println(row)
+	if ss != nil {
+		fmt.Println(ss.Error())
+	}
 }

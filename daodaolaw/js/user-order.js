@@ -167,12 +167,12 @@ var ResolvedList=React.createClass({
 	}
 })
 var PerOrder=React.createClass({
-	getInitialState:function(){
+  getInitialState:function(){
 		return {
 			imgIndex:0
 		}
 	},
-	addOne:function(dom){
+  addOne:function(dom){
   	if(dom.addNum>0){
   		location.href="ask.html?laywerId="+dom.laywerId+'&typeId='+dom.typeId+'&orderId='+dom.orderId+'&isAdd=1';
   	}else{

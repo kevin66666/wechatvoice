@@ -607,16 +607,17 @@ type MemberListReponse struct {
 	List []MemberOrder `json:"list"`
 }
 type MemberOrder struct {
-	OrderId string `json:"orderId"`
-	Status  string `json:"status"`
-	Content string `json:"content"`
-	Type    string `json:"type"`
-	TypeId  string `json:"typeId"`
-	Time    string `json:"time"`
-	Price   int64  `json:"price"`
-	AddNum  int64  `json:"addNum"`
-	Answer  string `json:"answer"`
-	CanEval bool   `json:"canEval"`
+	OrderId  string `json:"orderId"`
+	Status   string `json:"status"`
+	Content  string `json:"content"`
+	Type     string `json:"type"`
+	TypeId   string `json:"typeId"`
+	Time     string `json:"time"`
+	Price    int64  `json:"price"`
+	AddNum   int64  `json:"addNum"`
+	Answer   string `json:"answer"`
+	CanEval  bool   `json:"canEval"`
+	LawyerId string `json:"laywerId"`
 }
 
 func GetMemberOrderList(ctx *macaron.Context) string {
@@ -714,6 +715,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.AddNum = 2 - k.AppenQuestionTime
 		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
 		single.Price = price
+		single.LawyerId = k.AnswerId
 		var a bool
 		if k.IsRanked == "1" {
 			a = false

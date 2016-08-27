@@ -3,8 +3,16 @@
 	"GoVersion": "go1.7",
 	"Deps": [
 		{
+			"ImportPath": "github.com/Chronokeeper/anyxml",
+			"Rev": "54457d8e98c60cb91f18947facfa991ce3ea2ba3"
+		},
+		{
 			"ImportPath": "github.com/Unknwon/com",
 			"Rev": "188d690b1aea28bf00ba76983aa285b1d322e3dd"
+		},
+		{
+			"ImportPath": "github.com/Unknwon/goconfig",
+			"Rev": "5f601ca6ef4d5cea8d52be2f8b3a420ee4b574a5"
 		},
 		{
 			"ImportPath": "github.com/Unknwon/macaron",
@@ -13,6 +21,29 @@
 		{
 			"ImportPath": "github.com/Unknwon/macaron/inject",
 			"Rev": "635c89ac7410dd20df967e37e8f7f173e126cedd"
+		},
+		{
+			"ImportPath": "github.com/agrison/go-tablib",
+			"Comment": "v1.0-5-g4930582",
+			"Rev": "4930582c22eec7bfc0e5b47e0246d5048a78fe49"
+		},
+		{
+			"ImportPath": "github.com/agrison/mxj",
+			"Rev": "1269f8afb3b42d0e7b9cf60041e8e187727c88d6"
+		},
+		{
+			"ImportPath": "github.com/bndr/gotabulate",
+			"Comment": "v1.1.2-11-ga1f2a69",
+			"Rev": "a1f2a699a4b825786acb4e395f9f2f6893b102b7"
+		},
+		{
+			"ImportPath": "github.com/fatih/structs",
+			"Rev": "dc3312cb1a4513a366c4c9e622ad55c32df12ed3"
+		},
+		{
+			"ImportPath": "github.com/fsnotify/fsnotify",
+			"Comment": "v1.3.1-1-gf12c623",
+			"Rev": "f12c6236fe7b5cf6bcf30e5935d08cb079d78334"
 		},
 		{
 			"ImportPath": "github.com/go-sql-driver/mysql",
@@ -29,6 +60,11 @@
 			"Rev": "80f8150043c80fb52dee6bc863a709cdac7ec8f8"
 		},
 		{
+			"ImportPath": "github.com/mattn/go-runewidth",
+			"Comment": "v0.0.1",
+			"Rev": "d6bea18f789704b5f83375793155289da36a3c7f"
+		},
+		{
 			"ImportPath": "github.com/qor/inflection",
 			"Rev": "45321e63b98c756df17369c027c1df89298e1288"
 		},
@@ -37,9 +73,34 @@
 			"Rev": "08f0718b61e95ddba0ade3346725fe0e4bf28ca6"
 		},
 		{
+			"ImportPath": "github.com/tealeg/xlsx",
+			"Rev": "78618502ccb74583eecc4e52b02845f7bb566fe8"
+		},
+		{
+			"ImportPath": "github.com/xormplus/core",
+			"Rev": "2750e9842a92becc078aae15d9132e2301d2cf6b"
+		},
+		{
+			"ImportPath": "github.com/xormplus/xorm",
+			"Rev": "998849c99e14e57358d75e58d0591d9049af70f8"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
+		},
+		{
+			"ImportPath": "gopkg.in/flosch/pongo2.v3",
+			"Comment": "v3.0",
+			"Rev": "5e81b817a0c48c1c57cdf1a9056cf76bdee02ca9"
+		},
+		{
 			"ImportPath": "gopkg.in/ini.v1",
 			"Comment": "v0-26-gcaf3f03",
 			"Rev": "caf3f03ad90a464ba8fc4ccfece68d72433f9861"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "e4d366fc3c7938e2958e662b4258c7a89e1f0e3e"
 		}
 	]
 }

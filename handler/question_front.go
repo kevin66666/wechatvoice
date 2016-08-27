@@ -52,10 +52,6 @@ const (
 	WECHAT_PREPAY_URL = "/wechatvoice/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
 )
 
-func init() {
-
-}
-
 var merchantIndexUrl = "http://www.mylvfa.com/daodaolaw/search.html"
 
 //查询问题返回
@@ -3341,4 +3337,220 @@ type ResponseOrderDetail struct {
 	Msg      string `json:"msg"`
 	Content  string `json:"content"`
 	TypeName string `json:"typeName"`
+}
+
+func QuestionQueryNew(ctx *macaron.Context) string {
+	response := new(QuestionQueryResponse)
+	Print("进入查询问题方法")
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+
+	Print("客户端存的cookie值为", cookieStr)
+	openId := strings.Split(cookieStr, "|")[0]
+	// userType := strings.Split(cookieStr, "|")[1]
+	fmt.Println(openId)
+	body, _ := ctx.Req.Body().String()
+	req := new(model.QuestionQuery)
+
+	marshallErr := json.Unmarshal([]byte(body), req)
+
+	if marshallErr != nil {
+		Print("unmarshall出错", marshallErr.Error())
+		response.Code = CODE_ERROR
+		response.Msg = marshallErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	questionList, count, queryErr := model.GetQuestionQuery(*req)
+	fmt.Println(questionList)
+	if queryErr != nil && !strings.Contains(queryErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = queryErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	law := new(model.LawyerInfo)
+	lawErr := law.GetConn().Where("open_id = ?", openId).Error
+
+	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+		fmt.Println(lawErr)
+	}
+
+	retList := make([]QuestionInfo, 0)
+	if law.Uuid != "" {
+		//说明这货是个律师 过来可以听自己解答过的问题
+		for v, k := range questionList {
+			log.Println("这是第", v, "个问题列表中的问题")
+			single := new(QuestionInfo)
+			lawyer := new(model.LawyerInfo)
+			lawyerErr := lawyer.GetConn().Where("uuid = ?", k.AnswerId).Find(&lawyer).Error
+			if lawyerErr != nil && !strings.Contains(lawyerErr.Error(), RNF) {
+				response.Code = CODE_ERROR
+				response.Msg = lawyerErr.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+			single.OrderId = k.Uuid
+			single.LaywerId = k.AnswerId
+			single.Question = k.Description
+			single.Name = k.AnswerName
+			single.SelfIntr = lawyer.FirstCategory
+			single.LawerPic = lawyer.HeadImgUrl
+			single.Answer = k.VoicePath
+			single.TypeId = k.CategoryId
+			single.TypeName = k.Category
+			cateInfo := new(model.WechatVoiceQuestionSettings)
+			cateErr := cateInfo.GetConn().Where("category_id = ?", k.CategoryId).Find(&cateInfo).Error
+			if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
+				Print("获取分类信息错误", cateErr.Error())
+				response.Code = CODE_ERROR
+				response.Msg = cateErr.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+			payAmount := cateInfo.PayAmount
+
+			payAmountF, _ := strconv.ParseFloat(payAmount, 64)
+			payAmountF = payAmountF / 100
+			amountStr := strconv.FormatFloat(payAmountF, 'f', 2, 64)
+			single.TypePrice = amountStr
+			rank, _ := strconv.ParseInt(k.RankInfo, 10, 64)
+			single.Star = rank
+			payment := new(model.WechatVoicePaymentInfo)
+			payErr := payment.GetConn().Where("question_id = ?", k.Uuid).Where("open_id = ?", openId).Where("is_paied = ?", "1").Find(&payment).Error
+
+			if payErr != nil && !strings.Contains(payErr.Error(), RNF) {
+				Print("获取已支付信息错误", payErr.Error())
+				response.Code = CODE_ERROR
+				response.Msg = payErr.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+			var payAble bool
+			if payment.Uuid != "" {
+				//说明有支付记录
+				Print("用户已对Id为", k.Uuid, "的订单进行支付，无需再支付")
+				payAble = true
+			} else if k.AnswerOpenId == openId {
+				//自己回答的  可以直接听
+				Print("这货是律师 自己回答的 可以听")
+				payAble = true
+			} else {
+				Print("用户未对Id为", k.Uuid, "的订单进行支付，需要支付")
+				payAble = false
+			}
+			single.IsPay = payAble
+			childList, childErr := model.GetChildAnsers(k.Uuid)
+			if childErr != nil && !strings.Contains(childErr.Error(), RNF) {
+				response.Code = CODE_ERROR
+				response.Msg = childErr.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+			single.AddNum = int64(len(childList))
+			single.IsShow = false
+			addInfo := make([]AddInfos, 0)
+			if len(childList) > 0 {
+				for _, v := range childList {
+					singleChild := new(AddInfos)
+					singleChild.OrderId = v.Uuid
+					singleChild.QuestionInfo = v.Description
+					singleChild.Answer = v.VoicePath
+					addInfo = append(addInfo, *singleChild)
+				}
+			}
+			single.AddInfo = addInfo
+			retList = append(retList, *single)
+		}
+
+	} else {
+		//这货是普通用户
+		for v, k := range questionList {
+			log.Println("这是第", v, "个问题列表中的问题")
+			single := new(QuestionInfo)
+			lawyer := new(model.LawyerInfo)
+			lawyerErr := lawyer.GetConn().Where("uuid = ?", k.AnswerId).Find(&lawyer).Error
+			if lawyerErr != nil && !strings.Contains(lawyerErr.Error(), RNF) {
+				response.Code = CODE_ERROR
+				response.Msg = lawyerErr.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+			single.OrderId = k.Uuid
+			single.LaywerId = k.AnswerId
+			single.Question = k.Description
+			single.Name = k.AnswerName
+			single.SelfIntr = lawyer.FirstCategory
+			single.LawerPic = lawyer.HeadImgUrl
+			single.Answer = k.VoicePath
+			single.TypeId = k.CategoryId
+			single.TypeName = k.Category
+			cateInfo := new(model.WechatVoiceQuestionSettings)
+			cateErr := cateInfo.GetConn().Where("category_id = ?", k.CategoryId).Find(&cateInfo).Error
+			if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {
+				Print("获取分类信息错误", cateErr.Error())
+				response.Code = CODE_ERROR
+				response.Msg = cateErr.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+			payAmount := cateInfo.PayAmount
+
+			payAmountF, _ := strconv.ParseFloat(payAmount, 64)
+			payAmountF = payAmountF / 100
+			amountStr := strconv.FormatFloat(payAmountF, 'f', 2, 64)
+			single.TypePrice = amountStr
+			rank, _ := strconv.ParseInt(k.RankInfo, 10, 64)
+			single.Star = rank
+			payment := new(model.WechatVoicePaymentInfo)
+			payErr := payment.GetConn().Where("question_id = ?", k.Uuid).Where("open_id = ?", openId).Where("is_paied = ?", "1").Find(&payment).Error
+
+			if payErr != nil && !strings.Contains(payErr.Error(), RNF) {
+				Print("获取已支付信息错误", payErr.Error())
+				response.Code = CODE_ERROR
+				response.Msg = payErr.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+			var payAble bool
+			if payment.Uuid != "" {
+				//说明有支付记录
+				Print("用户已对Id为", k.Uuid, "的订单进行支付，无需再支付")
+				payAble = true
+			} else {
+				Print("用户未对Id为", k.Uuid, "的订单进行支付，需要支付")
+				payAble = false
+			}
+			single.IsPay = payAble
+			childList, childErr := model.GetChildAnsers(k.Uuid)
+			if childErr != nil && !strings.Contains(childErr.Error(), RNF) {
+				response.Code = CODE_ERROR
+				response.Msg = childErr.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+			single.AddNum = int64(len(childList))
+			single.IsShow = false
+			addInfo := make([]AddInfos, 0)
+			if len(childList) > 0 {
+				for _, v := range childList {
+					singleChild := new(AddInfos)
+					singleChild.OrderId = v.Uuid
+					singleChild.QuestionInfo = v.Description
+					singleChild.Answer = v.VoicePath
+					addInfo = append(addInfo, *singleChild)
+				}
+			}
+			single.AddInfo = addInfo
+			retList = append(retList, *single)
+		}
+
+	}
+
+	response.Code = CODE_SUCCESS
+	response.Msg = MSG_SUCCESS
+	response.List = retList
+	response.Total = count
+	ret_str, _ := json.Marshal(response)
+	return string(ret_str)
 }

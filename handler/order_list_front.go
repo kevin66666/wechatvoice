@@ -610,7 +610,7 @@ type MemberOrder struct {
 	OrderId  string `json:"orderId"`
 	Status   string `json:"status"`
 	Content  string `json:"content"`
-	Type     string `json:"type"`
+	Type     string `json:"typeName"`
 	TypeId   string `json:"typeId"`
 	Time     string `json:"time"`
 	Price    int64  `json:"price"`

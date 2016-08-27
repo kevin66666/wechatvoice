@@ -325,6 +325,7 @@ func ToLawOrders(ctx *macaron.Context) {
 				fmt.Print(err1.Error())
 			}
 			var userid string
+			fmt.Println(len(list1))
 			if len(list1) == 0 {
 				fmt.Println("律师表中没有这个人")
 				ctx.Resp.Write([]byte("<script type=\"text/javascript\">window.location.href=\"" + front + "\"</script>"))
@@ -381,6 +382,7 @@ func ToLawOrders(ctx *macaron.Context) {
 				if err != nil {
 					fmt.Println(err.Error)
 				}
+				ctx.SetSecureCookie("userloginstatus", openId+"|0")
 			}
 		}
 		// ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")

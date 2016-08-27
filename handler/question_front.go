@@ -157,13 +157,14 @@ func QuestionQuery(ctx *macaron.Context) string {
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
 	}
-	cust := new(model.Customer)
-	custErr := cust.GetConn().Where("customerID = ?", "o-u0Nv8ydozIYnNVzca_C0frKwgI").Find(&cust).Error
-	if custErr != nil {
-		fmt.Print(custErr.Error())
-	}
-	fmt.Print(&cust)
-
+	// cust := new(model.Customer)
+	// custErr := cust.GetConn().Where("customerID = ?", "o-u0Nv8ydozIYnNVzca_C0frKwgI").Find(&cust).Error
+	// if custErr != nil {
+	// 	fmt.Print(custErr.Error())
+	// }
+	// fmt.Print(&cust)
+	cs := model.GetCustInfo("o-u0Nv8ydozIYnNVzca_C0frKwgI")
+	fmt.Println(cs)
 	code := ctx.Query("code")
 	Print("获取到的code为==========>>>", code)
 	if code != "" {

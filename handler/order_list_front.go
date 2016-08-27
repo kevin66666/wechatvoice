@@ -387,7 +387,10 @@ func ToLawOrders(ctx *macaron.Context) {
 					lawInfo.PhoneNumber = lawyerPhone
 
 					photo := singlePhoto
-					fmt.Println(singlePhoto)
+					var a string
+					if photo != "" {
+						a = strings.Split("/", photo)[2]
+					}
 					lawInfo.HeadImgUrl = "images/" + photo
 					lawInfo.Name = lawyerName
 					lawInfo.FirstCategory = business
@@ -398,6 +401,8 @@ func ToLawOrders(ctx *macaron.Context) {
 					from := "/usr/local/apache-tomcat-6.0.32/webapps/mylawyerfriend" + singlePhoto
 					to := "/home/workspace_go/src/wechatvoice/daodaolaw/images"
 					exec.Command("cp", from, to)
+					toP := to + a
+					lawInfo.HeadImgUrl = toP
 					err := lawInfo.GetConn().Create(&lawInfo)
 					if err != nil {
 						fmt.Println(err.Error)

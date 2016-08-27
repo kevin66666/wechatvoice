@@ -3243,6 +3243,7 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	voicePath := dirname2 + fileNameMp3
 	// questionInfo.VoicePath = fileName
 	law := new(model.LawyerInfo)
+	fmt.Println(law)
 	lawErr := law.GetConn().Where("open_id = ?", cookie).Find(&law).Error
 	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
 		fmt.Println(lawErr.Error())

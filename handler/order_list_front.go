@@ -405,7 +405,11 @@ func ToLawOrders(ctx *macaron.Context) {
 					lawInfo.Desc = desc
 					from := "/usr/local/apache-tomcat-6.0.32/webapps/mylawyerfriend" + singlePhoto
 					to := "/home/workspace_go/src/wechatvoice/daodaolaw/images"
-					exec.Command("cp", from, to)
+					cmd := exec.Command("cp", from, to)
+					errcmd := cmd.Run()
+					if errcmd != nil {
+						fmt.Println(errcmd.Error())
+					}
 					toP := "/images" + a
 					lawInfo.HeadImgUrl = toP
 					err := lawInfo.GetConn().Create(&lawInfo)

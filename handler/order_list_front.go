@@ -316,10 +316,12 @@ func ToLawOrders(ctx *macaron.Context) {
 		json.Unmarshal(resBody, res1)
 		openId := res1.OpenId
 		u := new(model.LawyerInfo)
-		u.GetConn().Where("open_id = ?", openId).Find(&u)
+		erru := u.GetConn().Where("open_id = ?", openId).Find(&u).Error
+		if erru != nil && !strings.Contains(erru.Error(), RNF) {
+			fmt.Println(erru.Error)
+		}
 		if u.Uuid == "" {
 			//说明这个人已经注册进来了
-		} else {
 			list1, err1 := model.GetUserInfoByOpenId(openId)
 			if err1 != nil {
 				fmt.Print(err1.Error())
@@ -384,6 +386,8 @@ func ToLawOrders(ctx *macaron.Context) {
 				}
 				ctx.SetSecureCookie("userloginstatus", openId+"|0")
 			}
+		} else {
+			ctx.SetSecureCookie("userloginstatus", openId+"|0")
 		}
 		// ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
 		// member := new(model.MemberInfo)

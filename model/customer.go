@@ -32,7 +32,8 @@ func GetInfo() {
 	}
 	// engin.Insert()
 	sql1 := "insert into customer where customerID =?,customerName =?,selCity =?"
-	engin.Insert(sql1, "1", "1", "1")
+	engin.Sql(sql1, "1", "1", "1").Insert()
+	//engin.Insert(sql1, "1", "1", "1")
 	for _, k := range res {
 		id := k["customerID"]
 		fmt.Println("xxxxxxxx")

@@ -607,6 +607,7 @@ type LawOrder struct {
 	Time    string `json:"time"`
 	Price   int64  `json:"price"`
 	Answer  string `json:"answer"`
+	IsPlay  string `json:"isPlay"`
 }
 
 func GetLayerOrderList(ctx *macaron.Context) string {
@@ -734,6 +735,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		single.Price = price
 
 		single.Answer = k.VoicePath
+		single.IsPlay = true
 		/**
 			OrderId string `json:"orderId"`
 		Status string `json:"status"`
@@ -775,6 +777,7 @@ type MemberOrder struct {
 	Answer   string `json:"answer"`
 	CanEval  bool   `json:"canEval"`
 	LawyerId string `json:"laywerId"`
+	IsPlay   bool   `json:"isPlay"`
 }
 
 func GetMemberOrderList(ctx *macaron.Context) string {
@@ -868,6 +871,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.Type = k.Category
 		single.Time = k.CreateTime
 		single.Answer = k.VoicePath
+		single.IsPlay = true
 		l, errs := model.GetInfos(openId, k.Uuid)
 		if errs != nil && !strings.Contains(errs.Error(), RNF) {
 			response.Code = CODE_ERROR

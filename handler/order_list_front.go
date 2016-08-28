@@ -42,7 +42,7 @@ func UpdateInfo(info model.WechatVoiceQuestions) {
 	// fmt.Println(no
 	b4 := info.LockTime
 	a := now - b4
-	times := a / 1000 / 60
+	times := a / 60
 	fmt.Println(now)
 	fmt.Println(b4)
 	fmt.Println(a)

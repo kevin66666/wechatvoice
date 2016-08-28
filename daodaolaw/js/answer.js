@@ -79,6 +79,7 @@ var Answer=React.createClass({
 	record:function(e){
 		alert(this.state.isRecord)
 		e.stopPropagation()
+		this.setState({isRecord:!this.state.isRecord})
 		if(this.state.isRecord){
 			this.start()
 		}else{
@@ -88,7 +89,6 @@ var Answer=React.createClass({
 	start:function(){
 		var _this=this
 		_this.tips('开始录音')
-		this.setState({isRecord:false})
 		wx.startRecord({
 			cancel: function () {
 				_this.tips('用户拒绝授权录音')
@@ -109,7 +109,6 @@ var Answer=React.createClass({
 	},
 	stop:function(){
         var _this=this
-		this.setState({isRecord:true})
 		wx.stopRecord({
 	    success: function (res) {
 	      var localId = res.localId

@@ -177,12 +177,11 @@ var PerOrder=React.createClass({
 	getInitialState:function(){
 		return {
 			imgIndex:0,
-      isPlay:false
+      isPlay:true
 		}
 	},
   getAnswer:function(answer,e){
   	//听完语音后显示评价框
-    this.setState({isPlay:!this.state.isPlay})
     if(this.state.isPlay){
       var _this=this
       var $audio=$(e.target).prev()
@@ -207,6 +206,7 @@ var PerOrder=React.createClass({
       $audio[0].pause()
       this.setState({imgIndex:0})
     }
+    this.setState({isPlay:!this.state.isPlay})
   },
 	render:function(){
 		var dom=this.props.dom;

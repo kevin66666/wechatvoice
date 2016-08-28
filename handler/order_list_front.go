@@ -21,6 +21,7 @@ import (
 func init() {
 	c := cron.New()
 	c.AddFunc("@every 2m", func() { UpdateAllQuestions() })
+	c.Start()
 }
 
 func UpdateAllQuestions() {

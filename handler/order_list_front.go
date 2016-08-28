@@ -20,7 +20,7 @@ import (
 
 func init() {
 	c := cron.New()
-	c.AddFunc("@every 10m", func() { UpdateAllQuestions() })
+	c.AddFunc("@every 2m", func() { UpdateAllQuestions() })
 }
 
 func UpdateAllQuestions() {
@@ -31,6 +31,7 @@ func UpdateAllQuestions() {
 	if len(list) > 0 {
 
 		for _, k := range list {
+			log.Println("=====>>>", k.Uuid)
 			go UpdateInfo(k)
 		}
 	}

@@ -171,7 +171,7 @@ func GetNotSpectial(cateId, status string, start, end int64) ([]WechatVoiceQuest
 	list := make([]WechatVoiceQuestions, 0)
 	str := make([]string, 0)
 	str = append(str, cateId)
-	err := conn.Where("category_id  not in (?)", str).Where("is_solved = ?", status).Offset(start - 1).Limit(end - start + 1).Find(&list).Error
+	err := conn.Where("category_id  not in (?)", str).Where("is_solved = ?", status).Where("is_locked = 0").Offset(start - 1).Limit(end - start + 1).Find(&list).Error
 	return list, err
 }
 func GetCustomerInfo(openId, status string, start, end int64) ([]WechatVoiceQuestions, error) {

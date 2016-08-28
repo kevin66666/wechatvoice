@@ -20,7 +20,7 @@ import (
 
 func init() {
 	c := cron.New()
-	c.AddFunc("@every 2m", func() { UpdateAllQuestions() })
+	c.AddFunc("@every 1m", func() { UpdateAllQuestions() })
 	c.Start()
 }
 
@@ -42,6 +42,7 @@ func UpdateInfo(info model.WechatVoiceQuestions) {
 	b4 := info.LockTime
 	a := now - b4
 	times := a / 1000 / 60
+	fmt.Println(times)
 	if times > 10 {
 		info.IsLocked = "0"
 		info.LockTime = 0

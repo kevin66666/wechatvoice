@@ -1069,7 +1069,7 @@ func GetQuestionToAnswer(ctx *macaron.Context) string {
 
 	if len(lockList) == 0 || len(lockList) == 1 {
 		question := new(model.WechatVoiceQuestions)
-		qErr := question.GetConn().Where("order_id =?", req.OrderId).Find(&question).Error
+		qErr := question.GetConn().Where("uuid =?", req.OrderId).Find(&question).Error
 		if qErr != nil && !strings.Contains(qErr.Error(), RNF) {
 			response.Code = CODE_ERROR
 			response.Msg = qErr.Error()

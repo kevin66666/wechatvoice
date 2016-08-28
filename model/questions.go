@@ -157,11 +157,11 @@ func GetChildAnsers(questionId string) ([]WechatVoiceQuestions, error) {
 	err := conn.Where("parent_question_id = ?", questionId).Find(&list).Error
 	return list, err
 }
-func GetLawyerQs(cateId, status, openId string, startLine, endLien int64) ([]WechatVoiceQuestions, error) {
+func GetLawyerQs(status, openId string, startLine, endLien int64) ([]WechatVoiceQuestions, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("category_id = ?", cateId).Order("created_at desc").Where("is_solved = ?", status).Where("is_paied = 1").Where("need_id = ?", openId).Offset(startLine - 1).Limit(endLien - startLine + 1).Find(&list).Find(&list).Error
+	err := conn.Order("created_at desc").Where("is_solved = ?", status).Where("is_paied = 1").Where("need_id = ?", openId).Offset(startLine - 1).Limit(endLien - startLine + 1).Find(&list).Find(&list).Error
 	return list, err
 }
 

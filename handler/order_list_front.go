@@ -44,7 +44,11 @@ func UpdateInfo(info model.WechatVoiceQuestions) {
 	times := a / 1000 / 60
 	if times > 10 {
 		info.IsLocked = "0"
-		info.GetConn().Update(&info)
+		info.LockTime = 0
+		err := info.GetConn().Update(&info).Error
+		if err != nil {
+			fmt.Println(err.Error())
+		}
 	}
 }
 
@@ -689,7 +693,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 	switch req.OrderType {
 	case "0":
 		//带解答
-		list, err = model.GetLawyerQs(lawyer.FirstCategoryId, req.OrderType, law.Uuid, req.StartLine, req.EndLine)
+		list, err = model.GetLawyerQs(req.OrderType, law.Uuid, req.StartLine, req.EndLine)
 		if err != nil && !strings.Contains(err.Error(), RNF) {
 			response.Code = CODE_ERROR
 			response.Msg = err.Error()

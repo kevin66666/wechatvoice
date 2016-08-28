@@ -205,12 +205,12 @@ var PerOrder=React.createClass({
     $audio.on('play',function(){
       timer=setInterval(function(){
         var imgIndex=_this.state.imgIndex;
-        if(imgIndex<=2){
+        if(imgIndex<=1){
           _this.setState({imgIndex:imgIndex+1})
         }else{
           _this.setState({imgIndex:0})
         }
-      },500)
+      },100)
     })
     $audio.on('ended',function(){
       clearInterval(timer)
@@ -244,7 +244,7 @@ var PerOrder=React.createClass({
 	},
 	render:function(){
 		var dom=this.props.dom;
-		var src=['img/xiaoxi.png','img/dian.png','img/half.png'][this.state.imgIndex]
+		var src=['img/xiaoxi.png','img/half.png'][this.state.imgIndex]
 		return (
 			<div className="laywer-order-list user-order">
 				<p className="over-hidden">

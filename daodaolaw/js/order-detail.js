@@ -47,7 +47,10 @@ var OrderDetail=React.createClass({
 	      })
 	      $audio.on('ended',function(){
 	        clearInterval(timer)
-	        _this.setState({imgIndex:0})
+	        _this.setState({
+	        	imgIndex:0,
+	        	isPlay:true
+	        })
 	      })
 	      $audio.on('pause',function(){
 	        clearInterval(timer)

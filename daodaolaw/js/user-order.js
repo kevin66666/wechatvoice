@@ -149,13 +149,31 @@ var ResolvedList=React.createClass({
     	this.req(this,'http://www.mylvfa.com/voice/ucenter/userlist','2')
     }
   },
+  changePlay:function(orderId){
+    var newInfo=this.state.orderInfo
+    newInfo.map(function(dom){
+      if(orderId=dom.orderId){
+        dom.isPlay=!dom.isPlay
+      }
+    })
+    this.setState({orderInfo:newInfo})
+  },
+  end:function(orderId){
+    var newInfo=this.state.orderInfo
+    newInfo.map(function(dom){
+      if(orderId=dom.orderId){
+        dom.isPlay=true
+      }
+    })
+    this.setState({orderInfo:newInfo})
+  },
 	render:function(){
 		var list=<p className="no-info">没有相关信息</p>
 		var orderInfo=this.state.orderInfo
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
 			list=orderInfo.map(function(dom){
-				return  <PerOrder dom={dom} changeLoad={this.props.changeLoad} getOrderId={this.props.getOrderId} changeEvaluate={this.props.changeEvaluate}/>
+				return  <PerOrder dom={dom} changePlay={this.changePlay} end={this.end} changeLoad={this.props.changeLoad} getOrderId={this.props.getOrderId} changeEvaluate={this.props.changeEvaluate}/>
 			}.bind(this))
 		}
 		return (
@@ -181,43 +199,41 @@ var PerOrder=React.createClass({
   	}
   },
   getAnswer:function(orderId,canEval,answer,e){
-  	this.props.getOrderId(orderId)
-  	//听完语音后显示评价框
   	var $audio=$(e.target).prev()
     var timer=''
     var _this=this
-    if(this.state.isPlay){
+    $audio.on('play',function(){
+      timer=setInterval(function(){
+        var imgIndex=_this.state.imgIndex;
+        if(imgIndex<=2){
+          _this.setState({imgIndex:imgIndex+1})
+        }else{
+          _this.setState({imgIndex:0})
+        }
+      },500)
+    })
+    $audio.on('ended',function(){
+      clearInterval(timer)
+      _this.setState({imgIndex:0})
+      _this.props.end(orderId)
+      if(canEval){
+  		_this.props.changeEvaluate(true)
+  	  }
+    })
+    $audio.on('pause',function(){
+      clearInterval(timer)
+      _this.setState({imgIndex:0})
+    //   if(canEval){
+  		// _this.props.changeEvaluate(true)
+  	 //  }
+    })
+    if(isPlay){
       $audio.prop({src:answer,autoplay:'autoplay'})
-      $audio.on('play',function(){
-        timer=setInterval(function(){
-          var imgIndex=_this.state.imgIndex;
-          if(imgIndex<=2){
-            _this.setState({imgIndex:imgIndex+1})
-          }else{
-            _this.setState({imgIndex:0})
-          }
-        },500)
-      })
-      $audio.on('ended',function(){
-        clearInterval(timer)
-  		_this.setState({imgIndex:0})
-  		if(canEval){
-  			_this.props.changeEvaluate(true)
-  		}
-      })
-      $audio.on('pause',function(){
-        clearInterval(timer)
-        _this.setState({imgIndex:0})
-        if(canEval){
-  			_this.props.changeEvaluate(true)
-  		}
-      })
     }else{
       clearInterval(timer)
       $audio[0].pause()
-      _this.setState({imgIndex:0})
     }
-    this.setState({isPlay:!this.state.isPlay})
+    this.props.changePlay(orderId)
   },
   tips:function(text){
 		this.props.changeLoad('load',true)
@@ -243,7 +259,7 @@ var PerOrder=React.createClass({
 					<span className="user-add-num" onTouchEnd={this.addOne.bind(this,dom)}>可追问{dom.addNum}次</span>
 					<p className="voice pull-right">
 				    <audio src={dom.answer} controls="controls"/>
-				    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.orderId,dom.canEval,dom.answer)}>收听</span>
+				    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.answer,dom.isPlay,dom.orderId)}>收听</span>
 				    <img src={src}/>
 			    </p>
 				</div>

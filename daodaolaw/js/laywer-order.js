@@ -184,8 +184,8 @@ var PerOrder=React.createClass({
   	//听完语音后显示评价框
     var $audio=$(e.target).prev()
     var timer=''
+    var _this=this
     if(this.state.isPlay){
-      var _this=this
       $audio.prop({src:answer,autoplay:'autoplay'})
       $audio.on('play',function(){
         alert($audio[0].duration)
@@ -202,10 +202,14 @@ var PerOrder=React.createClass({
         clearInterval(timer)
         _this.setState({imgIndex:0})
       })
+      // $audio.on('pause',function(){
+      //   clearInterval(timer)
+      //   _this.setState({imgIndex:0})
+      // })
     }else{
-      $audio[0].pause()
+      $audio[0].stop()
       clearInterval(timer)
-      this.setState({imgIndex:0})
+      _this.setState({imgIndex:0})
     }
     this.setState({isPlay:!this.state.isPlay})
   },

@@ -627,6 +627,8 @@ ul, li {
   top: 10px;
   width: 18px;
   height: 18px;
+  border: none;
+  outline: none;
 }
 /*搜索end*/
 /*律师订单*/

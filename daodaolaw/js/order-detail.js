@@ -38,6 +38,7 @@ var OrderDetail=React.createClass({
 	      $audio.on('play',function(){
 	        timer=setInterval(function(){
 	          var imgIndex=_this.state.imgIndex;
+	          alert(imgIndex)
 	          if(imgIndex<=2){
 	            _this.setState({imgIndex:imgIndex+1})
 	          }else{

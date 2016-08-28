@@ -349,7 +349,8 @@ var Money=React.createClass({
 					$('.pic>img').attr('src','img/money_open.jpg');
 					$('.price').css('display','inline');
 					setTimeout(function(){
-						_this.props.changeMoney(false,'')	
+						_this.props.changeMoney(false,'')
+						location.reload()	
 
 					},2000)
 				})

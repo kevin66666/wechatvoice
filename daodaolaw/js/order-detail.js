@@ -34,7 +34,8 @@ var OrderDetail=React.createClass({
     	var timer=''
     	var _this=this
 	  	if(this.state.isPlay){
-	      $audio.prop({src:answer,autoplay:'autoplay'})
+	      // $audio.prop({src:answer,autoplay:'autoplay'})
+	      $audio[0].play()
 	      $audio.on('play',function(){
 	        timer=setInterval(function(){
 	          var imgIndex=_this.state.imgIndex;

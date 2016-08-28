@@ -7,7 +7,7 @@ var Search=React.createClass({
 			isAddMore:true,
 			searchList:[],
 			load:false,
-      tips:'加载中,请稍等'
+      		tips:'加载中,请稍等'
 		}
 	},
 	componentDidMount:function(){
@@ -61,11 +61,16 @@ var Search=React.createClass({
 			isShowAsk:false
 		})
 		if(keywords){
+			this.changeLoad('load',true)
+    		this.changeLoad('tips','加载中,请稍后')
+    
 			this.setState({
 				searchList:[],
 				isAddMore:true
 			})
-			this.getSearchList()
+			setTimeout(function(){
+				this.getSearchList()
+			}.bind(this),1000)
 		}
 	},
 	getSearchList:function(){
@@ -85,6 +90,8 @@ var Search=React.createClass({
 				contentType: "application/json",
 				dataType:'json',
 				success:function(data){
+					this.changeLoad('load',false)
+
 					if(data.code===10000){
 						if(data.list.length>0){
 							this.setState({searchList:this.state.searchList.concat(data.list)})

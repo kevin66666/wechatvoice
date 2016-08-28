@@ -77,7 +77,6 @@ var Answer=React.createClass({
 	    }.bind(this),2000)
 	},
 	record:function(e){
-		alert(this.state.isRecord)
 		e.stopPropagation()
 		this.setState({isRecord:!this.state.isRecord})
 		if(this.state.isRecord){
@@ -132,7 +131,6 @@ var Answer=React.createClass({
 	},
 	play:function(e){
 		e.stopPropagation()
-		alert('play')
 		var $play=$(e.target)
 		$play.addClass('bg-answer')
 	   	var _this=this

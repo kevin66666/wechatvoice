@@ -607,7 +607,7 @@ type LawOrder struct {
 	Time    string `json:"time"`
 	Price   int64  `json:"price"`
 	Answer  string `json:"answer"`
-	IsPlay  string `json:"isPlay"`
+	IsPlay  bool   `json:"isPlay"`
 }
 
 func GetLayerOrderList(ctx *macaron.Context) string {
@@ -735,7 +735,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		single.Price = price
 
 		single.Answer = k.VoicePath
-		single.IsPlay = true
+		single.IsPlay = false
 		/**
 			OrderId string `json:"orderId"`
 		Status string `json:"status"`
@@ -871,7 +871,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.Type = k.Category
 		single.Time = k.CreateTime
 		single.Answer = k.VoicePath
-		single.IsPlay = true
+		single.IsPlay = false
 		l, errs := model.GetInfos(openId, k.Uuid)
 		if errs != nil && !strings.Contains(errs.Error(), RNF) {
 			response.Code = CODE_ERROR
@@ -918,6 +918,7 @@ type RedpacketResponse struct {
 func EvalAnswers(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
 	req := new(EvaluateAnswers)
+	fmt.Println("-========----pingjia request ", body)
 	json.Unmarshal([]byte(body), req)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
 	openId := strings.Split(cookieStr, "|")[0]
@@ -951,15 +952,6 @@ func EvalAnswers(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 
-	// amount, _ := strconv.ParseFloat(orderInfo.PaymentInfo, 64)
-	// log.Println(amount)
-
-	// lp, _ := strconv.ParseFloat(setting.LawyerFeePercent, 64)
-	// red := 100.00 - lp
-	// amountLeft := (amount * red) / 100
-	// amtInt := int64(amountLeft)
-	// redint := rand.Int63n(amtInt)
-	// redStr := strconv.FormatInt(redint, 10)
 	amountF, _ := strconv.ParseFloat(orderInfo.PaymentInfo, 64)
 	amountF = amountF * 100
 	lp, _ := strconv.ParseFloat(setting.LawyerFeePercent, 64)
@@ -1037,6 +1029,19 @@ func EvalAnswers(ctx *macaron.Context) string {
 		fmt.Println(errPay)
 	}
 	// payment.SwiftNumber = orderInfo.
+
+	//保存orderInfo
+	orderInfo.IsRanked = "1"
+	orderInfo.IsSolved = "2"
+	star := req.Number
+	orderInfo.RankInfo = star
+	orderUpdateErr := orderInfo.GetConn().Save(&orderInfo).Error
+	if orderUpdateErr != nil && !strings.Contains(orderUpdateErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = orderUpdateErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
 	response.RedPacket = redStr

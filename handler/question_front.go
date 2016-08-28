@@ -2840,7 +2840,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 	typePrice := req.TypePrice
 	content := req.Content
 
-	cate := new(model.Category)
+	cate := new(model.LawCatgory)
 	cateErr := cate.GetConn().Where("uuid = ?", cateId).Find(&cate).Error
 
 	if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {

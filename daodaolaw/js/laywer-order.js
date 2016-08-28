@@ -182,8 +182,6 @@ var PerOrder=React.createClass({
 	},
   getAnswer:function(answer,e){
   	//听完语音后显示评价框
-      // alert(this.state.isPlay)
-
     var $audio=$(e.target).prev()
     var timer=''
     var _this=this
@@ -198,7 +196,7 @@ var PerOrder=React.createClass({
           }else{
             _this.setState({imgIndex:0})
           }
-        },800)
+        },500)
       })
       $audio.on('ended',function(){
         clearInterval(timer)

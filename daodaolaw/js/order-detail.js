@@ -39,7 +39,7 @@ var OrderDetail=React.createClass({
 	        timer=setInterval(function(){
 	          var imgIndex=_this.state.imgIndex;
 	          alert(imgIndex)
-	          if(imgIndex<=2){
+	          if(imgIndex<=1){
 	            _this.setState({imgIndex:imgIndex+1})
 	          }else{
 	            _this.setState({imgIndex:0})
@@ -74,7 +74,7 @@ var OrderDetail=React.createClass({
   		$audio.on('play',function(){
   			var imgIndex=0;
   			timer=setInterval(function(){
-  				var src=['img/xiaoxi.png','img/dian.png','img/half.png'][imgIndex]
+  				var src=['img/xiaoxi.png','img/half.png'][imgIndex]
   				if(imgIndex<=2){
   					$img.prop({src:src})
   					imgIndex+=1
@@ -110,7 +110,7 @@ var OrderDetail=React.createClass({
 		for(var i=0;i<info.star;i++){
 			star.push(<i className="fa fa-star col-yellow"></i>)
 		}
-		var src=['img/xiaoxi.png','img/dian.png','img/half.png'][this.state.imgIndex]
+		var src=['img/xiaoxi.png','img/half.png'][this.state.imgIndex]
 		return (
 			<div className="media quest-list margin-lg-t padding-vertical-md">
 			  <div className="media-body">

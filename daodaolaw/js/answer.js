@@ -142,6 +142,8 @@ var Answer=React.createClass({
 	save:function(){
 		//var $save=$(e.target)
 		//$save.addClass('bg-answer')
+		this.changeLoad('load',true)
+    	this.changeLoad('tips','保存中，请稍后')
 		var _this=this;
 		wx.uploadVoice({
 		    localId: _this.state.answer, 
@@ -172,7 +174,7 @@ var Answer=React.createClass({
 					this.tips('音频保存成功')
 					location.href='laywer-order.html'
 				}else{
-					this.tips(data.msg)
+					this.tips('音频保存失败')
 				}
 			}.bind(this),
 			error:function(data){

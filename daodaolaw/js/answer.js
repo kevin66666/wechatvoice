@@ -132,6 +132,7 @@ var Answer=React.createClass({
 		})
 	},
 	play:function(e){
+		alert('play')
 		var $play=$(e.target)
 		$play.addClass('bg-answer')
 	   	var _this=this
@@ -200,11 +201,11 @@ var Answer=React.createClass({
 				<p className="content">{info.content}</p>
 				<p><img src="img/luyin.png" onTouchEnd={this.record}/></p>
 				<p>(点击开始录音,再次点击结束录音)</p>
-				<audio controls autoplay></audio>
+				<audio src="" controls></audio>
 				<div className="save">
+					<span className="margin-md-r" onTouchEnd={this.play}>播放录音</span>
 					<span className="margin-md-r dispN" onTouchEnd={this.reset}>重新录音</span>
-					<p onTouchEnd={this.play}>播放录音</p>
-					<p onTouchEnd={this.save}>确认发送</p>
+					<span className="margin-md-r" onTouchEnd={this.save}>确认发送</span>
 				</div>
 				<Loading load={this.state.load} tips={this.state.tips}/>
 			</div>

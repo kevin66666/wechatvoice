@@ -169,7 +169,8 @@ var ResolvedList=React.createClass({
 var PerOrder=React.createClass({
   getInitialState:function(){
 		return {
-			imgIndex:0
+			imgIndex:0,
+      		isPlay:true
 		}
 	},
   addOne:function(dom){
@@ -182,30 +183,41 @@ var PerOrder=React.createClass({
   getAnswer:function(orderId,canEval,answer,e){
   	this.props.getOrderId(orderId)
   	//听完语音后显示评价框
-  	var _this=this
   	var $audio=$(e.target).prev()
-	$('img').prop('src','img/xiaoxi.png')
-	$('audio').prop('src','')
-  	$audio.prop({src:answer,autoplay:'autoplay'})
-  	var timer=''
-  	$audio.on('play',function(){
-		alert($audio[0].duration)
-  		timer=setInterval(function(){
-  			var imgIndex=_this.state.imgIndex;
-  			if(imgIndex<=2){
-  				_this.setState({imgIndex:imgIndex+1})
-  			}else{
-  				_this.setState({imgIndex:0})
-  			}
-  		},500)
-  	})
-  	$audio.on('ended',function(){
-  		clearInterval(timer)
+    var timer=''
+    var _this=this
+    if(this.state.isPlay){
+      $audio.prop({src:answer,autoplay:'autoplay'})
+      $audio.on('play',function(){
+        timer=setInterval(function(){
+          var imgIndex=_this.state.imgIndex;
+          if(imgIndex<=2){
+            _this.setState({imgIndex:imgIndex+1})
+          }else{
+            _this.setState({imgIndex:0})
+          }
+        },800)
+      })
+      $audio.on('ended',function(){
+        clearInterval(timer)
   		_this.setState({imgIndex:0})
   		if(canEval){
   			_this.props.changeEvaluate(true)
   		}
-  	})
+      })
+      $audio.on('pause',function(){
+        clearInterval(timer)
+        _this.setState({imgIndex:0})
+        if(canEval){
+  			_this.props.changeEvaluate(true)
+  		}
+      })
+    }else{
+      clearInterval(timer)
+      $audio[0].pause()
+      _this.setState({imgIndex:0})
+    }
+    this.setState({isPlay:!this.state.isPlay})
   },
   tips:function(text){
 		this.props.changeLoad('load',true)

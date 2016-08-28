@@ -85,8 +85,8 @@ var Answer=React.createClass({
 		this.setState({isRecord:!this.state.isRecord})
 	},
 	start:function(){
-
 		var _this=this
+		_this.tips('开始录音')
 		wx.startRecord({
 			cancel: function () {
 				_this.tips('用户拒绝授权录音')

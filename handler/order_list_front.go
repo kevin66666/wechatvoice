@@ -875,7 +875,12 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 			ret_Str, _ := json.Marshal(response)
 			return string(ret_Str)
 		}
-		single.AddNum = int64(2) - int64(len(l))
+
+		if k.ParentQuestionId != "" {
+			single.AddNum = int64(0)
+		} else {
+			single.AddNum = int64(2) - int64(len(l))
+		}
 		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
 		single.Price = price
 		single.LawyerId = k.AnswerId

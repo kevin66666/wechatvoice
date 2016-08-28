@@ -189,37 +189,37 @@ var PerOrder=React.createClass({
 	},
   getAnswer:function(answer,isPlay,orderId,e){
   	//听完语音后显示评价框
-    this.props.changePlay(orderId)
     var $audio=$(e.target).prev()
     var timer=''
     var _this=this
+    $audio.on('play',function(){
+      timer=setInterval(function(){
+        var imgIndex=_this.state.imgIndex;
+        // alert(imgIndex)
+        if(imgIndex<=2){
+          _this.setState({imgIndex:imgIndex+1})
+        }else{
+          _this.setState({imgIndex:0})
+        }
+      },500)
+    })
+    $audio.on('ended',function(){
+      clearInterval(timer)
+      _this.setState({imgIndex:0})
+    })
+    $audio.on('pause',function(){
+      alert('pause')
+      clearInterval(timer)
+      _this.setState({imgIndex:0})
+    })
+    alert(isPlay)
     if(isPlay){
       $audio.prop({src:answer,autoplay:'autoplay'})
-      $audio.on('play',function(){
-        timer=setInterval(function(){
-          var imgIndex=_this.state.imgIndex;
-          alert(imgIndex)
-          if(imgIndex<=2){
-            _this.setState({imgIndex:imgIndex+1})
-          }else{
-            _this.setState({imgIndex:0})
-          }
-        },500)
-      })
-      $audio.on('ended',function(){
-        clearInterval(timer)
-        _this.setState({imgIndex:0})
-      })
-      $audio.on('pause',function(){
-        alert('pause')
-        clearInterval(timer)
-        _this.setState({imgIndex:0})
-      })
     }else{
       clearInterval(timer)
       $audio[0].pause()
-      _this.setState({imgIndex:0})
     }
+    this.props.changePlay(orderId)
   },
 	render:function(){
 		var dom=this.props.dom;

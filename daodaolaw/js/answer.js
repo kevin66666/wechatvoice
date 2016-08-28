@@ -76,8 +76,9 @@ var Answer=React.createClass({
 	      this.changeLoad('load',false)
 	    }.bind(this),2000)
 	},
-	record:function(){
+	record:function(e){
 		alert(this.state.isRecord)
+		e.stopPropagation()
 		if(this.state.isRecord){
 			this.start()
 		}else{
@@ -133,7 +134,7 @@ var Answer=React.createClass({
 		})
 	},
 	play:function(e){
-		alert('play')
+		e.stopPropagation()
 		var $play=$(e.target)
 		$play.addClass('bg-answer')
 	   	var _this=this
@@ -151,9 +152,10 @@ var Answer=React.createClass({
 		  _this.tips('微信播放录音接口调取失败')
 		})
 	},
-	save:function(){
+	save:function(e){
 		//var $save=$(e.target)
 		//$save.addClass('bg-answer')
+		e.stopPropagation()
 		this.changeLoad('load',true)
     	this.changeLoad('tips','保存中，请稍后')
 		var _this=this;

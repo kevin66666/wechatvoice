@@ -198,7 +198,7 @@ var PerOrder=React.createClass({
   		this.tips('不能再追问')
   	}
   },
-  getAnswer:function(orderId,canEval,answer,e){
+  getAnswer:function(orderId,canEval,isPlay,answer,e){
   	var $audio=$(e.target).prev()
     var timer=''
     var _this=this
@@ -259,8 +259,8 @@ var PerOrder=React.createClass({
 					<span className="user-add-num" onTouchEnd={this.addOne.bind(this,dom)}>可追问{dom.addNum}次</span>
 					<p className="voice pull-right">
 				    <audio src={dom.answer} controls="controls"/>
-				    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.answer,dom.isPlay,dom.orderId)}>收听</span>
-				    <img src={src}/>
+				    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.orderId,dom.canEval,dom.isPlay,dom.answer)}>收听</span>
+				    <img src={src}/>  
 			    </p>
 				</div>
 			</div>

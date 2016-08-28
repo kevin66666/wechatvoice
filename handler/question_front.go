@@ -3228,6 +3228,9 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	defer res.Body.Close()
 	accessToken = string(resBody)
 	url := "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=" + accessToken + "&media_id=" + req.MId
+	fmt.Println("--------------------->>>>>")
+	fmt.Println(url)
+	fmt.Println("======>>>")
 	resp1, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err)

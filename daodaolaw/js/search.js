@@ -257,6 +257,7 @@ var EverySearch=React.createClass({
 		for(var i=0;i<info.star;i++){
 			star.push(<i className="fa fa-star col-yellow"></i>)
 		}
+		var text=info.isPay?'点击听取':info.typePrice+'元听取';
 		return (
 			<div className="media">
 			  <div className="media-left">{index+1}.</div>
@@ -269,7 +270,7 @@ var EverySearch=React.createClass({
 				  <p className="pull-left"><a href={url}><img src={info.pic}/></a></p>
 			    <p className="voice pull-left">
 				    <audio src={info.answer} controls="controls"/>
-				    <span className="price" onTouchEnd={this.pay.bind(this,info,index)}>{info.typePrice}元听取</span>
+				    <span className="price" onTouchEnd={this.pay.bind(this,info,index)}>{text}</span>
 				    <img src="img/xiaoxi.png"/>
 			    </p>
 			  </div>

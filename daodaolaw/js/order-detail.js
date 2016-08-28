@@ -3,7 +3,8 @@ var OrderDetail=React.createClass({
 		return {
 			info:'',
 			isShow:false,
-			imgIndex:0
+			imgIndex:0,
+			isPlay:true
 		}
 	},
 	componentDidMount:function(){
@@ -29,26 +30,35 @@ var OrderDetail=React.createClass({
 		this.setState({isShow:!this.state.isShow})
 	},
 	getAnswer:function(answer,e){
-	  	var _this=this
 	  	var $audio=$(e.target).prev()
-	    $('img').prop('src','img/xiaoxi.png')
-	    $('audio').prop('src','')
-	    $audio.prop({src:answer,autoplay:'autoplay'})
-	  	var timer=''
-	  	$audio.on('play',function(){
-	  		timer=setInterval(function(){
-	  			var imgIndex=_this.state.imgIndex;
-	  			if(imgIndex<=2){
-	  				_this.setState({imgIndex:imgIndex+1})
-	  			}else{
-	  				_this.setState({imgIndex:0})
-	  			}
-	  		},500)
-	  	})
-	  	$audio.on('ended',function(){
-	  		clearInterval(timer)
-	  		_this.setState({imgIndex:0})
-	  	})
+    	var timer=''
+    	var _this=this
+	  	if(this.state.isPlay){
+	      $audio.prop({src:answer,autoplay:'autoplay'})
+	      $audio.on('play',function(){
+	        timer=setInterval(function(){
+	          var imgIndex=_this.state.imgIndex;
+	          if(imgIndex<=2){
+	            _this.setState({imgIndex:imgIndex+1})
+	          }else{
+	            _this.setState({imgIndex:0})
+	          }
+	        },500)
+	      })
+	      $audio.on('ended',function(){
+	        clearInterval(timer)
+	        _this.setState({imgIndex:0})
+	      })
+	      $audio.on('pause',function(){
+	        clearInterval(timer)
+	        _this.setState({imgIndex:0})
+	      })
+	    }else{
+	      clearInterval(timer)
+	      $audio[0].pause()
+	      _this.setState({imgIndex:0})
+	    }
+	    this.setState({isPlay:!this.state.isPlay})
 	},
 	play:function(answer,e){
 	    $('img').prop('src','img/xiaoxi.png')

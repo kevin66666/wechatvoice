@@ -188,9 +188,9 @@ var PerOrder=React.createClass({
     if(this.state.isPlay){
       $audio.prop({src:answer,autoplay:'autoplay'})
       $audio.on('play',function(){
-        // alert($audio[0].duration)
         timer=setInterval(function(){
           var imgIndex=_this.state.imgIndex;
+          alert(imgIndex)
           if(imgIndex<=2){
             _this.setState({imgIndex:imgIndex+1})
           }else{

@@ -232,8 +232,22 @@ func QuestionQuery(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-
-	questionList, count, queryErr := model.GetQuestionQuery(*req)
+	//用户的逻辑来说 需要将用户删除的订单排除
+	logList, logListErr := model.GetUserDeletedList(openId)
+	if logListErr != nil && !strings.Contains(logListErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = logListErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	log.Println(len(logList))
+	logIdList := make([]string, 0)
+	for _, k := range logList {
+		logIdList = append(logIdList, k.OrderId)
+	}
+	log.Println(logIdList)
+	questionList, count, queryErr := model.GetQuestionQueryNew(*req, logIdList) // 这个方法在这备用
+	//questionList, count, queryErr := model.GetQuestionQuery(*req)
 	fmt.Println(questionList)
 	if queryErr != nil && !strings.Contains(queryErr.Error(), RNF) {
 		response.Code = CODE_ERROR
@@ -678,6 +692,7 @@ func CreateNewSpecialQuestion(ctx *macaron.Context) string {
 	question.CustomerId = customer.Uuid
 	question.CustomerName = customer.Name
 	question.CustomerOpenId = openId
+	// question.AnswerOpenId = re
 	question.PaymentInfo = req.TypePrice
 	payInt, transferErr := strconv.ParseInt(req.TypePrice, 10, 64)
 	question.OrderNumber = orderNumber
@@ -780,6 +795,7 @@ type CateInfo struct {
 	CateName        string `json:"typeId"`
 	CateId          string `json:"typeName"`
 	CatePaymentInfo string `json:"typePrice"`
+	PeekPay         string `json:"peekPay"`
 }
 
 func GetQuestionCateList(ctx *macaron.Context) string {
@@ -863,7 +879,11 @@ func GetQuestionCateList(ctx *macaron.Context) string {
 		amountInt, _ := strconv.ParseFloat(price.PayAmount, 64)
 		amountInt = amountInt / 100
 		amountStr := strconv.FormatFloat(amountInt, 'f', 2, 64)
+		peekInt, _ := strconv.ParseFloat(price.PeekPayment, 64)
+		peekInt = peekInt / 100
+		peekStr := strconv.FormatFloat(peekInt, 'f', 2, 64)
 		single.CatePaymentInfo = amountStr
+		single.PeekPay = peekStr
 		fmt.Println(single)
 		list = append(list, *single)
 	}
@@ -2939,6 +2959,15 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
+		law := new(model.LawyerInfo)
+		lawErr := law.GetConn().Where("uuid = ?", req.LaywerId).Find(&law).Error
+		if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = lawErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		question.AnswerOpenId = law.OpenId
 		response.Code = CODE_SUCCESS
 		response.Msg = MSG_SUCCESS
 		response.Appid = "wxac69efc11c5e182f"
@@ -2984,10 +3013,19 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		if transferErr != nil {
 			fmt.Println(transferErr)
 		}
+		oldQ := new(model.WechatVoiceQuestions)
+		qErr := oldQ.GetConn().Where("uuid  = ?", req.OrderId).Find(&oldQ).Error
+		if qErr != nil && !strings.Contains(qErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = qErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
 		question.OrderNumber = orderNumber
 		question.PaymentInfoInt = payInt
 		question.Important = "1"
 		question.ParentQuestionId = req.OrderId
+		question.AnswerOpenId = oldQ.AnswerOpenId
 		createErr := question.GetConn().Create(&question).Error
 		if createErr != nil {
 			response.Code = CODE_ERROR

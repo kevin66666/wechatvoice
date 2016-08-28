@@ -91,6 +91,7 @@ type OrderInfo struct {
 	Pv           int64  `json:"pv"`
 	QuestionType string `json:"questionType"`
 	HasChild     bool   `json:"haveChild"`
+	CanDelete    bool   `json:"canDelete"`
 }
 
 func GetOrderList(ctx *macaron.Context) string {
@@ -600,14 +601,15 @@ type LawyerOrderListResponse struct {
 }
 
 type LawOrder struct {
-	OrderId string `json:"orderId"`
-	Status  string `json:"status"`
-	Content string `json:"content"`
-	Type    string `json:"type"`
-	Time    string `json:"time"`
-	Price   int64  `json:"price"`
-	Answer  string `json:"answer"`
-	IsPlay  bool   `json:"isPlay"`
+	OrderId   string `json:"orderId"`
+	Status    string `json:"status"`
+	Content   string `json:"content"`
+	Type      string `json:"type"`
+	Time      string `json:"time"`
+	Price     int64  `json:"price"`
+	Answer    string `json:"answer"`
+	IsPlay    bool   `json:"isPlay"`
+	CanDelete bool   `json:"canDelete"`
 }
 
 func GetLayerOrderList(ctx *macaron.Context) string {
@@ -699,28 +701,67 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 	switch req.OrderType {
 	case "0":
 		//带解答
-		list, err = model.GetLawyerQs(req.OrderType, law.Uuid, req.StartLine, req.EndLine)
-		if err != nil && !strings.Contains(err.Error(), RNF) {
+		// list, err = model.GetLawyerQs(req.OrderType, law.Uuid, req.StartLine, req.EndLine)
+		// if err != nil && !strings.Contains(err.Error(), RNF) {
+		// 	response.Code = CODE_ERROR
+		// 	response.Msg = err.Error()
+		// 	ret_str, _ := json.Marshal(response)
+		// 	return string(ret_str)
+		// }
+		// if int64(len(list)) != (req.EndLine - req.StartLine + 1) {
+		// 	a := req.EndLine - int64(len(list))
+		// 	list1, list1Err := model.GetNotSpectial(lawyer.FirstCategoryId, req.OrderType, req.StartLine, a)
+		// 	if list1Err != nil && !strings.Contains(list1Err.Error(), RNF) {
+		// 		response.Code = CODE_ERROR
+		// 		response.Msg = list1Err.Error()
+		// 		ret_str, _ := json.Marshal(response)
+		// 		return string(ret_str)
+		// 	}
+		// 	for _, k := range list1 {
+		// 		list = append(list, k)
+		// 	}
+		// }
+		//指定问题部分
+		directList, dirErr := model.GetLawerDirectInfo(openId, req.StartLine, req.EndLine)
+		if dirErr != nil && !strings.Contains(dirErr.Error(), RNF) {
 			response.Code = CODE_ERROR
-			response.Msg = err.Error()
+			response.Msg = dirErr.Error()
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
-		if int64(len(list)) != (req.EndLine - req.StartLine + 1) {
-			a := req.EndLine - int64(len(list))
-			list1, list1Err := model.GetNotSpectial(lawyer.FirstCategoryId, req.OrderType, req.StartLine, a)
-			if list1Err != nil && !strings.Contains(list1Err.Error(), RNF) {
-				response.Code = CODE_ERROR
-				response.Msg = list1Err.Error()
-				ret_str, _ := json.Marshal(response)
-				return string(ret_str)
-			}
-			for _, k := range list1 {
+		log.Println(len(directList)) //这里打印输出下 有多少条
+		dirLen := len(directList)
+		if dirLen > 0 {
+			//先把这些数据丢到list中
+			for _, k := range directList {
 				list = append(list, k)
 			}
 		}
+		aList := make([]model.WechatVoiceQuestions, 0)
+		var aErr error
+		if int64(dirLen) < (req.EndLine - req.StartLine) {
+			//说明数量不够 需要后期去补充
+			need := req.EndLine - int64(dirLen)
+			aList, aErr = model.GetLaerOther(req.StartLine, need)
+		}
+		if aErr != nil && !strings.Contains(aErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = aErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+
+		for _, k := range aList {
+			list = append(list, k)
+		}
 	case "2":
 		list, _, err = model.QueryLawyerQuestions(req.StartLine, req.EndLine, openId)
+	}
+	if err != nil && !strings.Contains(err.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
 	}
 	retList := make([]LawOrder, 0)
 	for _, k := range list {
@@ -730,7 +771,13 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		single.Content = k.Description
 		single.Type = k.Category
 		single.Time = k.CreateTime
-
+		var flag bool
+		if k.IsSolved == "2" {
+			flag = true
+		} else {
+			flag = false
+		}
+		single.CanDelete = flag
 		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
 		single.Price = price
 
@@ -766,70 +813,71 @@ type MemberListReponse struct {
 	List []MemberOrder `json:"list"`
 }
 type MemberOrder struct {
-	OrderId  string `json:"orderId"`
-	Status   string `json:"status"`
-	Content  string `json:"content"`
-	Type     string `json:"typeName"`
-	TypeId   string `json:"typeId"`
-	Time     string `json:"time"`
-	Price    int64  `json:"price"`
-	AddNum   int64  `json:"addNum"`
-	Answer   string `json:"answer"`
-	CanEval  bool   `json:"canEval"`
-	LawyerId string `json:"laywerId"`
-	IsPlay   bool   `json:"isPlay"`
+	OrderId   string `json:"orderId"`
+	Status    string `json:"status"`
+	Content   string `json:"content"`
+	Type      string `json:"typeName"`
+	TypeId    string `json:"typeId"`
+	Time      string `json:"time"`
+	Price     int64  `json:"price"`
+	AddNum    int64  `json:"addNum"`
+	Answer    string `json:"answer"`
+	CanEval   bool   `json:"canEval"`
+	LawyerId  string `json:"laywerId"`
+	IsPlay    bool   `json:"isPlay"`
+	CanDelete bool   `json:"canDelete"`
 }
 
 func GetMemberOrderList(ctx *macaron.Context) string {
 	response := new(MemberListReponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/ucenter/userlist"
-		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
-		//cookieStr = "1|2"
-		ctx.Redirect(url)
-	}
-	code := ctx.Query("code")
-	if code != "" {
-		url := "http://60.205.4.26:22334/getOpenid?code=" + code
-		res, err := http.Get(url)
-		if err != nil {
-			fmt.Println("=========xxxxx")
-			fmt.Println(err.Error())
-		}
-		resBody, _ := ioutil.ReadAll(res.Body)
-		fmt.Println(string(resBody))
-		defer res.Body.Close()
-		fmt.Println("==========>>>>")
-		res1 := new(OpenIdResponse)
-		json.Unmarshal(resBody, res1)
-		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
-		member := new(model.MemberInfo)
-		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
-		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
-			response.Code = CODE_ERROR
-			response.Msg = memberErr.Error()
-			ret_str, _ := json.Marshal(res)
-			return string(ret_str)
-		}
-		if member.Uuid == "" {
-			fmt.Println("新的用户")
-			user := GetUserInfo(res1.OpenId, res1.AccessToken)
-			member.Uuid = util.GenerateUuid()
-			member.HeadImgUrl = user.HeadImgUrl
-			member.OpenId = user.OpenId
-			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
-			member.NickName = user.NickName
-			err := member.GetConn().Create(&member).Error
-			if err != nil {
-				response.Code = CODE_ERROR
-				response.Msg = err.Error()
-				ret_str, _ := json.Marshal(response)
-				return string(ret_str)
-			}
-		}
-		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
-	}
+	// if cookieStr == "" && ctx.Query("code") == "" {
+	// 	re := "http://www.mylvfa.com/voice/ucenter/userlist"
+	// 	url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+	// 	//cookieStr = "1|2"
+	// 	ctx.Redirect(url)
+	// }
+	// code := ctx.Query("code")
+	// if code != "" {
+	// 	url := "http://60.205.4.26:22334/getOpenid?code=" + code
+	// 	res, err := http.Get(url)
+	// 	if err != nil {
+	// 		fmt.Println("=========xxxxx")
+	// 		fmt.Println(err.Error())
+	// 	}
+	// 	resBody, _ := ioutil.ReadAll(res.Body)
+	// 	fmt.Println(string(resBody))
+	// 	defer res.Body.Close()
+	// 	fmt.Println("==========>>>>")
+	// 	res1 := new(OpenIdResponse)
+	// 	json.Unmarshal(resBody, res1)
+	// 	ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+	// 	member := new(model.MemberInfo)
+	// 	memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+	// 	if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+	// 		response.Code = CODE_ERROR
+	// 		response.Msg = memberErr.Error()
+	// 		ret_str, _ := json.Marshal(res)
+	// 		return string(ret_str)
+	// 	}
+	// 	if member.Uuid == "" {
+	// 		fmt.Println("新的用户")
+	// 		user := GetUserInfo(res1.OpenId, res1.AccessToken)
+	// 		member.Uuid = util.GenerateUuid()
+	// 		member.HeadImgUrl = user.HeadImgUrl
+	// 		member.OpenId = user.OpenId
+	// 		member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+	// 		member.NickName = user.NickName
+	// 		err := member.GetConn().Create(&member).Error
+	// 		if err != nil {
+	// 			response.Code = CODE_ERROR
+	// 			response.Msg = err.Error()
+	// 			ret_str, _ := json.Marshal(response)
+	// 			return string(ret_str)
+	// 		}
+	// 	}
+	// 	//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	// }
 	fmt.Println(cookieStr)
 	//fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
@@ -853,7 +901,53 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 	if req.OrderType == "-1" {
 		req.OrderType = "2"
 	}
-	list, err := model.GetCustomerInfo(openId, req.OrderType, req.StartNum, req.EndNum)
+	//用户的逻辑来说 需要将用户删除的订单排除
+	logList, logListErr := model.GetUserDeletedList(openId)
+	if logListErr != nil && !strings.Contains(logListErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = logListErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	log.Println(len(logList))
+	logIdList := make([]string, 0)
+	for _, k := range logList {
+		logIdList = append(logIdList, k.OrderId)
+	}
+	log.Println(logIdList)
+	//备用
+	//list, err := model.GetCustomerInfoNew(openId, req.OrderType, logIdList, req.StartNum, req.EndNum)
+	// list, err := model.GetCustomerInfo(openId, req.OrderType, req.StartNum, req.EndNum)
+	//未完成订单 我就不管他   已完成 的 需要进行筛选
+	// fmt.Println(len(list))
+	// if err != nil && !strings.Contains(err.Error(), RNF) {
+	// 	response.Code = CODE_ERROR
+	// 	response.Msg = err.Error()
+	// 	ret_str, _ := json.Marshal(response)
+	// 	return string(ret_str)
+	// }
+	list := make([]model.WechatVoiceQuestions, 0)
+	var err error
+	retList := make([]MemberOrder, 0)
+	switch req.OrderType {
+	case "0":
+		list, err = model.GetCustomerInfo(openId, req.OrderType, req.StartNum, req.EndNum)
+
+	case "2":
+		idList, idErr := model.GetPaymentQuery(openId)
+		if idErr != nil && !strings.Contains(idErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = idErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		id := make([]string, 0)
+		for _, k := range idList {
+			id = append(id, k.QuestionId)
+		}
+		list, err = model.GetCustomerPaiedInfo(openId, id, logIdList, req.StartNum, req.EndNum)
+
+	}
 	fmt.Println(len(list))
 	if err != nil && !strings.Contains(err.Error(), RNF) {
 		response.Code = CODE_ERROR
@@ -861,7 +955,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	retList := make([]MemberOrder, 0)
+
 	for _, k := range list {
 		single := new(MemberOrder)
 		single.OrderId = k.Uuid
@@ -872,6 +966,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.Time = k.CreateTime
 		single.Answer = k.VoicePath
 		single.IsPlay = true
+
 		l, errs := model.GetInfos(openId, k.Uuid)
 		if errs != nil && !strings.Contains(errs.Error(), RNF) {
 			response.Code = CODE_ERROR
@@ -879,7 +974,20 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 			ret_Str, _ := json.Marshal(response)
 			return string(ret_Str)
 		}
-
+		var can bool
+		if k.IsSolved == "0" {
+			//没有解答的 肯定可以删除
+			can = true
+		} else {
+			//已解答的
+			if k.CustomerOpenId == openId {
+				//用户自己的订单 可以删除
+				can = true
+			} else {
+				can = false
+			}
+		}
+		single.CanDelete = can
 		if k.ParentQuestionId != "" {
 			single.AddNum = int64(0)
 		} else {
@@ -1140,147 +1248,390 @@ func GetQuestionToAnswer(ctx *macaron.Context) string {
 	}
 
 }
-func GetMemberOrderListNew(ctx *macaron.Context) string {
-	response := new(MemberListReponse)
-	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-	if cookieStr == "" && ctx.Query("code") == "" {
-		re := "http://www.mylvfa.com/voice/ucenter/userlist"
-		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
-		//cookieStr = "1|2"
-		ctx.Redirect(url)
-	}
-	code := ctx.Query("code")
-	if code != "" {
-		url := "http://60.205.4.26:22334/getOpenid?code=" + code
-		res, err := http.Get(url)
-		if err != nil {
-			fmt.Println("=========xxxxx")
-			fmt.Println(err.Error())
-		}
-		resBody, _ := ioutil.ReadAll(res.Body)
-		fmt.Println(string(resBody))
-		defer res.Body.Close()
-		fmt.Println("==========>>>>")
-		res1 := new(OpenIdResponse)
-		json.Unmarshal(resBody, res1)
-		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
-		member := new(model.MemberInfo)
-		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
-		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
-			response.Code = CODE_ERROR
-			response.Msg = memberErr.Error()
-			ret_str, _ := json.Marshal(res)
-			return string(ret_str)
-		}
-		if member.Uuid == "" {
-			fmt.Println("新的用户")
-			user := GetUserInfo(res1.OpenId, res1.AccessToken)
-			member.Uuid = util.GenerateUuid()
-			member.HeadImgUrl = user.HeadImgUrl
-			member.OpenId = user.OpenId
-			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
-			member.NickName = user.NickName
-			err := member.GetConn().Create(&member).Error
-			if err != nil {
-				response.Code = CODE_ERROR
-				response.Msg = err.Error()
-				ret_str, _ := json.Marshal(response)
-				return string(ret_str)
-			}
-		}
-		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
-	}
-	fmt.Println(cookieStr)
-	//fmt.Println(cookieStr)
-	openId := strings.Split(cookieStr, "|")[0]
-	//userType := strings.Split(cookieStr, "|")[1]
 
-	log.Println("=========>>>>>>,用户OPENID 为", openId)
-	//log.Println("=========>>>>>>,用户类型为", userType)
+// func GetMemberOrderListNew(ctx *macaron.Context) string {
+// 	response := new(MemberListReponse)
+// 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+// 	if cookieStr == "" && ctx.Query("code") == "" {
+// 		re := "http://www.mylvfa.com/voice/ucenter/userlist"
+// 		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+// 		//cookieStr = "1|2"
+// 		ctx.Redirect(url)
+// 	}
+// 	code := ctx.Query("code")
+// 	if code != "" {
+// 		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+// 		res, err := http.Get(url)
+// 		if err != nil {
+// 			fmt.Println("=========xxxxx")
+// 			fmt.Println(err.Error())
+// 		}
+// 		resBody, _ := ioutil.ReadAll(res.Body)
+// 		fmt.Println(string(resBody))
+// 		defer res.Body.Close()
+// 		fmt.Println("==========>>>>")
+// 		res1 := new(OpenIdResponse)
+// 		json.Unmarshal(resBody, res1)
+// 		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+// 		member := new(model.MemberInfo)
+// 		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+// 		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+// 			response.Code = CODE_ERROR
+// 			response.Msg = memberErr.Error()
+// 			ret_str, _ := json.Marshal(res)
+// 			return string(ret_str)
+// 		}
+// 		if member.Uuid == "" {
+// 			fmt.Println("新的用户")
+// 			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+// 			member.Uuid = util.GenerateUuid()
+// 			member.HeadImgUrl = user.HeadImgUrl
+// 			member.OpenId = user.OpenId
+// 			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+// 			member.NickName = user.NickName
+// 			err := member.GetConn().Create(&member).Error
+// 			if err != nil {
+// 				response.Code = CODE_ERROR
+// 				response.Msg = err.Error()
+// 				ret_str, _ := json.Marshal(response)
+// 				return string(ret_str)
+// 			}
+// 		}
+// 		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+// 	}
+// 	fmt.Println(cookieStr)
+// 	//fmt.Println(cookieStr)
+// 	openId := strings.Split(cookieStr, "|")[0]
+// 	//userType := strings.Split(cookieStr, "|")[1]
 
+// 	log.Println("=========>>>>>>,用户OPENID 为", openId)
+// 	//log.Println("=========>>>>>>,用户类型为", userType)
+
+// 	body, _ := ctx.Req.Body().String()
+
+// 	req := new(MemberRequest)
+// 	fmt.Println("=======>>>>>>请求数据wei", body)
+// 	marshallErr := json.Unmarshal([]byte(body), req)
+
+// 	if marshallErr != nil {
+// 		response.Code = CODE_ERROR
+// 		response.Msg = marshallErr.Error()
+// 		ret_str, _ := json.Marshal(response)
+// 		return string(ret_str)
+// 	}
+// 	if req.OrderType == "-1" {
+// 		req.OrderType = "2"
+// 	}
+// 	retList := make([]MemberOrder, 0)
+// 	list := make([]model.WechatVoiceQuestions, 0)
+// 	logList, logListErr := model.GetUserDeletedList(openId)
+// 	if logListErr != nil && !strings.Contains(logListErr.Error(), RNF) {
+// 		response.Code = CODE_ERROR
+// 		response.Msg = logListErr.Error()
+// 		ret_str, _ := json.Marshal(response)
+// 		return string(ret_str)
+// 	}
+// 	log.Println(len(logList))
+// 	logIdList := make([]string, 0)
+// 	for _, k := range logList {
+// 		logIdList = append(logIdList, k.OrderId)
+// 	}
+// 	log.Println(logIdList)
+// 	//备用
+// 	//list, err := model.GetCustomerInfoNew(openId, req.OrderType, logIdList, req.StartNum, req.EndNum)
+// 	/**
+// 	用户删除  userdelete 1
+// 	用户未完成的订单中  userdelete  1
+
+// 	如果订单完成了     userdelete  1      然后加一条log
+// 	如果订单未完成   那么删就删吧
+// 	*/
+// 	var err error
+// 	switch req.OrderType {
+// 	case "0":
+// 		list, err = model.GetCustomerInfo(openId, req.OrderType, req.StartNum, req.EndNum)
+
+// 	case "2":
+// 		idList, idErr := model.GetPaymentQuery(openId)
+// 		if idErr != nil && !strings.Contains(idErr.Error(), RNF) {
+// 			response.Code = CODE_ERROR
+// 			response.Msg = idErr.Error()
+// 			ret_str, _ := json.Marshal(response)
+// 			return string(ret_str)
+// 		}
+// 		id := make([]string, 0)
+// 		for _, k := range idList {
+// 			id = append(id, k.QuestionId)
+// 		}
+// 		list, err = model.GetCustomerPaiedInfo(openId, id, req.StartNum, req.EndNum)
+
+// 	}
+// 	fmt.Println(len(list))
+// 	if err != nil && !strings.Contains(err.Error(), RNF) {
+// 		response.Code = CODE_ERROR
+// 		response.Msg = err.Error()
+// 		ret_str, _ := json.Marshal(response)
+// 		return string(ret_str)
+// 	}
+
+// 	for _, k := range list {
+// 		single := new(MemberOrder)
+// 		single.OrderId = k.Uuid
+// 		single.Status = k.IsSolved
+// 		single.Content = k.Description
+// 		single.TypeId = k.CategoryId
+// 		single.Type = k.Category
+// 		single.Time = k.CreateTime
+// 		single.Answer = k.VoicePath
+// 		single.IsPlay = true
+// 		l, errs := model.GetInfos(openId, k.Uuid)
+// 		if errs != nil && !strings.Contains(errs.Error(), RNF) {
+// 			response.Code = CODE_ERROR
+// 			response.Msg = errs.Error()
+// 			ret_Str, _ := json.Marshal(response)
+// 			return string(ret_Str)
+// 		}
+
+// 		if k.ParentQuestionId != "" {
+// 			single.AddNum = int64(0)
+// 		} else {
+// 			single.AddNum = int64(2) - int64(len(l))
+// 		}
+// 		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
+// 		single.Price = price
+// 		single.LawyerId = k.AnswerId
+// 		var a bool
+// 		if k.IsRanked == "1" {
+// 			a = false
+// 		} else {
+// 			a = true
+// 		}
+// 		single.CanEval = a
+// 		retList = append(retList, *single)
+// 	}
+// 	response.Code = CODE_SUCCESS
+// 	response.Msg = "ok"
+// 	response.List = retList
+// 	ret_str, _ := json.Marshal(response)
+// 	return string(ret_str)
+// }
+
+type DeleteOrderRequest struct {
+	OrderId string `json:"orderId"`
+}
+type Response struct {
+	Code int64  `json:"code"`
+	Msg  string `json:"msg"`
+}
+
+func DeleteOrderInfo(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
-
-	req := new(MemberRequest)
-	fmt.Println("=======>>>>>>请求数据wei", body)
-	marshallErr := json.Unmarshal([]byte(body), req)
-
-	if marshallErr != nil {
+	req := new(DeleteOrderRequest)
+	json.Unmarshal([]byte(body), req)
+	orderId := req.OrderId
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	cookie := strings.Split(cookieStr, "|")[0]
+	fmt.Println(cookie)
+	response := new(Response)
+	question := new(model.WechatVoiceQuestions)
+	questionErr := question.GetConn().Where("uuid = ?", orderId).Find(&question).Error
+	if questionErr != nil && !strings.Contains(questionErr.Error(), RNF) {
 		response.Code = CODE_ERROR
-		response.Msg = marshallErr.Error()
+		response.Msg = questionErr.Error()
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	if req.OrderType == "-1" {
-		req.OrderType = "2"
+	if cookie != question.CustomerOpenId {
+		response.Code = CODE_ERROR
+		response.Msg = "不能删除不是自己的订单"
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
 	}
-	retList := make([]MemberOrder, 0)
-	list := make([]model.WechatVoiceQuestions, 0)
-	var err error
-	switch req.OrderType {
-	case "0":
-		list, err = model.GetCustomerInfo(openId, req.OrderType, req.StartNum, req.EndNum)
-
-	case "2":
-		idList, idErr := model.GetPaymentQuery(openId)
-		if idErr != nil && !strings.Contains(idErr.Error(), RNF) {
+	if question.IsSolved == "0" {
+		//如果订单未完成 删就删吧
+		deleteErr := question.GetConn().Delete(&question).Error
+		if deleteErr != nil && strings.Contains(deleteErr.Error(), RNF) {
 			response.Code = CODE_ERROR
-			response.Msg = idErr.Error()
+			response.Msg = deleteErr.Error()
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
-		id := make([]string, 0)
-		for _, k := range idList {
-			id = append(id, k.QuestionId)
+		response.Code = CODE_ERROR
+		response.Msg = "ok"
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	} else if question.IsSolved == "2" && question.IsRanked == "0" {
+		//订单已有人回答  还没评价 那么不能删除
+		response.Code = CODE_ERROR
+		response.Msg = "未评价的订单不能删除"
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	} else {
+		question.UserDelete = "1"
+		err := question.GetConn().Save(&question).Error
+		if err != nil && !strings.Contains(err.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = err.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
 		}
-		list, err = model.GetCustomerPaiedInfo(openId, id, req.StartNum, req.EndNum)
-
+		deleteLog := new(model.UserDeleteLogs)
+		deleteLog.Uuid = util.GenerateUuid()
+		deleteLog.UserOpenId = cookie
+		deleteLog.OrderNumber = question.OrderNumber
+		deleteLog.Uuid = question.Uuid
+		cErr := deleteLog.GetConn().Create(&deleteLog).Error
+		if cErr != nil && !strings.Contains(cErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = cErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		response.Code = CODE_SUCCESS
+		response.Msg = "ok"
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
 	}
-	fmt.Println(len(list))
+
+}
+func LawyerDeleteOrderInfo(ctx *macaron.Context) string {
+	body, _ := ctx.Req.Body().String()
+	req := new(DeleteOrderRequest)
+	json.Unmarshal([]byte(body), req)
+	orderId := req.OrderId
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	cookie := strings.Split(cookieStr, "|")[0]
+	fmt.Println(cookie)
+	response := new(Response)
+	question := new(model.WechatVoiceQuestions)
+	questionErr := question.GetConn().Where("uuid = ?", orderId).Find(&question).Error
+	if questionErr != nil && !strings.Contains(questionErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = questionErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	if cookie != question.AnswerOpenId {
+		response.Code = CODE_ERROR
+		response.Msg = "不能删除不是自己的订单"
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	question.LawyerDelete = "1"
+	err := question.GetConn().Save(&question).Error
 	if err != nil && !strings.Contains(err.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = err.Error()
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-
-	for _, k := range list {
-		single := new(MemberOrder)
-		single.OrderId = k.Uuid
-		single.Status = k.IsSolved
-		single.Content = k.Description
-		single.TypeId = k.CategoryId
-		single.Type = k.Category
-		single.Time = k.CreateTime
-		single.Answer = k.VoicePath
-		single.IsPlay = true
-		l, errs := model.GetInfos(openId, k.Uuid)
-		if errs != nil && !strings.Contains(errs.Error(), RNF) {
-			response.Code = CODE_ERROR
-			response.Msg = errs.Error()
-			ret_Str, _ := json.Marshal(response)
-			return string(ret_Str)
-		}
-
-		if k.ParentQuestionId != "" {
-			single.AddNum = int64(0)
-		} else {
-			single.AddNum = int64(2) - int64(len(l))
-		}
-		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
-		single.Price = price
-		single.LawyerId = k.AnswerId
-		var a bool
-		if k.IsRanked == "1" {
-			a = false
-		} else {
-			a = true
-		}
-		single.CanEval = a
-		retList = append(retList, *single)
-	}
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
-	response.List = retList
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
+}
+
+func EvalAnswersTest(ctx *macaron.Context) {
+
+	// amountF, _ := strconv.ParseFloat(orderInfo.PaymentInfo, 64)
+	// amountF = amountF * 100
+	// lp, _ := strconv.ParseFloat(setting.LawyerFeePercent, 64)
+	// red := 100.00 - lp
+	// amountLeft := (amountF * red) / 100
+	// amount := int64(amountLeft)
+	// redint := rand.Int63n(amount)
+	// // log.Println(redStr)
+	// redIntStr := strconv.FormatInt(redint, 10)
+	// redF, _ := strconv.ParseFloat(redIntStr, 64)
+	// redFr := redF / 100
+	// redStr := strconv.FormatFloat(redFr, 'f', 2, 64)
+
+	// orderInfo.IsRanked = "1"
+	// orderInfo.RankInfo = req.Number
+	// updateErr := orderInfo.GetConn().Save(&orderInfo).Error
+	// if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
+	// 	response.Code = CODE_ERROR
+	// 	response.Msg = updateErr.Error()
+	// 	ret_str, _ := json.Marshal(response)
+	// 	return string(ret_str)
+	// }
+
+	//给律师发红包
+	// a := amountF * lp
+	// astr := strconv.FormatFloat(a, 'f', 2, 64)
+	// reds := new(RedPackages)
+	reds := new(RedPackages)
+	reds.Act_name = "发送红包"
+	reds.Client_ip = "127.0.0.1"
+	reds.Remark = "ahahahah"
+	reds.Re_openid = "o-u0Nv5Rjxrw2EdmYXqzLXi_uTVo"
+	reds.Nick_name = "叨叨律法"
+	reds.SendNickName = "差不多先生"
+	reds.Wishing = "您的订单已完成"
+	reds.Amount = int64(100)
+	reds.MpId = ""
+	fmt.Println(reds)
+	suc, strsuc := SendRedPacket(reds)
+	fmt.Println("================红包红包红包===============>>>>")
+	log.Println(suc)
+	log.Println(strsuc)
+	fmt.Println("===============================>>>>")
+	// fmt.Println("===========================", suc, strsuc)
+	//记录律师信息
+	// law := new(model.LawyerInfo)
+	// lawErr := law.GetConn().Where("uuid = ?", orderInfo.AnswerId).Find(&law).Error
+	// if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+	// 	fmt.Println(lawErr.Error())
+	// }
+	// switch req.Number {
+	// case "1":
+	// 	law.RankFirst = law.RankFirst + 1
+	// case "2":
+	// 	law.RankSecond = law.RankSecond + 1
+	// case "3":
+	// 	law.RankThird = law.RankThird + 1
+	// case "4":
+	// 	law.RankFouth = law.RankFouth + 1
+	// case "5":
+	// 	law.RankLast = law.RankLast + 1
+	// }
+	// lawErr = law.GetConn().Save(&law).Error
+	// if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+	// 	fmt.Println(lawErr)
+	// }
+	// //记录钱的信息
+	// pay := new(model.OrderPaymentInfo)
+	// pay.GetConn().Where("order_number = ?", req.OrderId).Where("open_id = ?", openId).Where("is_first = 1").Find(&pay)
+	// payment := new(model.WechatVoicePaymentInfo)
+	// payment.Uuid = util.GenerateUuid()
+	// payment.SwiftNumber = pay.WeixinSwiftNumber
+	// payment.MemberId = orderInfo.CustomerId
+	// payment.OpenId = openId
+	// payment.RedPacketAmount = redStr
+	// payment.LawyerAmount = astr
+	// payment.OrderId = req.OrderId
+	// errPay := payment.GetConn().Create(&payment).Error
+	// if errPay != nil {
+	// 	fmt.Println(errPay)
+	// }
+	// // payment.SwiftNumber = orderInfo.
+
+	// //保存orderInfo
+	// orderInfo.IsRanked = "1"
+	// orderInfo.IsSolved = "2"
+	// star := req.Number
+	// orderInfo.RankInfo = star
+	// orderUpdateErr := orderInfo.GetConn().Save(&orderInfo).Error
+	// if orderUpdateErr != nil && !strings.Contains(orderUpdateErr.Error(), RNF) {
+	// 	response.Code = CODE_ERROR
+	// 	response.Msg = orderUpdateErr.Error()
+	// 	ret_str, _ := json.Marshal(response)
+	// 	return string(ret_str)
+	// }
+	// response.Code = CODE_SUCCESS
+	// response.Msg = "ok"
+	// //response.RedPacket = redStr
+	// ret_str, _ := json.Marshal(response)
+
+	// return string(ret_str)
 }

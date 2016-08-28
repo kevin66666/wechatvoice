@@ -431,9 +431,9 @@ func SendRedPacket(red *RedPackages) (int64, string) {
 	}
 	output, _ := xml.Marshal(v)
 	vbody := bytes.NewBuffer([]byte(output))
-	SSLKEY_PATH := ""
-	SSLCERT_PATH := ""
-	SSLROOTCA_PATH := ""
+	SSLKEY_PATH := "key/apiclient_key.pem"
+	SSLCERT_PATH := "key/apiclient_cert.pem"
+	SSLROOTCA_PATH := "key/rootca.pem"
 	cert, err := tls.LoadX509KeyPair(SSLCERT_PATH, SSLKEY_PATH)
 	if err != nil {
 		fmt.Println(err.Error())

@@ -1140,3 +1140,147 @@ func GetQuestionToAnswer(ctx *macaron.Context) string {
 	}
 
 }
+func GetMemberOrderListNew(ctx *macaron.Context) string {
+	response := new(MemberListReponse)
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/ucenter/userlist"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			fmt.Println("=========xxxxx")
+			fmt.Println(err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+		member := new(model.MemberInfo)
+		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
+		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = memberErr.Error()
+			ret_str, _ := json.Marshal(res)
+			return string(ret_str)
+		}
+		if member.Uuid == "" {
+			fmt.Println("新的用户")
+			user := GetUserInfo(res1.OpenId, res1.AccessToken)
+			member.Uuid = util.GenerateUuid()
+			member.HeadImgUrl = user.HeadImgUrl
+			member.OpenId = user.OpenId
+			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+			member.NickName = user.NickName
+			err := member.GetConn().Create(&member).Error
+			if err != nil {
+				response.Code = CODE_ERROR
+				response.Msg = err.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+		}
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+	}
+	fmt.Println(cookieStr)
+	//fmt.Println(cookieStr)
+	openId := strings.Split(cookieStr, "|")[0]
+	//userType := strings.Split(cookieStr, "|")[1]
+
+	log.Println("=========>>>>>>,用户OPENID 为", openId)
+	//log.Println("=========>>>>>>,用户类型为", userType)
+
+	body, _ := ctx.Req.Body().String()
+
+	req := new(MemberRequest)
+	fmt.Println("=======>>>>>>请求数据wei", body)
+	marshallErr := json.Unmarshal([]byte(body), req)
+
+	if marshallErr != nil {
+		response.Code = CODE_ERROR
+		response.Msg = marshallErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+	if req.OrderType == "-1" {
+		req.OrderType = "2"
+	}
+	retList := make([]MemberOrder, 0)
+	list := make([]model.WechatVoiceQuestions, 0)
+	var err error
+	switch req.OrderType {
+	case "0":
+		list, err = model.GetCustomerInfo(openId, req.OrderType, req.StartNum, req.EndNum)
+
+	case "2":
+		idList, idErr := model.GetPaymentQuery(openId)
+		if idErr != nil && !strings.Contains(idErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = idErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		id := make([]string, 0)
+		for _, k := range idList {
+			id = append(id, k.QuestionId)
+		}
+		list, err = model.GetCustomerPaiedInfo(openId, id, req.StartNum, req.EndNum)
+
+	}
+	fmt.Println(len(list))
+	if err != nil && !strings.Contains(err.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = err.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
+	for _, k := range list {
+		single := new(MemberOrder)
+		single.OrderId = k.Uuid
+		single.Status = k.IsSolved
+		single.Content = k.Description
+		single.TypeId = k.CategoryId
+		single.Type = k.Category
+		single.Time = k.CreateTime
+		single.Answer = k.VoicePath
+		single.IsPlay = true
+		l, errs := model.GetInfos(openId, k.Uuid)
+		if errs != nil && !strings.Contains(errs.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = errs.Error()
+			ret_Str, _ := json.Marshal(response)
+			return string(ret_Str)
+		}
+
+		if k.ParentQuestionId != "" {
+			single.AddNum = int64(0)
+		} else {
+			single.AddNum = int64(2) - int64(len(l))
+		}
+		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
+		single.Price = price
+		single.LawyerId = k.AnswerId
+		var a bool
+		if k.IsRanked == "1" {
+			a = false
+		} else {
+			a = true
+		}
+		single.CanEval = a
+		retList = append(retList, *single)
+	}
+	response.Code = CODE_SUCCESS
+	response.Msg = "ok"
+	response.List = retList
+	ret_str, _ := json.Marshal(response)
+	return string(ret_str)
+}

@@ -33,3 +33,11 @@ func (this *WechatVoicePaymentInfo) GetConn() *gorm.DB {
 func (this *WechatVoicePaymentInfo) CloseConn(db *gorm.DB) {
 	dbpool.CloseConn(db)
 }
+
+func GetPaymentQuery(openid string) ([]WechatVoicePaymentInfo, error) {
+	db := dbpool.OpenConn()
+	defer dbpool.CloseConn(&db)
+	list := make([]WechatVoicePaymentInfo, 0)
+	err := db.Where("open_id = ?", openid).Where("is_paied = 1").Find(&list).Error
+	return list, err
+}

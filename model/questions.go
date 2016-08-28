@@ -83,7 +83,7 @@ func GetQuestionQuery(req QuestionQuery) ([]WechatVoiceQuestions, int64, error) 
 	if req.CategoryId != "" {
 		query = query.Where("category_id = ?", req.CategoryId)
 	}
-	query = query.Order("id asc")
+	query = query.Order("id desc")
 	err = query.Find(&list1).Count(&count).Error
 	err = query.Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
 	return list, count, err
@@ -178,7 +178,7 @@ func GetCustomerInfo(openId, status string, start, end int64) ([]WechatVoiceQues
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("customer_open_id = ?", openId).Where("is_solved = ?", status).Offset(start).Limit(end - start).Find(&list).Error
+	err := conn.Where("customer_open_id = ?", openId).Where("is_paied = 1").Where("is_solved = ?", status).Order("id desc").Offset(start).Limit(end - start).Find(&list).Error
 	return list, err
 }
 func GetAllLocked() ([]WechatVoiceQuestions, error) {
@@ -193,5 +193,13 @@ func GetInfos(openId, parentId string) ([]WechatVoiceQuestions, error) {
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
 	err := conn.Where("customer_open_id = ?", openId).Where("parent_question_id =?", parentId).Find(&list).Error
+	return list, err
+}
+
+func GetCustomerPaiedInfo(openid string, orderIdList []string, startLine, endLine int64) ([]WechatVoiceQuestions, error) {
+	conn := dbpool.OpenConn()
+	defer dbpool.CloseConn(&conn)
+	list := make([]WechatVoiceQuestions, 0)
+	err := conn.Where("customer_open_id = ?", openid).Where("uuid in (?)", orderIdList).Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	return list, err
 }

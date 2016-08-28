@@ -78,12 +78,12 @@ var Answer=React.createClass({
 	},
 	record:function(){
 		alert(this.state.isRecord)
+		this.setState({isRecord:!this.state.isRecord})
 		if(this.state.isRecord){
 			this.start()
 		}else{
 			this.stop()
 		}
-		this.setState({isRecord:!this.state.isRecord})
 	},
 	start:function(){
 		var _this=this

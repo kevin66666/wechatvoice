@@ -186,8 +186,7 @@ var PerOrder=React.createClass({
     var timer=''
     var _this=this
     if(this.state.isPlay){
-      // $audio.prop({src:answer,autoplay:'autoplay'})
-      $audio.prop({autoplay:'autoplay'})
+      $audio.prop({src:answer,autoplay:'autoplay'})
       $audio.on('play',function(){
         alert($audio[0].duration)
         timer=setInterval(function(){

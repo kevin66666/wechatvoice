@@ -735,7 +735,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		single.Price = price
 
 		single.Answer = k.VoicePath
-		single.IsPlay = false
+		single.IsPlay = true
 		/**
 			OrderId string `json:"orderId"`
 		Status string `json:"status"`
@@ -871,7 +871,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.Type = k.Category
 		single.Time = k.CreateTime
 		single.Answer = k.VoicePath
-		single.IsPlay = false
+		single.IsPlay = true
 		l, errs := model.GetInfos(openId, k.Uuid)
 		if errs != nil && !strings.Contains(errs.Error(), RNF) {
 			response.Code = CODE_ERROR

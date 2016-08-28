@@ -2570,6 +2570,7 @@ func PayPeekAnswer(ctx *macaron.Context) string {
 	payF, _ := strconv.ParseFloat(pays, 64)
 	payF = payF / 100
 	payFs := strconv.FormatFloat(payF, 'f', 2, 64)
+	fmt.Println(payFs)
 	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
 	fmt.Println(sings)
 	if signErr != nil {

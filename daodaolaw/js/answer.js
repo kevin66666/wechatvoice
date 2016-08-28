@@ -106,8 +106,6 @@ var Answer=React.createClass({
 		wx.error(function(res){
 		  _this.tips('微信录音接口调取失败')
 		})
-		e.preventDefault()
-		e.returnValue = false
 	},
 	stop:function(){
         var _this=this
@@ -135,6 +133,8 @@ var Answer=React.createClass({
 	},
 	play:function(e){
 		e.stopPropagation()
+		this.setState({isRecord:false})
+		alert('play')
 		var $play=$(e.target)
 		$play.addClass('bg-answer')
 	   	var _this=this

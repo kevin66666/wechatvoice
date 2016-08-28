@@ -9,6 +9,7 @@ var Answer=React.createClass({
 			typeId:'',           
 			typeName:'',
 			content:'',
+			isRecord:true,
 			load:false,
       		tips:'加载中,请稍等'
 		}
@@ -64,18 +65,26 @@ var Answer=React.createClass({
 		})
 	},
 	changeLoad:function(name,val){
-    var newData={}
-    newData[name]=val
-    this.setState(newData)
-  },
-  tips:function(text){
-		this.changeLoad('load',true)
-    this.changeLoad('tips',text)
-    setTimeout(function(){
-      this.changeLoad('load',false)
-    }.bind(this),2000)
+	    var newData={}
+	    newData[name]=val
+	    this.setState(newData)
 	},
-	start:function(e){
+  	tips:function(text){
+		this.changeLoad('load',true)
+	    this.changeLoad('tips',text)
+	    setTimeout(function(){
+	      this.changeLoad('load',false)
+	    }.bind(this),2000)
+	},
+	record:function(){
+		if(this.state.isRecord){
+			this.start()
+		}else{
+			this.stop()
+		}
+		this.setState({isRecord:!this.state.isRecord})
+	},
+	start:function(){
 
 		var _this=this
 		wx.startRecord({
@@ -188,8 +197,8 @@ var Answer=React.createClass({
 			<div className="answer">
 				<p>类型: {this.state.typeName}</p>
 				<p className="content">{info.content}</p>
-				<p><img src="img/luyin.png" onTouchStart={this.start} onTouchEnd={this.stop}/></p>
-				<p>(按住开始回答)</p>
+				<p><img src="img/luyin.png" onTouchEnd={this.record}/></p>
+				<p>(点击开始录音,再次点击结束录音)</p>
 				<audio controls autoplay></audio>
 				<div className="save">
 					<span className="margin-md-r dispN" onTouchEnd={this.reset}>重新录音</span>

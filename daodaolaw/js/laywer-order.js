@@ -203,10 +203,12 @@ var PerOrder=React.createClass({
         _this.setState({imgIndex:0})
       })
       $audio.on('pause',function(){
+        alert('pause')
         clearInterval(timer)
         _this.setState({imgIndex:0})
       })
     }else{
+      alert('false')
       $audio[0].pause()
       clearInterval(timer)
       _this.setState({imgIndex:0})

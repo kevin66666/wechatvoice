@@ -85,7 +85,7 @@ func GetQuestionQuery(req QuestionQuery) ([]WechatVoiceQuestions, int64, error) 
 	}
 	query = query.Order("id asc")
 	err = query.Find(&list1).Count(&count).Error
-	err = query.Offset(req.StartLine - 1).Limit(req.EndLine - req.StartLine + 1).Find(&list).Error
+	err = query.Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
 	return list, count, err
 }
 
@@ -96,7 +96,7 @@ func GetQueryList(startLine, endLine int64) ([]WechatVoiceQuestions, int64, erro
 	list := make([]WechatVoiceQuestions, 0)
 	list1 := make([]WechatVoiceQuestions, 0)
 
-	err := conn.Where("is_solved = 1").Order("id desc").Offset(startLine - 1).Limit(endLine - startLine).Find(&list).Error
+	err := conn.Where("is_solved = 1").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	err = conn.Where("is_solved = 1").Order("id desc").Find(&list1).Count(&count).Error
 
 	return list, count, err
@@ -110,7 +110,7 @@ func QueryUserQuestions(userOpenId string, status []string, startLine, endLine i
 	var err error
 	var count int64
 	err = conn.Where("customer_open_id = ?", userOpenId).Where("is_solved in (?)", status).Find(&l1).Count(&count).Error
-	err = conn.Where("customer_open_id = ?", userOpenId).Where("is_solved in (?)", status).Offset(startLine - 1).Limit(endLine - startLine + 1).Find(&list).Error
+	err = conn.Where("customer_open_id = ?", userOpenId).Where("is_solved in (?)", status).Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	return list, count, err
 }
 
@@ -122,7 +122,7 @@ func QueryLawyerQuestions(startLine int64, endLine int64, userOpenId string) ([]
 	var err error
 	var count int64
 	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Find(&l1).Count(&count).Error
-	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Offset(startLine - 1).Limit(endLine - startLine + 1).Find(&list).Error
+	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	return list, count, err
 }
 
@@ -134,7 +134,7 @@ func QueryLawerNotSolvedQuestions(catList []string, startLine, endLine int64) ([
 	var err error
 	var count int64
 	err = conn.Where("category_id in (?)", catList).Where("is_solved =?", "1").Find(&l1).Count(&count).Error
-	err = conn.Where("category_id in (?)", catList).Where("is_solved =?", "1").Order("important desc").Offset(startLine - 1).Limit(endLine - startLine + 1).Find(&list).Error
+	err = conn.Where("category_id in (?)", catList).Where("is_solved =?", "1").Order("important desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	return list, count, err
 }
 
@@ -146,7 +146,7 @@ func QueryBadAnswers(statusList []string, startLine, endLine int64) ([]WechatVoi
 	var err error
 	var count int64
 	err = conn.Where("category_id in (?)", statusList).Where("is_solved =?", "1").Where("rank_info in (?)", statusList).Find(&l1).Count(&count).Error
-	err = conn.Where("category_id in (?)", statusList).Where("is_solved =?", "1").Where("rank_info in (?)", statusList).Offset(startLine - 1).Offset(endLine - startLine + 1).Find(&l1).Count(&count).Error
+	err = conn.Where("category_id in (?)", statusList).Where("is_solved =?", "1").Where("rank_info in (?)", statusList).Offset(startLine).Offset(endLine - startLine).Find(&l1).Count(&count).Error
 	return list, count, err
 }
 
@@ -161,7 +161,7 @@ func GetLawyerQs(status, openId string, startLine, endLien int64) ([]WechatVoice
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Order("created_at desc").Where("is_solved = ?", status).Where("is_paied = 1").Where("need_id = ?", openId).Offset(startLine - 1).Limit(endLien - startLine + 1).Find(&list).Find(&list).Error
+	err := conn.Order("created_at desc").Where("is_solved = ?", status).Where("is_paied = 1").Where("need_id = ?", openId).Offset(startLine).Limit(endLien - startLine).Find(&list).Find(&list).Error
 	return list, err
 }
 
@@ -171,14 +171,14 @@ func GetNotSpectial(cateId, status string, start, end int64) ([]WechatVoiceQuest
 	list := make([]WechatVoiceQuestions, 0)
 	str := make([]string, 0)
 	str = append(str, cateId)
-	err := conn.Where("category_id  not in (?)", str).Where("is_solved = ?", status).Where("is_locked = 0").Offset(start - 1).Limit(end - start + 1).Find(&list).Error
+	err := conn.Where("category_id  not in (?)", str).Where("is_solved = ?", status).Where("is_locked = 0").Offset(start).Limit(end - start).Find(&list).Error
 	return list, err
 }
 func GetCustomerInfo(openId, status string, start, end int64) ([]WechatVoiceQuestions, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("customer_open_id = ?", openId).Where("is_solved = ?", status).Offset(start - 1).Limit(end - start + 1).Find(&list).Error
+	err := conn.Where("customer_open_id = ?", openId).Where("is_solved = ?", status).Offset(start).Limit(end - start).Find(&list).Error
 	return list, err
 }
 func GetAllLocked() ([]WechatVoiceQuestions, error) {

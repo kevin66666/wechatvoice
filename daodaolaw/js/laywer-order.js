@@ -176,7 +176,7 @@ var ResolvedList=React.createClass({
 var PerOrder=React.createClass({
 	getInitialState:function(){
 		return {
-			imgIndex:0，
+			imgIndex:0,
       isPlay:false
 		}
 	},

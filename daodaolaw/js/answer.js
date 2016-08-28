@@ -133,7 +133,6 @@ var Answer=React.createClass({
 	},
 	play:function(e){
 		e.stopPropagation()
-		this.setState({isRecord:false})
 		alert('play')
 		var $play=$(e.target)
 		$play.addClass('bg-answer')
@@ -202,12 +201,12 @@ var Answer=React.createClass({
 			<div className="answer">
 				<p>类型: {this.state.typeName}</p>
 				<p className="content">{info.content}</p>
-				<p><img src="img/luyin.png" onTouchEnd={this.record}/></p>
+				<p><img src="img/luyin.png" onTouchStart={this.record}/></p>
 				<p>(点击开始录音,再次点击结束录音)</p>
 				<audio src="" controls></audio>
 				<div className="save">
-					<span className="margin-md-r" onTouchEnd={this.play}>播放录音</span>
 					<span className="margin-md-r dispN" onTouchEnd={this.reset}>重新录音</span>
+					<span className="margin-md-r" onTouchEnd={this.play}>播放录音</span>
 					<span className="margin-md-r" onTouchEnd={this.save}>确认发送</span>
 				</div>
 				<Loading load={this.state.load} tips={this.state.tips}/>

@@ -182,13 +182,15 @@ var PerOrder=React.createClass({
 	},
   getAnswer:function(answer,e){
   	//听完语音后显示评价框
+      alert(this.state.isPlay)
+
     var $audio=$(e.target).prev()
     var timer=''
     var _this=this
     if(this.state.isPlay){
       $audio.prop({src:answer,autoplay:'autoplay'})
       $audio.on('play',function(){
-        alert($audio[0].duration)
+        // alert($audio[0].duration)
         timer=setInterval(function(){
           var imgIndex=_this.state.imgIndex;
           if(imgIndex<=2){
@@ -208,7 +210,6 @@ var PerOrder=React.createClass({
         _this.setState({imgIndex:0})
       })
     }else{
-      alert('false')
       $audio[0].pause()
       clearInterval(timer)
       _this.setState({imgIndex:0})

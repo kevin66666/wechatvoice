@@ -162,6 +162,16 @@ var ResolvedList=React.createClass({
         dom.isPlay=!dom.isPlay
       }
     })
+    this.setState({orderInfo:newInfo})
+  },
+  end:function(orderId){
+    var newInfo=this.state.orderInfo
+    newInfo.map(function(dom){
+      if(orderId=dom.orderId){
+        dom.isPlay=true
+      }
+    })
+    this.setState({orderInfo:newInfo})
   },
 	render:function(){
 		var list=<p className="no-info">没有相关信息</p>
@@ -169,7 +179,7 @@ var ResolvedList=React.createClass({
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
 			list=orderInfo.map(function(dom){
-				return <PerOrder dom={dom} changePlay={this.changePlay} changeLoad={this.props.changeLoad} getOrderId={this.props.getOrderId} changeEvaluate={this.props.changeEvaluate}/>
+				return <PerOrder dom={dom} changePlay={this.changePlay} end={this.end} changeLoad={this.props.changeLoad} getOrderId={this.props.getOrderId} changeEvaluate={this.props.changeEvaluate}/>
 			}.bind(this))
 		}
 		return (
@@ -206,6 +216,7 @@ var PerOrder=React.createClass({
     $audio.on('ended',function(){
       clearInterval(timer)
       _this.setState({imgIndex:0})
+      _this.props.end(orderId)
     })
     $audio.on('pause',function(){
       alert('pause')

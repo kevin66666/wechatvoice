@@ -47,7 +47,7 @@ var UserOrder=React.createClass({
 			isShowMoney:false,
 			orderId:'',
 			load:false,
-      tips:'加载中,请稍等'
+      		tips:'加载中,请稍等'
 		}
 	},
 	changeEvaluate:function(val){
@@ -202,6 +202,7 @@ var PerOrder=React.createClass({
   	var $audio=$(e.target).prev()
     var timer=''
     var _this=this
+    this.props.getOrderId(orderId)
     $audio.on('play',function(){
       timer=setInterval(function(){
         var imgIndex=_this.state.imgIndex;

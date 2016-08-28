@@ -35,6 +35,7 @@ var OrderDetail=React.createClass({
     	var _this=this
 	  	if(this.state.isPlay){
 	      // $audio.prop({src:answer,autoplay:'autoplay'})
+	      console.log($audio[0])
 	      $audio[0].play()
 	      $audio.on('play',function(){
 	        timer=setInterval(function(){

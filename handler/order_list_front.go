@@ -858,7 +858,6 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-
 	retList := make([]MemberOrder, 0)
 	for _, k := range list {
 		single := new(MemberOrder)
@@ -869,7 +868,14 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.Type = k.Category
 		single.Time = k.CreateTime
 		single.Answer = k.VoicePath
-		single.AddNum = 2 - k.AppenQuestionTime
+		l, errs := model.GetInfos(openId, k.Uuid)
+		if errs != nil && !strings.Contains(errs.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = errs.Error()
+			ret_Str, _ := json.Marshal(response)
+			return string(ret_Str)
+		}
+		single.AddNum = int64(2) - int64(len(l))
 		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
 		single.Price = price
 		single.LawyerId = k.AnswerId

@@ -188,3 +188,10 @@ func GetAllLocked() ([]WechatVoiceQuestions, error) {
 	err := conn.Where("is_locked = ?", "1").Find(&list).Error
 	return list, err
 }
+func GetInfos(openId, parentId string) ([]WechatVoiceQuestions, error) {
+	conn := dbpool.OpenConn()
+	defer dbpool.CloseConn(&conn)
+	list := make([]WechatVoiceQuestions, 0)
+	err := conn.Where("customer_open_id = ?", openId).Where("parent_question_id =?", parentId).Find(&list).Error
+	return list, err
+}

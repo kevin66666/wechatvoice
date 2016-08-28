@@ -77,6 +77,7 @@ var Answer=React.createClass({
 	    }.bind(this),2000)
 	},
 	record:function(){
+		alert(this.state.isRecord)
 		if(this.state.isRecord){
 			this.start()
 		}else{

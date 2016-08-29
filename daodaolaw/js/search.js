@@ -179,7 +179,7 @@ var EverySearch=React.createClass({
 	},
 	pay:function(info,index){
 		var data={
-			orderId:info.orderId。
+			orderId:info.orderId,
 			peekPay:info.peekPay
 		}
 		//调取支付接口

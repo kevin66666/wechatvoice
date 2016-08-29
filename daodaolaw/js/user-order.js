@@ -251,7 +251,7 @@ var ResolvedList=React.createClass({
       contentType: "application/json",
       success:function(data){
         if(data.code===10000){
-          this.resetList(orderId)
+          this.resetList(this.state.orderId)
         }else{
           this.props.tips('删除订单失败')
         }

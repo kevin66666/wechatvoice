@@ -31,6 +31,6 @@ func GetUserDeletedList(openId string) ([]UserDeleteLogs, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]UserDeleteLogs, 0)
-	listErr := conn.Where("open_id = ?", openId).Find(&list).Error
+	listErr := conn.Where("user_open_id = ?", openId).Find(&list).Error
 	return list, listErr
 }

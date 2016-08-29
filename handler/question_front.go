@@ -3312,6 +3312,7 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	// if errStart != nil {
 	// 	fmt.Println(errStart)
 	// }
+
 	if errCmd != nil {
 		fmt.Println(errCmd.Error())
 	}

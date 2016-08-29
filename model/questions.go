@@ -201,7 +201,7 @@ func GetCustomerInfo(openId, status string, start, end int64) ([]WechatVoiceQues
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("customer_open_id = ?", openId).Where("is_paied = 1").Where("user_delete is not 1").Where("is_solved = ?", status).Order("id desc").Offset(start).Limit(end - start).Find(&list).Error
+	err := conn.Where("customer_open_id = ?", openId).Where("is_paied = 1").Not("user_delete", "1").Where("is_solved = ?", status).Order("id desc").Offset(start).Limit(end - start).Find(&list).Error
 	return list, err
 }
 func GetCustomerInfoNew(openId, status string, idList []string, start, end int64) ([]WechatVoiceQuestions, error) {

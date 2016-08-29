@@ -778,7 +778,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		single.Status = k.IsSolved
 		single.Content = k.Description
 		single.Type = k.Category
-		single.Time = k.CreateTime
+		single.Time = k.CreateTime[0:10]
 		var flag bool
 		if k.IsSolved == "2" {
 			flag = true
@@ -971,7 +971,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.Content = k.Description
 		single.TypeId = k.CategoryId
 		single.Type = k.Category
-		single.Time = k.CreateTime
+		single.Time = k.CreateTime[0:10]
 		single.Answer = k.VoicePath
 		single.IsPlay = true
 

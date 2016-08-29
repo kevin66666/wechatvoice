@@ -78,6 +78,7 @@ type QuestionInfo struct {
 	AddNum    int64      `json:"addNum"`
 	IsShow    bool       `json:"isShow"`
 	AddInfo   []AddInfos `json:"addInfo"`
+	PeekPay   string     `json:"peekPay"`
 }
 
 type AddInfos struct {
@@ -277,6 +278,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		single.Answer = k.VoicePath
 		single.TypeId = k.CategoryId
 		single.TypeName = k.Category
+		single.PeekPay = "1.00"
 		cateInfo := new(model.WechatVoiceQuestionSettings)
 		cateErr := cateInfo.GetConn().Where("category_id = ?", k.CategoryId).Find(&cateInfo).Error
 		if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {

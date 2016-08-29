@@ -2,7 +2,10 @@ var getDataMixin={
   getInitialState:function(){
     return {
       orderInfo:[],
-      isAddMore:true
+      isAddMore:true,
+      orderId:'',
+      confirmDispN:'dispN',
+      confirm:false
     }
   },
   req:function(that,url,type){
@@ -30,7 +33,7 @@ var getDataMixin={
         }else if(data.code===10003){
           location.href=data.msg
         }else{
-          alert(data.msg)
+          that.props.tips(data.msg)
         }
       }.bind(that),
       error:function(data){
@@ -47,7 +50,7 @@ var UserOrder=React.createClass({
 			isShowMoney:false,
 			orderId:'',
 			load:false,
-      		tips:'加载中,请稍等'
+      tips:'加载中,请稍等'
 		}
 	},
 	changeEvaluate:function(val){
@@ -67,13 +70,20 @@ var UserOrder=React.createClass({
     newData[name]=val
     this.setState(newData)
   },
+  tips:function(text){
+  	this.changeLoad('load',true)
+    this.changeLoad('tips',text)
+    setTimeout(function(){
+      this.changeLoad('load',false)
+    }.bind(this),2000)
+  },
 	render:function(){	
 		return (
 			<div>
 				<OrderNav/>
-				<OrderList changeEvaluate={this.changeEvaluate} getOrderId={this.getOrderId} changeLoad={this.changeLoad}/>
-				<Evaluate isShowEvaluate={this.state.isShowEvaluate} changeEvaluate={this.changeEvaluate} changeMoney={this.changeMoney} changeLoad={this.changeLoad} orderId={this.state.orderId}/>
-				<Money changeMoney={this.changeMoney} isShowMoney={this.state.isShowMoney} money={this.state.money}/>
+				<OrderList changeEvaluate={this.changeEvaluate} getOrderId={this.getOrderId} tips={this.tips}/>
+				<Evaluate isShowEvaluate={this.state.isShowEvaluate} changeEvaluate={this.changeEvaluate} changeMoney={this.changeMoney} tips={this.tips} orderId={this.state.orderId}/>
+				<Money changeMoney={this.changeMoney} isShowMoney={this.state.isShowMoney} money={this.state.money} tips={this.tips}/>
 				<Loading load={this.state.load} tips={this.state.tips}/>
 			</div>
 		)
@@ -93,8 +103,8 @@ var OrderList=React.createClass({
 	render:function(){
 		return (
 			<div className="tab-content">
-				<UnsolvedList />
-				<ResolvedList changeEvaluate={this.props.changeEvaluate} getOrderId={this.props.getOrderId} changeLoad={this.props.changeLoad}/>
+				<UnsolvedList tips={this.props.tips}/>
+				<ResolvedList changeEvaluate={this.props.changeEvaluate} getOrderId={this.props.getOrderId} tips={this.props.tips}/>
 			</div>
 		)
 	}
@@ -113,6 +123,52 @@ var UnsolvedList=React.createClass({
   toAnswer:function(orderId){
   	location.href='answer.html?orderId='+orderId;
   },
+  resetList:function(orderId){
+  	var index='';
+  	var newInfo=this.state.orderInfo;
+  	newInfo.map(function(dom,i){
+  		if(dom.orderId===orderId){
+  			index=i
+  			return 
+  		}
+  	})
+  	newInfo.splice(index,1)
+  	this.setState({orderInfo:newInfo})
+  },
+  delet:function(orderId){
+    this.changeDisp('confirmDispN','dispB')
+    this.setState({orderId:orderId})
+  },
+  doDelet:function(){
+  	var data={orderId:this.state.orderId}
+  	$.ajax({
+  		url:'http://www.mylvfa.com/voice/order/delete',
+  		type:'POST',
+  		data:JSON.stringify(data),
+  		dataType:'json',
+  		contentType: "application/json",
+  		success:function(data){
+  			if(data.code===10000){
+  				this.resetList(orderId)
+  			}else{
+  				this.props.tips('删除订单失败')
+  			}
+  		}.bind(this),
+  		error:function(err){
+  			console.log('删除订单失败:',err)
+  		}
+  	})
+  },
+  changeDisp:function(name,val){
+    var newState={}
+    newState[name]=val
+    this.setState(newState)
+  },
+  changeChose:function(status){
+    if(status){
+      this.doDelet()
+    }
+  },
 	render:function(){
 		var list=<p className="no-info">没有相关信息</p>
 		var orderInfo=this.state.orderInfo
@@ -122,6 +178,7 @@ var UnsolvedList=React.createClass({
 				return  <div className="laywer-order-list padding-bottom-20">
 									<p className="over-hidden">
 										<span className="pull-left">订单号: {dom.orderId}</span>
+										<span className="pull-right del-order" onTouchEnd={this.delet.bind(this,dom.orderId)}>删除订单</span>
 									</p>
 									<p>详情: {dom.content}</p>
 									<p className="over-hidden">
@@ -135,6 +192,7 @@ var UnsolvedList=React.createClass({
 			<div className="tab-pane active unsolved">
 				{list}
 				<a href="javascript:void(0)" className="wBtn-showMore clr-gray" onTouchEnd={this.addMore}>{isAddMore}</a>
+        <Confirm changeChose={this.changeChose} changeDisp={this.changeDisp} confirmDispN={this.state.confirmDispN}/>
 			</div>
 		)
 	}
@@ -167,19 +225,66 @@ var ResolvedList=React.createClass({
     })
     this.setState({orderInfo:newInfo})
   },
+  resetList:function(orderId){
+  	var index='';
+  	var newInfo=this.state.orderInfo;
+  	newInfo.map(function(dom,i){
+  		if(dom.orderId===orderId){
+  			index=i
+  			return 
+  		}
+  	})
+  	newInfo.splice(index,1)
+  	this.setState({orderInfo:newInfo})
+  },
+  delet:function(orderId){
+    this.changeDisp('confirmDispN','dispB')
+    this.setState({orderId:orderId})
+  },
+  doDelet:function(){
+    var data={orderId:this.state.orderId}
+    $.ajax({
+      url:'http://www.mylvfa.com/voice/order/delete',
+      type:'POST',
+      data:JSON.stringify(data),
+      dataType:'json',
+      contentType: "application/json",
+      success:function(data){
+        if(data.code===10000){
+          this.resetList(orderId)
+        }else{
+          this.props.tips('删除订单失败')
+        }
+      }.bind(this),
+      error:function(err){
+        console.log('删除订单失败:',err)
+      }
+    })
+  },
+  changeDisp:function(name,val){
+    var newState={}
+    newState[name]=val
+    this.setState(newState)
+  },
+  changeChose:function(status){
+    if(status){
+      this.doDelet()
+    }
+  },
 	render:function(){
 		var list=<p className="no-info">没有相关信息</p>
 		var orderInfo=this.state.orderInfo
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
 			list=orderInfo.map(function(dom){
-				return  <PerOrder dom={dom} changePlay={this.changePlay} end={this.end} changeLoad={this.props.changeLoad} getOrderId={this.props.getOrderId} changeEvaluate={this.props.changeEvaluate}/>
+				return  <PerOrder dom={dom} changePlay={this.changePlay} end={this.end} delet={this.delet} tips={this.props.tips} getOrderId={this.props.getOrderId} changeEvaluate={this.props.changeEvaluate}/>
 			}.bind(this))
 		}
 		return (
 			<div className="tab-pane resolved">
 				{list}
 				<a href="javascript:void(0)" className="wBtn-showMore clr-gray" onTouchEnd={this.addMore}>{isAddMore}</a>
+        <Confirm changeChose={this.changeChose} changeDisp={this.changeDisp} confirmDispN={this.state.confirmDispN}/>
 			</div>
 		)
 	}
@@ -195,7 +300,7 @@ var PerOrder=React.createClass({
   	if(dom.addNum>0){
   		location.href="ask.html?laywerId="+dom.laywerId+'&typeId='+dom.typeId+'&orderId='+dom.orderId+'&isAdd=1';
   	}else{
-  		this.tips('不能再追问')
+  		this.props.tips('不能再追问')
   	}
   },
   getAnswer:function(orderId,canEval,isPlay,answer,e){
@@ -237,13 +342,6 @@ var PerOrder=React.createClass({
     }
     this.props.changePlay(orderId)
   },
-  tips:function(text){
-		this.props.changeLoad('load',true)
-    this.props.changeLoad('tips',text)
-    setTimeout(function(){
-      this.props.changeLoad('load',false)
-    }.bind(this),2000)
-	},
 	render:function(){
 		var dom=this.props.dom;
 		var src=['img/xiaoxi.png','img/half.png'][this.state.imgIndex]
@@ -251,6 +349,7 @@ var PerOrder=React.createClass({
 			<div className="laywer-order-list user-order">
 				<p className="over-hidden">
 					<span className="pull-left">订单号: {dom.orderId}</span>
+					<span className="pull-right del-order" onTouchEnd={this.props.delet.bind(this,dom.orderId)}>删除订单</span>
 				</p>
 				<p>详情: {dom.content}</p>
 				<p className="over-hidden">
@@ -298,23 +397,16 @@ var Evaluate=React.createClass({
 						this.props.changeEvaluate(false)
 						this.props.changeMoney(true,data.redPacket)
 			 		}else{
-				    this.tips(data.msg)
+				    this.props.tips('评价失败')
 			   }
 				}.bind(this),
-				error:function(data){
-					console.log('评价失败:',data)
+				error:function(err){
+					console.log('评价失败:',err)
 				}
 			})
 		}else{	
-			this.tips('您还没有进行评分')
+			this.props.tips('您还没有进行评分')
 		}
-	},
-	tips:function(text){
-		this.props.changeLoad('load',true)
-    this.props.changeLoad('tips',text)
-    setTimeout(function(){
-      this.props.changeLoad('load',false)
-    }.bind(this),2000)
 	},
   render:function(){
   	var isShowEvaluate=this.props.isShowEvaluate?'mcover':'dispN';
@@ -343,16 +435,15 @@ var Money=React.createClass({
 		if(this.props.isShowMoney){
 			var _this = this
 			$('.money .pic')
-				.animate({top:'30%'},800)
+				.animate({top:'30%'},500)
 				.animate({top:"5%"})
-				.animate({top:'30%'},800)
+				.animate({top:'30%'},500)
 				.animate({top:"20%"},function(){
 					$('.pic>img').attr('src','img/money_open.jpg');
 					$('.price').css('display','inline');
 					setTimeout(function(){
 						_this.props.changeMoney(false,'')
 						location.reload()	
-
 					},2000)
 				})
 		}

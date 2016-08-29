@@ -901,3 +901,37 @@ ul, li {
   background: #62A7EA;
   color: #fff;
 }
+.del-order {
+  padding: 5px 10px;
+  border: 1px solid #b3b3b3;
+  border-radius: 3px;
+}
+/*确认框*/
+.chose-comfirm {
+  position: relative;
+  width: 228px;
+  height: 120px;
+  border-radius: 5px;
+  top: 30%;
+  left: calc((100% - 228px) / 2);
+  left: -webkit-calc((100% - 228px) / 2);
+  text-align: center;
+}
+.chose-comfirm .title {
+  height: 45px;
+  line-height: 45px;
+  margin: 0;
+  font-size: 14px;
+}
+.chose-comfirm>span {
+  color: #b3b3b3;
+}
+.chose-btn {
+  overflow: hidden;
+  width: 157px;
+  margin: 30px auto 20px;
+}
+.chose-btn  span {
+  font-size: 14px;
+}
+/*确认框end*/

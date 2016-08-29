@@ -7,7 +7,7 @@ var Search=React.createClass({
 			isAddMore:true,
 			searchList:[],
 			load:false,
-      		tips:'加载中,请稍等'
+      tips:'加载中,请稍等'
 		}
 	},
 	componentDidMount:function(){
@@ -52,17 +52,18 @@ var Search=React.createClass({
 				isShowList:false,
 				isShowAsk:true
 			})
+		}else{
+			this.setState({
+				isShowList:true,
+				isShowAsk:false
+			})
 		}
 	},
 	search:function(){
 		var keywords=this.state.keywords
-		this.setState({
-			isShowList:true,
-			isShowAsk:false
-		})
 		if(keywords){
 			this.changeLoad('load',true)
-    		this.changeLoad('tips','加载中,请稍后')
+    	this.changeLoad('tips','加载中,请稍后')
     
 			this.setState({
 				searchList:[],
@@ -140,7 +141,7 @@ var SearchBar=React.createClass({
 		return (
 			<div className="search-bar">
 				<label>
-					<input type="text" placeholder="我要搜索" onChange={this.handleChange}/>
+					<input type="text" placeholder="我要搜索" onChange={this.handleChange} onFocus={this.props.changeDisp.bind(this,'isShowList')}/>
 					<span className="icon" onTouchEnd={this.props.search}><i className="fa fa-search" aria-hidden="true"></i></span>
 				</label>
 				<span className="ask" onTouchEnd={this.props.changeDisp.bind(this,'isShowAsk')}>我要提问</span>
@@ -177,7 +178,10 @@ var EverySearch=React.createClass({
 		}
 	},
 	pay:function(info,index){
-		var data={orderId:info.orderId}
+		var data={
+			orderId:info.orderId。
+			peekPay:info.peekPay
+		}
 		//调取支付接口
 		if(!info.isPay){
 			$.ajax({
@@ -247,7 +251,7 @@ var EverySearch=React.createClass({
 						  		<p>{dom.question}</p>
 						  		<p className="add-voice">
 								    <audio src={dom.answer} controls="controls" ref="record"/>
-								    <span className="price" onTouchEnd={this.toDetail.bind(this,dom.orderId)}>免费听取</span>
+								    <span className="price" onTouchEnd={this.toDetail.bind(this,dom.orderId)}>点击听取</span>
 								    <img src="img/xiaoxi.png"/>
 							    </p>
 						  	</li>
@@ -257,14 +261,14 @@ var EverySearch=React.createClass({
 		for(var i=0;i<info.star;i++){
 			star.push(<i className="fa fa-star col-yellow"></i>)
 		}
-		var text=info.isPay?'点击听取':info.typePrice+'元听取';
+		var text=info.isPay?'点击听取':info.peekPay+'元听取';
 		return (
 			<div className="media">
 			  <div className="media-left">{index+1}.</div>
 			  <div className="media-body">
 			    <p>{info.question}</p>
 			    <p className="over-hidden">
-			    	<span className="pull-left">{info.typeName}&nbsp;|&nbsp;{info.name}&nbsp;|&nbsp;{info.selfIntr}</span>
+			    	<span className="pull-left">{info.typeName}&nbsp;|&nbsp;{info.name}律师&nbsp;|&nbsp;{info.selfIntr}</span>
 			    	<span className="pull-right">{star}</span>
 			    </p>
 				  <p className="pull-left"><a href={url}><img src={info.pic}/></a></p>
@@ -315,7 +319,7 @@ var Ask=React.createClass({
 	},
 	limitNum:function(e){
     var value=e.target.value
-    if(value.length>100){
+    if(value.length>300){
       e.preventDefault()
     }
   },
@@ -424,7 +428,7 @@ var Ask=React.createClass({
 						{list}
 					</ul>
 				</div>
-				<div className="content"><textarea rows="8" placeholder="最多100个字" onChange={this.handleChange} onKeyPress={this.limitNum}></textarea></div>
+				<div className="content"><textarea rows="8" placeholder="最多300个字" onChange={this.handleChange} onKeyPress={this.limitNum}></textarea></div>
 				<p className="price">￥{typePrice}元</p>
 				<div className="btn-ask"><p onTouchEnd={this.doAsk}>写好了</p></div>
 			</div>

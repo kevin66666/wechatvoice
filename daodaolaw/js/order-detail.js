@@ -65,30 +65,30 @@ var OrderDetail=React.createClass({
 	    }
 	    this.setState({isPlay:!this.state.isPlay})
 	},
-	play:function(answer,e){
-	    $('img').prop('src','img/xiaoxi.png')
-		$('audio').prop({'src':''})
-		var $audio=$(e.target).prev()
-		var $img=$(e.target).next()
-  		$audio.prop({src:answer,autoplay:'autoplay'})
-  		var timer=''
-  		$audio.on('play',function(){
-  			var imgIndex=0;
-  			timer=setInterval(function(){
-  				var src=['img/xiaoxi.png','img/half.png'][imgIndex]
-  				if(imgIndex<=2){
-  					$img.prop({src:src})
-  					imgIndex+=1
-  				}else{
-  					imgIndex=0;
-  				}
-  			},1000)
-  		})
-	  	$audio.on('ended',function(){
-	  		clearInterval(timer)
-	  		$img.prop({src:'img/xiaoxi.png'})
-	  	})
-	},
+	// play:function(answer,e){
+	//   $('img').prop('src','img/xiaoxi.png')
+	// 	$('audio').prop({'src':''})
+	// 	var $audio=$(e.target).prev()
+	// 	var $img=$(e.target).next()
+	// 	$audio.prop({src:answer,autoplay:'autoplay'})
+	// 	var timer=''
+	// 	$audio.on('play',function(){
+	// 		var imgIndex=0;
+	// 		timer=setInterval(function(){
+	// 			var src=['img/xiaoxi.png','img/half.png'][imgIndex]
+	// 			if(imgIndex<=2){
+	// 				$img.prop({src:src})
+	// 				imgIndex+=1
+	// 			}else{
+	// 				imgIndex=0;
+	// 			}
+	// 		},1000)
+	// 	})
+ //  	$audio.on('ended',function(){
+ //  		clearInterval(timer)
+ //  		$img.prop({src:'img/xiaoxi.png'})
+ //  	})
+	// },
 	render:function(){
 		var info=this.state.info;
 		var isAddNum=info.addNum>0?'text-center padding-md-t':'dispN';
@@ -123,7 +123,7 @@ var OrderDetail=React.createClass({
 				  <p className="pull-left"><a href={url}><img src={info.pic}/></a></p>
 			    <p className="voice pull-left">
 				    <audio src={info.answer} controls="controls"/>
-				    <span className="price" onTouchEnd={this.getAnswer.bind(this,info.answer)}>免费听取</span>
+				    <span className="price" onTouchEnd={this.getAnswer.bind(this,info.answer)}>点击听取</span>
 				    <img src={src}/>
 			    </p>
 			  </div>

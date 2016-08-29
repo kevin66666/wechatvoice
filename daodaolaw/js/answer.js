@@ -9,9 +9,10 @@ var Answer=React.createClass({
 			typeId:'',           
 			typeName:'',
 			content:'',
+			img:'img/luyin.png',
 			isRecord:true,
 			load:false,
-      		tips:'加载中,请稍等'
+      tips:'加载中,请稍等'
 		}
 	},
 	componentDidMount:function(){
@@ -69,12 +70,12 @@ var Answer=React.createClass({
 	    newData[name]=val
 	    this.setState(newData)
 	},
-  	tips:function(text){
+  tips:function(text){
 		this.changeLoad('load',true)
-	    this.changeLoad('tips',text)
-	    setTimeout(function(){
-	      this.changeLoad('load',false)
-	    }.bind(this),2000)
+    this.changeLoad('tips',text)
+    setTimeout(function(){
+      this.changeLoad('load',false)
+    }.bind(this),2000)
 	},
 	record:function(e){
 		e.stopPropagation()
@@ -88,6 +89,7 @@ var Answer=React.createClass({
 	start:function(){
 		var _this=this
 		_this.tips('开始录音')
+		_this.setState({img:'img/recording.png'})
 		wx.startRecord({
 			cancel: function () {
 				_this.tips('用户拒绝授权录音')
@@ -98,8 +100,11 @@ var Answer=React.createClass({
 		    // 录音时间超过一分钟没有停止的时候会执行 complete 回调
 		    complete: function (res) {
 		      var localId = res.localId
-		      _this.setState({answer:localId})
 		      _this.tips('录音时长超过1分钟,关闭录音')
+		      _this.setState({
+		      	answer:localId,
+		      	img:'img/luyin.png'
+		      })
 		    }
 		})
 		wx.error(function(res){
@@ -107,12 +112,15 @@ var Answer=React.createClass({
 		})
 	},
 	stop:function(){
-        var _this=this
+    var _this=this
 		wx.stopRecord({
 	    success: function (res) {
 	      var localId = res.localId
-	      _this.setState({answer:localId})
 	      _this.tips('结束录音')
+	       _this.setState({
+	      	answer:localId,
+	      	img:'img/luyin.png'
+	      })
 	    }
 		})
 		wx.error(function(res){
@@ -198,7 +206,7 @@ var Answer=React.createClass({
 			<div className="answer">
 				<p>类型: {this.state.typeName}</p>
 				<p className="content">{info.content}</p>
-				<p><img src="img/luyin.png" onTouchStart={this.record}/></p>
+				<p><img src={this.state.img} onTouchStart={this.record}/></p>
 				<p>(点击开始录音,再次点击结束录音)</p>
 				<audio src="" controls></audio>
 				<div className="save">

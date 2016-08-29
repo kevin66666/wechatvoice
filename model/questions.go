@@ -235,7 +235,13 @@ func GetCustomerPaiedInfo(openid string, orderIdList, deleteList []string, start
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("customer_open_id = ?", openid).Where("uuid in (?)", orderIdList).Where("uuid not in (?)", deleteList).Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+	var err error
+	if len(deleteList) > 0 {
+		err = conn.Where("customer_open_id = ?", openid).Where("uuid in (?)", orderIdList).Not("uuid", deleteList).Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+
+	} else {
+		err = conn.Where("customer_open_id = ?", openid).Where("uuid in (?)", orderIdList).Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+	}
 	return list, err
 }
 

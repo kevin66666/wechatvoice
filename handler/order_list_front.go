@@ -752,6 +752,9 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 			return string(ret_str)
 		}
 
+		fmt.Println("-===asdasdasd")
+		fmt.Println(aList)
+		fmt.Println("asdasdasdasd")
 		for _, k := range aList {
 			list = append(list, k)
 		}

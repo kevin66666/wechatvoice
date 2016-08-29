@@ -144,8 +144,8 @@ func QueryLawyerQuestions(startLine int64, endLine int64, userOpenId string) ([]
 	l1 := make([]WechatVoiceQuestions, 0)
 	var err error
 	var count int64
-	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Not("lawyer_delete", "1").Find(&l1).Count(&count).Error
-	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Not("lawyer_delete", "1").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Find(&l1).Count(&count).Error
+	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	return list, count, err
 }
 

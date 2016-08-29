@@ -742,6 +742,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		if int64(dirLen) < (req.EndLine - req.StartLine) {
 			//说明数量不够 需要后期去补充
 			need := req.EndLine - int64(dirLen)
+			fmt.Println("=======>>>>>>")
 			aList, aErr = model.GetLaerOther(req.StartLine, need)
 		}
 		if aErr != nil && !strings.Contains(aErr.Error(), RNF) {

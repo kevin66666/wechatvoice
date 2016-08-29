@@ -107,7 +107,11 @@ func GetQuestionQueryNew(req QuestionQuery, logList []string) ([]WechatVoiceQues
 		query = query.Where("category_id = ?", req.CategoryId)
 	}
 	query = query.Order("id desc")
-	err = query.Where("uuid not in (?)", logList).Find(&list1).Count(&count).Error
+	if len(logList) > 0 {
+		err = query.Not("uuid", logList).Find(&list1).Count(&count).ErrorFind(&list1).Count(&count).Error
+	} else {
+		err = query.Find(&list1).Count(&count).Error
+	}
 	err = query.Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
 	return list, count, err
 }

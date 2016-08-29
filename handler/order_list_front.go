@@ -763,6 +763,10 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
+	fmt.Println("========>>>>>>>>>>订单l列表")
+	fmt.Println(len(list))
+	log.Println(list)
+	fmt.Println("========>>>>>>>>>>订单l列表")
 	retList := make([]LawOrder, 0)
 	for _, k := range list {
 		single := new(LawOrder)

@@ -678,53 +678,7 @@ type AddInfo1 struct {
 func GetMemberOrderList(ctx *macaron.Context) string {
 	response := new(MemberListReponse)
 	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-	// if cookieStr == "" && ctx.Query("code") == "" {
-	// 	re := "http://www.mylvfa.com/voice/ucenter/userlist"
-	// 	url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
-	// 	//cookieStr = "1|2"
-	// 	ctx.Redirect(url)
-	// }
-	// code := ctx.Query("code")
-	// if code != "" {
-	// 	url := "http://60.205.4.26:22334/getOpenid?code=" + code
-	// 	res, err := http.Get(url)
-	// 	if err != nil {
-	// 		fmt.Println("=========xxxxx")
-	// 		fmt.Println(err.Error())
-	// 	}
-	// 	resBody, _ := ioutil.ReadAll(res.Body)
-	// 	fmt.Println(string(resBody))
-	// 	defer res.Body.Close()
-	// 	fmt.Println("==========>>>>")
-	// 	res1 := new(OpenIdResponse)
-	// 	json.Unmarshal(resBody, res1)
-	// 	ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
-	// 	member := new(model.MemberInfo)
-	// 	memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
-	// 	if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
-	// 		response.Code = CODE_ERROR
-	// 		response.Msg = memberErr.Error()
-	// 		ret_str, _ := json.Marshal(res)
-	// 		return string(ret_str)
-	// 	}
-	// 	if member.Uuid == "" {
-	// 		fmt.Println("新的用户")
-	// 		user := GetUserInfo(res1.OpenId, res1.AccessToken)
-	// 		member.Uuid = util.GenerateUuid()
-	// 		member.HeadImgUrl = user.HeadImgUrl
-	// 		member.OpenId = user.OpenId
-	// 		member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
-	// 		member.NickName = user.NickName
-	// 		err := member.GetConn().Create(&member).Error
-	// 		if err != nil {
-	// 			response.Code = CODE_ERROR
-	// 			response.Msg = err.Error()
-	// 			ret_str, _ := json.Marshal(response)
-	// 			return string(ret_str)
-	// 		}
-	// 	}
-	// 	//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
-	// }
+
 	fmt.Println(cookieStr)
 	//fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]

@@ -500,7 +500,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	question.AskTime = today
 	question.AskerHeadImg = customer.HeadImgUrl
 	question.CustomerOpenId = openId
-
+	question.QType = "0"
 	question.IsAnswerd = "0"
 	question.IsLocked = "0"
 
@@ -2912,6 +2912,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		//question.PaymentInfoInt = typePriceInt
 		//
 		question.IsSolved = "0"
+		question.QType = "2"
 		question.AskerHeadImg = customer.HeadImgUrl
 		payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
 		question.OrderNumber = orderNumber
@@ -3017,6 +3018,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		if transferErr != nil {
 			fmt.Println(transferErr)
 		}
+		question.QType = "1"
 		oldQ := new(model.WechatVoiceQuestions)
 		qErr := oldQ.GetConn().Where("uuid  = ?", req.OrderId).Find(&oldQ).Error
 		if qErr != nil && !strings.Contains(qErr.Error(), RNF) {

@@ -2808,47 +2808,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		//cookieStr = "1|2"
 		ctx.Redirect(url)
 	}
-	code := ctx.Query("code")
-	if code != "" {
-		url := "http://60.205.4.26:22334/getOpenid?code=" + code
-		res, err := http.Get(url)
-		if err != nil {
-			fmt.Println("=========xxxxx")
-			fmt.Println(err.Error())
-		}
-		resBody, _ := ioutil.ReadAll(res.Body)
-		fmt.Println(string(resBody))
-		defer res.Body.Close()
-		fmt.Println("==========>>>>")
-		res1 := new(OpenIdResponse)
-		json.Unmarshal(resBody, res1)
-		ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
-		member := new(model.MemberInfo)
-		memberErr := member.GetConn().Where("open_id = ?", res1.OpenId).Find(&member).Error
-		if memberErr != nil && !strings.Contains(memberErr.Error(), RNF) {
-			response.Code = CODE_ERROR
-			response.Msg = memberErr.Error()
-			ret_str, _ := json.Marshal(res)
-			return string(ret_str)
-		}
-		if member.Uuid == "" {
-			fmt.Println("新的用户")
-			user := GetUserInfo(res1.OpenId, res1.AccessToken)
-			member.Uuid = util.GenerateUuid()
-			member.HeadImgUrl = user.HeadImgUrl
-			member.OpenId = user.OpenId
-			member.RegistTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
-			member.NickName = user.NickName
-			err := member.GetConn().Create(&member).Error
-			if err != nil {
-				response.Code = CODE_ERROR
-				response.Msg = err.Error()
-				ret_str, _ := json.Marshal(response)
-				return string(ret_str)
-			}
-		}
-		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
-	}
+
 	fmt.Println(cookieStr)
 	openId := strings.Split(cookieStr, "|")[0]
 	userType := strings.Split(cookieStr, "|")[1]
@@ -2909,10 +2869,20 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		typepriceNew := typePriceInt * 100
 		typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)
 		question.PaymentInfo = typePriceNewStr
+		lawer := new(model.LawyerInfo)
+		lawerErr := lawer.GetConn().Where("uuid = ?", req.LaywerId).Find(&lawer).Error
+		if lawerErr != nil && !strings.Contains(lawerErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = lawerErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
 		//question.PaymentInfoInt = typePriceInt
 		//
 		question.IsSolved = "0"
 		question.QType = "2"
+		question.AnswerId = req.LaywerId
+		question.AnswerOpenId = lawer.OpenId
 		question.AskerHeadImg = customer.HeadImgUrl
 		payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
 		question.OrderNumber = orderNumber
@@ -3013,7 +2983,8 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		//
 		question.IsSolved = "0"
 		question.IsLocked = "0"
-		question.AskerHeadImg = customer.HeadImgUrl
+		// question.AnswerId =
+		// question.AskerHeadImg = customer.HeadImgUrl
 		payInt, transferErr := strconv.ParseInt(typePrice, 10, 64)
 		if transferErr != nil {
 			fmt.Println(transferErr)

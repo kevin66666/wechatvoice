@@ -779,7 +779,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		single.Status = k.IsSolved
 		single.Content = k.Description
 		single.Type = k.Category
-		single.Time = k.CreateTime[0:10]
+		single.Time = k.CreateTime
 
 		var flag bool
 		if k.IsSolved == "2" {

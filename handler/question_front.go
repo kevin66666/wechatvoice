@@ -2873,10 +2873,12 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		lawerErr := lawer.GetConn().Where("uuid = ?", req.LaywerId).Find(&lawer).Error
 		if lawerErr != nil && !strings.Contains(lawerErr.Error(), RNF) {
 			response.Code = CODE_ERROR
+			fmt.Println("ssssss", lawerErr.Error())
 			response.Msg = lawerErr.Error()
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
+		fmt.Println(lawer)
 		//question.PaymentInfoInt = typePriceInt
 		//
 		question.IsSolved = "0"
@@ -2934,15 +2936,15 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
-		law := new(model.LawyerInfo)
-		lawErr := law.GetConn().Where("uuid = ?", req.LaywerId).Find(&law).Error
-		if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
-			response.Code = CODE_ERROR
-			response.Msg = lawErr.Error()
-			ret_str, _ := json.Marshal(response)
-			return string(ret_str)
-		}
-		question.AnswerOpenId = law.OpenId
+		// law := new(model.LawyerInfo)
+		// lawErr := law.GetConn().Where("uuid = ?", req.LaywerId).Find(&law).Error
+		// if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+		// 	response.Code = CODE_ERROR
+		// 	response.Msg = lawErr.Error()
+		// 	ret_str, _ := json.Marshal(response)
+		// 	return string(ret_str)
+		// }
+		// question.AnswerOpenId = law.OpenId
 		response.Code = CODE_SUCCESS
 		response.Msg = MSG_SUCCESS
 		response.Appid = "wxac69efc11c5e182f"

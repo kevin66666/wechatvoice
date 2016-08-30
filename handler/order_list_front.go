@@ -875,7 +875,9 @@ func EvalAnswers(ctx *macaron.Context) string {
 	redStr := strconv.FormatFloat(redFr, 'f', 2, 64)
 
 	orderInfo.IsRanked = "1"
-	orderInfo.RankInfo = req.Number
+	//var star string
+	number := strconv.FormatInt(req.Number, 10)
+	orderInfo.RankInfo = number
 	updateErr := orderInfo.GetConn().Save(&orderInfo).Error
 	if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
 		response.Code = CODE_ERROR
@@ -906,7 +908,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
 		fmt.Println(lawErr.Error())
 	}
-	switch req.Number {
+	switch number {
 	case "1":
 		law.RankFirst = law.RankFirst + 1
 	case "2":
@@ -942,8 +944,8 @@ func EvalAnswers(ctx *macaron.Context) string {
 	//保存orderInfo
 	orderInfo.IsRanked = "1"
 	orderInfo.IsSolved = "2"
-	star := req.Number
-	orderInfo.RankInfo = star
+	//star := req.Number
+	//orderInfo.RankInfo = star
 	orderUpdateErr := orderInfo.GetConn().Save(&orderInfo).Error
 	if orderUpdateErr != nil && !strings.Contains(orderUpdateErr.Error(), RNF) {
 		response.Code = CODE_ERROR

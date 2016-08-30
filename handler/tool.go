@@ -142,6 +142,62 @@ func GetUserInfo(openId, accessToken string) *UserInfo {
 	return res1
 }
 
+func GetUserString(openId, accessToken string) string {
+	fmt.Println("新用户------->>>>>>")
+	url := "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + openId + "&lang=zh_CN"
+	res, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	resBody, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(resBody))
+
+	defer res.Body.Close()
+	fmt.Println(string(resBody))
+	return string(resBody)
+}
+
+func GetUserTest(ctx *macaron.Context) string {
+	Print("进入index页面方法")
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+
+	if cookieStr == "" && ctx.Query("code") == "" {
+		re := "http://www.mylvfa.com/voice/front/toindex"
+		url := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxac69efc11c5e182f&redirect_uri=" + re + "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect"
+		//cookieStr = "1|2"
+		ctx.Redirect(url)
+	}
+	code := ctx.Query("code")
+	var str string
+	Print("获取到的code为==========>>>", code)
+	if code != "" {
+		url := "http://60.205.4.26:22334/getOpenid?code=" + code
+		res, err := http.Get(url)
+		if err != nil {
+			Print("获取openId 出错", err.Error())
+		}
+		resBody, _ := ioutil.ReadAll(res.Body)
+		fmt.Println(string(resBody))
+		defer res.Body.Close()
+		fmt.Println("==========>>>>")
+		res1 := new(OpenIdResponse)
+		json.Unmarshal(resBody, res1)
+		//ctx.SetSecureCookie("userloginstatus", res1.OpenId+"|0")
+
+		//ctx.Redirect("http://www.mylvfa.com/voice/front/getcatList")
+		str = GetUserString(res1.OpenId, res1.AccessToken)
+
+	}
+	fmt.Println(str)
+	userInfo := new(UserInfo)
+	errs := json.Unmarshal([]byte(str), userInfo)
+	if errs != nil {
+		fmt.Println(errs, "==========errs")
+	}
+	fmt.Println(userInfo, "user after unmashall")
+	return str
+}
+
 // func GetAllUtil(code string) error {
 // 	url := "http://60.205.4.26:22334/getOpenid?code=" + code
 // 	res, err := http.Get(url)

@@ -64,4 +64,6 @@ func SetRouter(m *macaron.Macaron) {
 
 	m.Get("/red", c.EvalAnswersTest)
 	m.Post("/order/delete", c.DeleteOrderInfo)
+
+	m.Get("/user/getusertest", c.GetUserTest)
 }

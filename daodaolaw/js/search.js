@@ -296,7 +296,7 @@ var Ask=React.createClass({
 			typeId:'',
 			content:'',
 			typeName:'',
-			typePrice:'',
+			typePrice:'2',
 			isShowType:false,
 			allType:[]
 		}

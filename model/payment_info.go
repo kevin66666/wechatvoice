@@ -38,6 +38,6 @@ func GetPaymentQuery(openid string) ([]WechatVoicePaymentInfo, error) {
 	db := dbpool.OpenConn()
 	defer dbpool.CloseConn(&db)
 	list := make([]WechatVoicePaymentInfo, 0)
-	err := db.Where("open_id = ?", openid).Where("is_paied = 1").Where("is_solved = ?", "2").Find(&list).Error
+	err := db.Where("open_id = ?", openid).Where("is_paied = 1").Find(&list).Error
 	return list, err
 }

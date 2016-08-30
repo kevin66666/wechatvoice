@@ -241,10 +241,10 @@ func GetCustomerPaiedInfo(openid string, orderIdList, deleteList []string, start
 	list := make([]WechatVoiceQuestions, 0)
 	var err error
 	if len(deleteList) > 0 {
-		err = conn.Where("customer_open_id = ?", openid).Where("uuid in (?)", orderIdList).Not("uuid", deleteList).Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+		err = conn.Where("customer_open_id = ?", openid).Where("uuid in (?)", orderIdList).Not("uuid", deleteList).Where("is_solved = 2").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 
 	} else {
-		err = conn.Where("customer_open_id = ?", openid).Where("uuid in (?)", orderIdList).Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+		err = conn.Where("customer_open_id = ?", openid).Where("uuid in (?)", orderIdList).Where("is_solved = 2").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	}
 	return list, err
 }

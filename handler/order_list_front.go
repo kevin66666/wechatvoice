@@ -1087,6 +1087,7 @@ func DeleteOrderInfo(ctx *macaron.Context) string {
 	}
 	if question.IsSolved == "0" {
 		//如果订单未完成 删就删吧
+		fmt.Println("=========删除未解决的订单")
 		deleteErr := question.GetConn().Delete(&question).Error
 		if deleteErr != nil && strings.Contains(deleteErr.Error(), RNF) {
 			response.Code = CODE_ERROR
@@ -1117,7 +1118,7 @@ func DeleteOrderInfo(ctx *macaron.Context) string {
 		deleteLog.Uuid = util.GenerateUuid()
 		deleteLog.UserOpenId = cookie
 		deleteLog.OrderNumber = question.OrderNumber
-		deleteLog.Uuid = question.Uuid
+		deleteLog.OrderId = question.Uuid
 		cErr := deleteLog.GetConn().Create(&deleteLog).Error
 		if cErr != nil && !strings.Contains(cErr.Error(), RNF) {
 			response.Code = CODE_ERROR

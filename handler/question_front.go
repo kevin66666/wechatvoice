@@ -48,6 +48,7 @@ const (
 	AFTER_PAY_ORDER_URL         = "/shangqu-shop/afterpay/wx"
 	AFTER_PAY_JUMP_PAGE_FAILD   = "payFailed.html?"
 	AFTER_PAY_JUMP_PAGE_SUCCESS = "paySuccess.html?"
+	MPID                        = "gh_2ee59b178d66"
 
 	WECHAT_PREPAY_URL = "/wechatvoice/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
 )
@@ -242,6 +243,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
+
 	log.Println(len(logList))
 	logIdList := make([]string, 0)
 	for _, k := range logList {

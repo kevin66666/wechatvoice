@@ -1208,7 +1208,7 @@ func EvalAnswersTest(ctx *macaron.Context) {
 	reds.SendNickName = "差不多先生"
 	reds.Wishing = "您的订单已完成"
 	reds.Amount = int64(100)
-	reds.MpId = ""
+	reds.MpId = MPID
 	fmt.Println(reds)
 	suc, strsuc := SendRedPacket(reds)
 	fmt.Println("================红包红包红包===============>>>>")

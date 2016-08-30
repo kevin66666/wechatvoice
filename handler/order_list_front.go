@@ -297,6 +297,7 @@ func ToLawOrders(ctx *macaron.Context) {
 				if errUpdate != nil {
 					fmt.Println("补全信息出错")
 				}
+				ctx.SetSecureCookie("userloginstatus", openId+"|0")
 
 			} else {
 				ctx.SetSecureCookie("userloginstatus", openId+"|0")

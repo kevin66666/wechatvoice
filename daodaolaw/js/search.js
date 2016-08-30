@@ -122,12 +122,19 @@ var Search=React.createClass({
     newData[name]=val
     this.setState(newData)
   },
+  tips:function(text){
+    this.changeLoad('load',true)
+    this.changeLoad('tips',text)
+    setTimeout(function(){
+      this.changeLoad('load',false)
+    }.bind(this),2000)
+  },
 	render:function(){
 		return (
 			<div>
 				<SearchBar getVal={this.getVal} search={this.search} changeDisp={this.changeDisp}/>
 				<SearchList isShowList={this.state.isShowList} searchList={this.state.searchList} getSearchList={this.getSearchList} changeFold={this.changeFold} isAddMore={this.state.isAddMore} resetList={this.resetList} changeLoad={this.changeLoad}/>
-				<Ask isShowAsk={this.state.isShowAsk} getVal={this.getVal}/>
+				<Ask isShowAsk={this.state.isShowAsk} getVal={this.getVal} tips={this.tips}/>
 				<Loading load={this.state.load} tips={this.state.tips}/>
 			</div>
 		)
@@ -264,12 +271,12 @@ var EverySearch=React.createClass({
 		var text=info.isPay?'点击听取':info.peekPay+'元听取';
 		return (
 			<div className="media">
-			  <div className="media-left">{index+1}.</div>
+			  <div className="media-left dispN">{index+1}.</div>
 			  <div className="media-body">
 			    <p>{info.question}</p>
 			    <p className="over-hidden">
 			    	<span className="pull-left">{info.typeName}&nbsp;|&nbsp;{info.name}律师&nbsp;|&nbsp;{info.selfIntr}</span>
-			    	<span className="pull-right">{star}</span>
+			    	<span className="pull-right margin-md-t">{star}</span>
 			    </p>
 				  <p className="pull-left"><a href={url}><img src={info.pic}/></a></p>
 			    <p className="voice pull-left">
@@ -277,11 +284,8 @@ var EverySearch=React.createClass({
 				    <span className="price" onTouchEnd={this.pay.bind(this,info,index)}>{text}</span>
 				    <img src="img/xiaoxi.png"/>
 			    </p>
+			    <p className="pull-right">{info.time}</p>
 			  </div>
-			  <p className={isAddNum} onTouchEnd={this.changeFold}>有{info.addNum}次追问<i className="fa fa-angle-down"></i></p>
-			  <ul className={isShow}>
-			  	{addInfo}
-			  </ul>
 			</div>
 		)
 	}
@@ -334,12 +338,21 @@ var Ask=React.createClass({
   		typePrice:price
   	})
   },
-  doAsk:function(){
+  ask:function(){
   	var data={
   		typeId:this.state.typeId,
   		typePrice:this.state.typePrice,
   		content:this.state.content
   	}
+  	if(data.typeId&&data.content){
+  		this.doAsk(data)
+  	}else if(!data.typeId){
+  		this.props.tips('请选择问题类型')
+  	}else if(!data.content){
+  		this.props.tips('请填写提问内容')
+  	}
+  },
+  doAsk:function(data){
   	$.ajax({
 				url:'http://www.mylvfa.com/voice/front/createquestion',
 				//搜索页面提问接口
@@ -406,7 +419,7 @@ var Ask=React.createClass({
 				error:function(data){
 					console.log('提交问题失败:',data)
 				}
-			})
+		})
   },
 	render:function(){
 		var isShow=this.props.isShowAsk?'question':'dispN'
@@ -430,7 +443,7 @@ var Ask=React.createClass({
 				</div>
 				<div className="content"><textarea rows="8" placeholder="最多300个字" onChange={this.handleChange} onKeyPress={this.limitNum}></textarea></div>
 				<p className="price">￥{typePrice}元</p>
-				<div className="btn-ask"><p onTouchEnd={this.doAsk}>写好了</p></div>
+				<div className="btn-ask"><p onTouchEnd={this.ask}>写好了</p></div>
 			</div>
 		)
 	}

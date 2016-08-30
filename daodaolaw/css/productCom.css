@@ -621,6 +621,9 @@ ul, li {
   top: 10px;
   color: #fff;
 }
+.quest-list .voice .price {
+  padding: 8px 10px 8px 30px;
+}
 .quest-list .voice>img,.user-order .voice>img,.add-voice>img,.laywer-order-list .voice>img {
   position: absolute;
   left:2px;

@@ -65,48 +65,48 @@ var OrderDetail=React.createClass({
 	    }
 	    this.setState({isPlay:!this.state.isPlay})
 	},
-	// play:function(answer,e){
-	//   $('img').prop('src','img/xiaoxi.png')
-	// 	$('audio').prop({'src':''})
-	// 	var $audio=$(e.target).prev()
-	// 	var $img=$(e.target).next()
-	// 	$audio.prop({src:answer,autoplay:'autoplay'})
-	// 	var timer=''
-	// 	$audio.on('play',function(){
-	// 		var imgIndex=0;
-	// 		timer=setInterval(function(){
-	// 			var src=['img/xiaoxi.png','img/half.png'][imgIndex]
-	// 			if(imgIndex<=2){
-	// 				$img.prop({src:src})
-	// 				imgIndex+=1
-	// 			}else{
-	// 				imgIndex=0;
-	// 			}
-	// 		},1000)
-	// 	})
- //  	$audio.on('ended',function(){
- //  		clearInterval(timer)
- //  		$img.prop({src:'img/xiaoxi.png'})
- //  	})
-	// },
+	play:function(answer,e){
+	  $('img').prop('src','img/xiaoxi.png')
+		$('audio').prop({'src':''})
+		var $audio=$(e.target).prev()
+		var $img=$(e.target).next()
+		$audio.prop({src:answer,autoplay:'autoplay'})
+		var timer=''
+		$audio.on('play',function(){
+			var imgIndex=0;
+			timer=setInterval(function(){
+				var src=['img/xiaoxi.png','img/half.png'][imgIndex]
+				if(imgIndex<=2){
+					$img.prop({src:src})
+					imgIndex+=1
+				}else{
+					imgIndex=0;
+				}
+			},1000)
+		})
+  	$audio.on('ended',function(){
+  		clearInterval(timer)
+  		$img.prop({src:'img/xiaoxi.png'})
+  	})
+	},
 	render:function(){
 		var info=this.state.info;
 		var isAddNum=info.addNum>0?'text-center padding-md-t':'dispN';
 		var isShow=this.state.isShow?'padding-md-t add-Info':'dispN';
 		var url="ask.html?laywerId="+info.laywerId+'&typeId='+info.typeId+'&orderId=-1&isAdd=0';
-		// var addInfo=''
-		// if(info.addInfo&&info.addInfo.length>0){
-		// 	addInfo=info.addInfo.map(function(dom){
-		// 		return 	<li>
-		// 				  		<p>{dom.question}</p>
-		// 				  		<p className="add-voice">
-		// 						    <audio src={dom.answer} controls="controls" ref="record"/>
-		// 						    <span className="price" onTouchEnd={this.play.bind(this,dom.answer)}>免费听取</span>
-		// 						    <img src="img/xiaoxi.png"/>
-		// 					    </p>
-		// 				  	</li>
-		// 	}.bind(this))
-		// }
+		var addInfo=''
+		if(info.addInfo&&info.addInfo.length>0){
+			addInfo=info.addInfo.map(function(dom){
+				return 	<li>
+						  		<p>{dom.question}</p>
+						  		<p className="add-voice">
+								    <audio src={dom.answer} controls="controls" ref="record"/>
+								    <span className="price" onTouchEnd={this.play.bind(this,dom.answer)}>点击听取</span>
+								    <img src="img/xiaoxi.png"/>
+							    </p>
+						  	</li>
+			}.bind(this))
+		}
 		var star=[]
 		for(var i=0;i<info.star;i++){
 			star.push(<i className="fa fa-star col-yellow"></i>)
@@ -126,7 +126,12 @@ var OrderDetail=React.createClass({
 				    <span className="price" onTouchEnd={this.getAnswer.bind(this,info.answer)}>点击听取</span>
 				    <img src={src}/>
 			    </p>
+			    <p className="pull-right">{info.time}</p>
 			  </div>
+			  <p className={isAddNum} onTouchEnd={this.changeFold}>有{info.addNum}次追问<i className="fa fa-angle-down"></i></p>
+			  <ul className={isShow}>
+			  	{addInfo}
+			  </ul>
 			</div>
 		)
 	}

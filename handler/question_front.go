@@ -63,22 +63,23 @@ type QuestionQueryResponse struct {
 }
 
 type QuestionInfo struct {
-	OrderId   string     `json:"orderId"`
-	LaywerId  string     `json:"laywerId"`
-	Question  string     `json:"question"`
-	Name      string     `json:"name"`
-	SelfIntr  string     `json:"selfIntr"`
-	LawerPic  string     `json:"pic"`
-	Answer    string     `json:"answer"`
-	TypeId    string     `json:"typeId"`
-	TypeName  string     `json:"typeName"`
-	TypePrice string     `json:"typePrice"`
-	Star      int64      `json:"star"`
-	IsPay     bool       `json:"isPay"`
-	AddNum    int64      `json:"addNum"`
-	IsShow    bool       `json:"isShow"`
-	AddInfo   []AddInfos `json:"addInfo"`
-	PeekPay   string     `json:"peekPay"`
+	OrderId    string     `json:"orderId"`
+	LaywerId   string     `json:"laywerId"`
+	Question   string     `json:"question"`
+	Name       string     `json:"name"`
+	SelfIntr   string     `json:"selfIntr"`
+	LawerPic   string     `json:"pic"`
+	Answer     string     `json:"answer"`
+	TypeId     string     `json:"typeId"`
+	TypeName   string     `json:"typeName"`
+	TypePrice  string     `json:"typePrice"`
+	Star       int64      `json:"star"`
+	IsPay      bool       `json:"isPay"`
+	AddNum     int64      `json:"addNum"`
+	IsShow     bool       `json:"isShow"`
+	AddInfo    []AddInfos `json:"addInfo"`
+	PeekPay    string     `json:"peekPay"`
+	AnswerTime string     `json:"time"`
 }
 
 type AddInfos struct {
@@ -279,6 +280,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		single.TypeId = k.CategoryId
 		single.TypeName = k.Category
 		single.PeekPay = "1.00"
+		single.AnswerTime = k.SolvedTime
 		cateInfo := new(model.WechatVoiceQuestionSettings)
 		cateErr := cateInfo.GetConn().Where("category_id = ?", k.CategoryId).Find(&cateInfo).Error
 		if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {

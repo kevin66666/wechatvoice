@@ -149,7 +149,7 @@ var UnsolvedList=React.createClass({
   		contentType: "application/json",
   		success:function(data){
   			if(data.code===10000){
-  				this.resetList(orderId)
+  				this.resetList(this.state.orderId)
   			}else{
   				this.props.tips('删除订单失败')
   			}
@@ -349,7 +349,7 @@ var PerOrder=React.createClass({
 			<div className="laywer-order-list user-order">
 				<p className="over-hidden">
 					<span className="pull-left">订单号: {dom.orderId}</span>
-					<span className="pull-right del-order dispN" onTouchEnd={this.props.delet.bind(this,dom.orderId)}>删除订单</span>
+					<span className="pull-right del-order dispN" onTouchEnd={this.props.delet.bind(this,dom.orderId)}>删除</span>
 				</p>
 				<p>详情: {dom.content}</p>
 				<p className="over-hidden">

@@ -5,7 +5,7 @@ var Ask=React.createClass({
 			typeId:'',
 			content:'',
 			laywerId:'',
-			typePrice:'',
+			typePrice:'2',
 			//parentOrderId:'',
 			// isShowType:false,
 			allType:[],
@@ -45,6 +45,16 @@ var Ask=React.createClass({
 					if(isAdd==1){
 						//追问免费
 						this.setState({typePrice:''})
+						//修改title
+						$('title').html('追问')
+						var $body = $('body');
+			      document.title = title;
+			      var $iframe = $('<iframe src="/favicon.ico" width="0" height="0"></iframe>').on('load', function() {
+			      setTimeout(function() {
+			        $iframe.off('load').remove()
+			        $('iframe').remove()
+			        }, 1)
+			      }).appendTo($body)
 					}
 				}
 			}.bind(this),

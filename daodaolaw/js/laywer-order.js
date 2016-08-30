@@ -122,10 +122,11 @@ var UnsolvedList=React.createClass({
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
 			list=orderInfo.map(function(dom){
+        var status=['抢答','定向咨询','追问'][dom.status];
 				return  <div className="laywer-order-list">
 									<p className="over-hidden">
 										<span className="pull-left">订单号: {dom.orderId}</span>
-										<span className="pull-right status" onTouchEnd={this.toAnswer.bind(this,dom.orderId)}>抢答</span>
+										<span className="pull-right status" onTouchEnd={this.toAnswer.bind(this,dom.orderId)}>{status}</span>
 									</p>
 									<p>{dom.content}</p>
 									<p className="over-hidden">

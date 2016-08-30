@@ -601,8 +601,9 @@ type LawyerOrderListResponse struct {
 }
 
 type LawOrder struct {
-	OrderId   string `json:"orderId"`
-	Status    string `json:"status"`
+	OrderId string `json:"orderId"`
+	Status  string `json:"status"`
+	//status: //0 代表抢答（直接提问的） 1代表指定提问  2代表追问
 	Content   string `json:"content"`
 	Type      string `json:"type"`
 	Time      string `json:"time"`
@@ -779,6 +780,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		single.Content = k.Description
 		single.Type = k.Category
 		single.Time = k.CreateTime[0:10]
+
 		var flag bool
 		if k.IsSolved == "2" {
 			flag = true
@@ -791,6 +793,19 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 
 		single.Answer = k.VoicePath
 		single.IsPlay = true
+		var status string
+		//status: //0 代表抢答（直接提问的） 1代表指定提问  2代表追问
+
+		if k.QType == "1" {
+			//追加
+			status = "2"
+		} else if k.QType == "2" {
+			//指定
+			status = "1"
+		} else {
+			status = "0"
+		}
+		single.Status = status
 		/**
 			OrderId string `json:"orderId"`
 		Status string `json:"status"`

@@ -147,13 +147,18 @@ func GetUserString(openId, accessToken string) string {
 	url := "https://api.weixin.qq.com/sns/userinfo?access_token=" + accessToken + "&openid=" + openId + "&lang=zh_CN"
 	res, err := http.Get(url)
 	if err != nil {
+		fmt.Println("=========150errs")
 		fmt.Println(err.Error())
 	}
 	resBody, _ := ioutil.ReadAll(res.Body)
+	fmt.Println("===============================23333====")
 	fmt.Println(string(resBody))
+	fmt.Println("===============================223333====")
 
 	defer res.Body.Close()
+	fmt.Println("===============================111122====")
 	fmt.Println(string(resBody))
+	fmt.Println("===============================111122====")
 	return string(resBody)
 }
 
@@ -188,7 +193,9 @@ func GetUserTest(ctx *macaron.Context) string {
 		str = GetUserString(res1.OpenId, res1.AccessToken)
 
 	}
+	fmt.Println("===================================")
 	fmt.Println(str)
+	fmt.Println("===================================")
 	userInfo := new(UserInfo)
 	errs := json.Unmarshal([]byte(str), userInfo)
 	if errs != nil {

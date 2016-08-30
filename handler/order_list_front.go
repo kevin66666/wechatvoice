@@ -1094,7 +1094,7 @@ func DeleteOrderInfo(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
-		response.Code = CODE_ERROR
+		response.Code = CODE_SUCCESS
 		response.Msg = "ok"
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)

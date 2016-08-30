@@ -116,7 +116,7 @@ func GetAllInfo(ctx *macaron.Context) {
 type UserInfo struct {
 	OpenId     string   `json:"openId"`
 	NickName   string   `json:"nickName"`
-	Sex        string   `json:"sex"`
+	Sex        int64    `json:"sex"`
 	Province   string   `json:"province"`
 	City       string   `json:"city"`
 	Country    string   `json:"country"`

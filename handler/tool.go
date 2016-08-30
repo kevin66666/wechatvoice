@@ -542,7 +542,7 @@ func SendRedPacket(red *RedPackages) (int64, string) {
 	}
 	r := result{}
 	errs := xml.Unmarshal(body, &r)
-	fmt.Println(errs.Error())
+	//fmt.Println(errs.Error())
 	//fmt.Println(r)
 	var success int64
 	fmt.Println("=======")

@@ -876,7 +876,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 
 	orderInfo.IsRanked = "1"
 	//var star string
-	number := strconv.FormatInt(req.Number, 10)
+	number := strconv.FormatInt(req.Number, 64)
 	fmt.Println("=====asdasdasdasd", number)
 	orderInfo.RankInfo = number
 	updateErr := orderInfo.GetConn().Save(&orderInfo).Error

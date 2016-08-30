@@ -849,6 +849,12 @@ type MemberOrder struct {
 	LawyerId  string `json:"laywerId"`
 	IsPlay    bool   `json:"isPlay"`
 	CanDelete bool   `json:"canDelete"`
+	// AddInfo []AddInfo1 `json:"addInfo"`
+}
+type AddInfo1 struct {
+	OrderId  string `json:"orderId"`
+	Question string `json:"question"`
+	Answer   string `json:"answer"`
 }
 
 func GetMemberOrderList(ctx *macaron.Context) string {

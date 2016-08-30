@@ -3187,21 +3187,55 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	orderList, listErr := model.GetChildAnsers(req.OrderId)
-	if listErr != nil && !strings.Contains(listErr.Error(), RNF) {
+	// orderList, listErr := model.GetChildAnsers(req.OrderId)
+	// if listErr != nil && !strings.Contains(listErr.Error(), RNF) {
+	// 	response.Code = CODE_ERROR
+	// 	response.Msg = listErr.Error()
+	// 	ret_str, _ := json.Marshal(response)
+	// 	return string(ret_str)
+	// }
+
+	orderFirst := new(model.WechatVoiceQuestions)
+	orderFirstErr := orderFirst.GetConn().Where("parent_question_id = ?", req.OrderId).Find(&orderFirst).Error
+	if orderFirstErr != nil && !strings.Contains(orderFirstErr.Error(), RNF) {
 		response.Code = CODE_ERROR
-		response.Msg = listErr.Error()
+		response.Msg = orderFirstErr.Error()
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
+	orderSecond := new(model.WechatVoiceQuestions)
+	orderSecondErr := orderSecond.GetConn().Where("parent_question_id = ?", orderFirst.Uuid).Find(&orderSecond).Error
+	if orderSecondErr != nil && !strings.Contains(orderSecondErr.Error(), RNF) {
+		response.Code = CODE_ERROR
+		response.Msg = orderSecondErr.Error()
+		ret_str, _ := json.Marshal(response)
+		return string(ret_str)
+	}
+
 	list := make([]AddInfo, 0)
-	if len(orderList) > 0 {
-		for _, k := range orderList {
-			single := new(AddInfo)
-			single.OrderId = k.Uuid
-			single.Question = k.Description
-			single.Answer = k.VoicePath
-			list = append(list, *single)
+	// if len(orderList) > 0 {
+	// 	for _, k := range orderList {
+	// 		single := new(AddInfo)
+	// 		single.OrderId = k.Uuid
+	// 		single.Question = k.Description
+	// 		single.Answer = k.VoicePath
+	// 		list = append(list, *single)
+	// 	}
+	// }
+
+	if orderFirst.Uuid != "" {
+		//说明有追加问题
+		single1 := new(AddInfo)
+		single1.OrderId = orderFirst.Uuid
+		single1.Question = orderFirst.Description
+		single1.Answer = orderFirst.VoicePath
+		list = append(list, *single1)
+		if orderSecond.Uuid != "" {
+			single2 := new(AddInfo)
+			single2.OrderId = orderSecond.Uuid
+			single2.Question = orderSecond.Description
+			single2.Answer = orderSecond.VoicePath
+			list = append(list, *single2)
 		}
 	}
 	response.Code = CODE_SUCCESS
@@ -3227,7 +3261,7 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 	rank := orderInfo.RankInfo
 	rankInt, _ := strconv.ParseInt(rank, 10, 64)
 	response.Star = rankInt
-	add := strconv.FormatInt(int64(len(orderList)), 10)
+	add := strconv.FormatInt(int64(len(list)), 10)
 	response.AddNum = add
 	response.IsShow = false
 	response.IsPay = true

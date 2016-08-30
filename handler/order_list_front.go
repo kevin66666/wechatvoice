@@ -815,7 +815,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 
 type EvaluateAnswers struct {
 	OrderId string `json:"orderId"`
-	Number  int64  `json:"start"`
+	Number  int64  `json:"star"`
 }
 
 type RedpacketResponse struct {
@@ -876,7 +876,8 @@ func EvalAnswers(ctx *macaron.Context) string {
 
 	orderInfo.IsRanked = "1"
 	//var star string
-	number := strconv.FormatInt(req.Number, 64)
+	number := strconv.FormatInt(req.Number, 10)
+	// strconv.FormatInt(i, base)
 	fmt.Println("=====asdasdasdasd", number)
 	orderInfo.RankInfo = number
 	updateErr := orderInfo.GetConn().Save(&orderInfo).Error

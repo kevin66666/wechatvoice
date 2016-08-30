@@ -2791,7 +2791,7 @@ func GetOrderInfoById(ctx *macaron.Context) string {
 }
 
 type SpecialQuestionsReq struct {
-	LaywerId      string `json:"lawerId"`
+	LaywerId      string `json:"laywerId"`
 	TypeId        string `json:"typeId"`
 	TypePrice     string `json:"typePrice"`
 	Content       string `json:"content"`

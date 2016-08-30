@@ -815,7 +815,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 
 type EvaluateAnswers struct {
 	OrderId string `json:"orderId"`
-	Number  string `json:"start"`
+	Number  int64  `json:"start"`
 }
 
 type RedpacketResponse struct {

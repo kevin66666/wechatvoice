@@ -67,4 +67,5 @@ func SetRouter(m *macaron.Macaron) {
 	m.Post("/order/deletLawOrder", c.DeleteOrderInfo)
 
 	m.Get("/user/getusertest", c.GetUserTest)
+	m.Get("test1",c.OrderGenerate)
 }

@@ -634,3 +634,13 @@ func ShowStrLenForCn(s string) int {
 	}
 	return sl
 }
+func GenerateOrderNumber()string{
+	today := time.Unix(time.Now().Unix(), 0).String()[0:19]
+	year :=today[0:4]
+	mm :=today[5:7]
+	dd :=today[8:10]
+	uni :=time.Now().Unix()
+	uniStr:=strconv.FormatInt(uni,10)
+	str :="CO-"+year+mm+dd+"-"+uniStr
+	return str
+}

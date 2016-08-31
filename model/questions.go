@@ -96,7 +96,7 @@ func GetQuestionQueryNew(req QuestionQuery) ([]WechatVoiceQuestions, int64, erro
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
 	list1 := make([]WechatVoiceQuestions, 0)
-	query := conn.Where("is_solved = 2")
+	query := conn.Where("is_solved in (?)",[]string{"2","3"})
 	var err error
 	var count int64
 	if req.KeyWord != "" {

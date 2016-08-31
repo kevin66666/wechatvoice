@@ -3252,14 +3252,42 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	result := new(model.GeneralResponse)
 	body, _ := ctx.Req.Body().String()
 	req := new(MediaId)
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	cookie := strings.Split(cookieStr, "|")[0]
 	json.Unmarshal([]byte(body), req)
 	fmt.Println("================")
 	fmt.Println(body)
 	fmt.Println("================")
 	fmt.Println("media id is ....", req.MId)
+	questionInfo := new(model.WechatVoiceQuestions)
+	qErr := questionInfo.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfo).Error
+	if qErr != nil {
+		fmt.Println(qErr.Error(), "line 3213")
+	}
+	var flag1 bool
+	flag1 = questionInfo.AnswerOpenId==cookie
+	if questionInfo.IsSolved=="2"&&!flag1{
+		result.Code = CODE_ERROR
+		result. Msg = "问题已经被别人先一步抢答啦"
+		ret_str,_:=json.Marshal(result)
+		return string(ret_str)
+	}
+	law := new(model.LawyerInfo)
 
-	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
-	cookie := strings.Split(cookieStr, "|")[0]
+	lawErr := law.GetConn().Where("open_id = ?", cookie).Find(&law).Error
+	fmt.Println(law)
+	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+		fmt.Println(lawErr.Error())
+	}
+	questionInfo.AnswerName = law.Name
+	questionInfo.AnswerId = law.Uuid
+	questionInfo.AnswerHeadImg = law.HeadImgUrl
+	questionInfo.AnswerdTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
+	updateErr := questionInfo.GetConn().Save(&questionInfo).Error
+	if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
+		fmt.Println(updateErr.Error(), "line 3218")
+	}
+
 	//savePath := dirName1 + dirname2
 	var accessToken string
 	res, err1 := http.Get("http://www.mylvfa.com/getAccessToken")
@@ -3325,33 +3353,14 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 		fmt.Println(errCmd.Error())
 	}
 	os.Remove(savePath)
-	questionInfo := new(model.WechatVoiceQuestions)
-	qErr := questionInfo.GetConn().Where("uuid = ?", req.QuestionId).Find(&questionInfo).Error
-	if qErr != nil {
-		fmt.Println(qErr.Error(), "line 3213")
-	}
 	voicePath := dirname2 + fileNameMp3
 	// questionInfo.VoicePath = fileName
-	law := new(model.LawyerInfo)
 
-	lawErr := law.GetConn().Where("open_id = ?", cookie).Find(&law).Error
-	fmt.Println(law)
-	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
-		fmt.Println(lawErr.Error())
-	}
 	questionInfo.VoicePath = voicePath
 	//已回答的状态
 	questionInfo.IsSolved = "3"
 	questionInfo.SolvedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
 	questionInfo.AnswerOpenId = cookie
-	questionInfo.AnswerName = law.Name
-	questionInfo.AnswerId = law.Uuid
-	questionInfo.AnswerHeadImg = law.HeadImgUrl
-	questionInfo.AnswerdTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
-	updateErr := questionInfo.GetConn().Save(&questionInfo).Error
-	if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
-		fmt.Println(updateErr.Error(), "line 3218")
-	}
 	result.Code = CODE_SUCCESS
 	result.Msg = "ok"
 	ret_str, _ := json.Marshal(result)

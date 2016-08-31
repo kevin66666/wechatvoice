@@ -1306,3 +1306,6 @@ func EvalAnswersTest(ctx *macaron.Context) {
 
 	// return string(ret_str)
 }
+func OrderGenerate(ctx *macaron.Context)string{
+	return GenerateOrderNumber()
+}

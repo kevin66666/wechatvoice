@@ -895,104 +895,221 @@ func EvalAnswers(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-
-	//给律师发红包
 	a := amountF * lp
 	astr := strconv.FormatFloat(a, 'f', 2, 64)
-	reds := new(RedPackages)
-	reds.Act_name = "发送红包"
-	reds.Client_ip = "127.0.0.1"
-	reds.Remark = "订单已完成"
-	reds.Re_openid = orderInfo.AnswerOpenId
-	reds.Nick_name = "叨叨律法"
-	reds.SendNickName = "叨叨律法"
-	reds.Wishing = "您回答的问题已经完成"
-	reds.Amount = int64(160)
-	reds.MpId = MPID
-	fmt.Println(reds)
-	suc, strsuc := SendRedPacket(reds)
-	fmt.Println("====================asdasdasdasdasdasdadsasdads")
-	fmt.Println("===========================", suc, strsuc)
-	fmt.Println("====================asdasdasdasdasdasdadsasdads")
-	//记录律师信息
-	law := new(model.LawyerInfo)
-	lawErr := law.GetConn().Where("uuid = ?", orderInfo.AnswerId).Find(&law).Error
-	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
-		fmt.Println(lawErr.Error())
-	}
-	switch number {
-	case "1":
-		law.RankFirst = law.RankFirst + 1
-	case "2":
-		law.RankSecond = law.RankSecond + 1
-	case "3":
-		law.RankThird = law.RankThird + 1
-	case "4":
-		law.RankFouth = law.RankFouth + 1
-	case "5":
-		law.RankLast = law.RankLast + 1
-	}
-	lawErr = law.GetConn().Save(&law).Error
-	if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
-		fmt.Println(lawErr)
-	}
-	//记录钱的信息
-	pay := new(model.OrderPaymentInfo)
-	pay.GetConn().Where("order_number = ?", req.OrderId).Where("open_id = ?", openId).Where("is_first = 1").Find(&pay)
-	payment := new(model.WechatVoicePaymentInfo)
-	payment.Uuid = util.GenerateUuid()
-	payment.SwiftNumber = pay.WeixinSwiftNumber
-	payment.MemberId = orderInfo.CustomerId
-	payment.OpenId = openId
-	payment.RedPacketAmount = redStr
-	payment.LawyerAmount = astr
-	payment.OrderId = req.OrderId
-	errPay := payment.GetConn().Create(&payment).Error
-	if errPay != nil {
-		fmt.Println(errPay)
-	}
-	// payment.SwiftNumber = orderInfo.
+	//给律师发红包
+	//如果评分大于2 那么 看问题类型 发红包 给红包
+	//如果小于2 那么直接返回来
+	if req.Number>2 {
+		//大于2分
+		if orderInfo.QType != "1" {
 
-	//保存orderInfo
-	orderInfo.IsRanked = "1"
-	orderInfo.IsSolved = "2"
-	//star := req.Number
-	//orderInfo.RankInfo = star
-	orderUpdateErr := orderInfo.GetConn().Save(&orderInfo).Error
-	if orderUpdateErr != nil && !strings.Contains(orderUpdateErr.Error(), RNF) {
-		response.Code = CODE_ERROR
-		response.Msg = orderUpdateErr.Error()
-		ret_str, _ := json.Marshal(response)
+			reds := new(RedPackages)
+			reds.Act_name = "发送红包"
+			reds.Client_ip = "127.0.0.1"
+			reds.Remark = "订单已完成"
+			reds.Re_openid = orderInfo.AnswerOpenId
+			reds.Nick_name = "叨叨律法"
+			reds.SendNickName = "叨叨律法"
+			reds.Wishing = "您回答问题" + orderInfo.OrderNumber + "已完成，得到1.6元红包"
+			reds.Amount = int64(160)
+			reds.MpId = MPID
+			fmt.Println(reds)
+			suc, strsuc := SendRedPacket(reds)
+			fmt.Println("====================asdasdasdasdasdasdadsasdads")
+			fmt.Println("===========================", suc, strsuc)
+			fmt.Println("====================asdasdasdasdasdasdadsasdads")
+			redsss := rand.Int63n(20)
+			redsssStr := strconv.FormatInt(redsss, 10)
+			redFfff, _ := strconv.ParseFloat(redsssStr, 64)
+			user := new(model.MemberInfo)
+			userErr := user.GetConn().Where("open_id = ?", openId).Find(&user).Error
+			if userErr != nil && !strings.Contains(userErr.Error(), RNF) {
+				fmt.Println(userErr.Error(), "红包获取用户出错")
+			}
+			balance := user.Balance
+			balaF, _ := strconv.ParseFloat(balance, 64)
+
+			redA := redFfff / float64(100)
+			balanceNew := balaF + redA
+			balanStr := strconv.FormatFloat(balanceNew, 'f', 2, 64)
+			redAsTR := strconv.FormatFloat(redA, 'f', 2, 64)
+
+			user.Balance = balanStr
+			updaUserErr := user.GetConn().Save(&user).Error
+			if updaUserErr != nil && !strings.Contains(updaUserErr.Error(), RNF) {
+				fmt.Println("=======更新出错 user ")
+			}
+			//记录律师信息
+			law := new(model.LawyerInfo)
+			lawErr := law.GetConn().Where("uuid = ?", orderInfo.AnswerId).Find(&law).Error
+			if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+				fmt.Println(lawErr.Error())
+			}
+			switch number {
+			case "1":
+				law.RankFirst = law.RankFirst + 1
+			case "2":
+				law.RankSecond = law.RankSecond + 1
+			case "3":
+				law.RankThird = law.RankThird + 1
+			case "4":
+				law.RankFouth = law.RankFouth + 1
+			case "5":
+				law.RankLast = law.RankLast + 1
+			}
+			lawErr = law.GetConn().Save(&law).Error
+			if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+				fmt.Println(lawErr)
+			}
+			//记录钱的信息
+			pay := new(model.OrderPaymentInfo)
+			pay.GetConn().Where("order_number = ?", req.OrderId).Where("open_id = ?", openId).Where("is_first = 1").Find(&pay)
+			payment := new(model.WechatVoicePaymentInfo)
+			payment.Uuid = util.GenerateUuid()
+			payment.SwiftNumber = pay.WeixinSwiftNumber
+			payment.MemberId = orderInfo.CustomerId
+			payment.OpenId = openId
+			payment.RedPacketAmount = redStr
+			payment.LawyerAmount = astr
+			payment.OrderId = req.OrderId
+			errPay := payment.GetConn().Create(&payment).Error
+			if errPay != nil {
+				fmt.Println(errPay)
+			}
+
+			response.Code = CODE_SUCCESS
+			response.Msg = "ok"
+			fmt.Println(redStr)
+			response.RedPacket = redAsTR
+			ret_str, _ := json.Marshal(response)
+
+			return string(ret_str)
+
+		}else{
+			//保存orderInfo
+			orderInfo.IsRanked = "1"
+			orderInfo.IsSolved = "2"
+			//star := req.Number
+			//orderInfo.RankInfo = star
+			orderUpdateErr := orderInfo.GetConn().Save(&orderInfo).Error
+			if orderUpdateErr != nil && !strings.Contains(orderUpdateErr.Error(), RNF) {
+				response.Code = CODE_ERROR
+				response.Msg = orderUpdateErr.Error()
+				ret_str, _ := json.Marshal(response)
+				return string(ret_str)
+			}
+			//记录律师信息
+			law := new(model.LawyerInfo)
+			lawErr := law.GetConn().Where("uuid = ?", orderInfo.AnswerId).Find(&law).Error
+			if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+				fmt.Println(lawErr.Error())
+			}
+			switch number {
+			case "1":
+				law.RankFirst = law.RankFirst + 1
+			case "2":
+				law.RankSecond = law.RankSecond + 1
+			case "3":
+				law.RankThird = law.RankThird + 1
+			case "4":
+				law.RankFouth = law.RankFouth + 1
+			case "5":
+				law.RankLast = law.RankLast + 1
+			}
+			lawErr = law.GetConn().Save(&law).Error
+			if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+				fmt.Println(lawErr)
+			}
+			response.Code = CODE_SUCCESS
+			response.Msg = MSG_SUCCESS
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+
+	}else{
+		//小于2 走后台呗
+		orderInfo.IsRanked = "1"
+		orderInfo.IsSolved = "2"
+		orderInfo.IsSendToBack = "1"
+		//star := req.Number
+		//orderInfo.RankInfo = star
+		//记录律师信息
+		law := new(model.LawyerInfo)
+		lawErr := law.GetConn().Where("uuid = ?", orderInfo.AnswerId).Find(&law).Error
+		if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+			fmt.Println(lawErr.Error())
+		}
+		switch number {
+		case "1":
+			law.RankFirst = law.RankFirst + 1
+		case "2":
+			law.RankSecond = law.RankSecond + 1
+		case "3":
+			law.RankThird = law.RankThird + 1
+		case "4":
+			law.RankFouth = law.RankFouth + 1
+		case "5":
+			law.RankLast = law.RankLast + 1
+		}
+		lawErr = law.GetConn().Save(&law).Error
+		if lawErr != nil && !strings.Contains(lawErr.Error(), RNF) {
+			fmt.Println(lawErr)
+		}
+		orderUpdateErr := orderInfo.GetConn().Save(&orderInfo).Error
+		if orderUpdateErr != nil && !strings.Contains(orderUpdateErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = orderUpdateErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		response.Code = CODE_SUCCESS
+		response.Msg = MSG_SUCCESS
+		ret_str,_:=json.Marshal(response)
 		return string(ret_str)
 	}
-	redsss := rand.Int63n(20)
-	redsssStr := strconv.FormatInt(redsss, 10)
-	redFfff, _ := strconv.ParseFloat(redsssStr, 64)
-	user := new(model.MemberInfo)
-	userErr := user.GetConn().Where("open_id = ?", openId).Find(&user).Error
-	if userErr != nil && !strings.Contains(userErr.Error(), RNF) {
-		fmt.Println(userErr.Error(), "红包获取用户出错")
-	}
-	balance := user.Balance
-	balaF, _ := strconv.ParseFloat(balance, 64)
 
-	redA := redFfff / float64(100)
-	balanceNew := balaF + redA
-	balanStr := strconv.FormatFloat(balanceNew, 'f', 2, 64)
-	redAsTR := strconv.FormatFloat(redA, 'f', 2, 64)
-
-	user.Balance = balanStr
-	updaUserErr := user.GetConn().Save(&user).Error
-	if updaUserErr != nil && !strings.Contains(updaUserErr.Error(), RNF) {
-		fmt.Println("=======更新出错 user ")
-	}
-	response.Code = CODE_SUCCESS
-	response.Msg = "ok"
-	fmt.Println(redStr)
-	response.RedPacket = redAsTR
-	ret_str, _ := json.Marshal(response)
-
-	return string(ret_str)
+	//
+	////保存orderInfo
+	//orderInfo.IsRanked = "1"
+	//orderInfo.IsSolved = "2"
+	////star := req.Number
+	////orderInfo.RankInfo = star
+	//orderUpdateErr := orderInfo.GetConn().Save(&orderInfo).Error
+	//if orderUpdateErr != nil && !strings.Contains(orderUpdateErr.Error(), RNF) {
+	//	response.Code = CODE_ERROR
+	//	response.Msg = orderUpdateErr.Error()
+	//	ret_str, _ := json.Marshal(response)
+	//	return string(ret_str)
+	//}
+	//redsss := rand.Int63n(20)
+	//redsssStr := strconv.FormatInt(redsss, 10)
+	//redFfff, _ := strconv.ParseFloat(redsssStr, 64)
+	//user := new(model.MemberInfo)
+	//userErr := user.GetConn().Where("open_id = ?", openId).Find(&user).Error
+	//if userErr != nil && !strings.Contains(userErr.Error(), RNF) {
+	//	fmt.Println(userErr.Error(), "红包获取用户出错")
+	//}
+	//balance := user.Balance
+	//balaF, _ := strconv.ParseFloat(balance, 64)
+	//
+	//redA := redFfff / float64(100)
+	//balanceNew := balaF + redA
+	//balanStr := strconv.FormatFloat(balanceNew, 'f', 2, 64)
+	//redAsTR := strconv.FormatFloat(redA, 'f', 2, 64)
+	//
+	//user.Balance = balanStr
+	//updaUserErr := user.GetConn().Save(&user).Error
+	//if updaUserErr != nil && !strings.Contains(updaUserErr.Error(), RNF) {
+	//	fmt.Println("=======更新出错 user ")
+	//}
+	//response.Code = CODE_SUCCESS
+	//response.Msg = "ok"
+	//fmt.Println(redStr)
+	//response.RedPacket = redAsTR
+	//ret_str, _ := json.Marshal(response)
+	//
+	//return string(ret_str)
 }
 
 type QuestionId struct {

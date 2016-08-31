@@ -959,9 +959,31 @@ func EvalAnswers(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
+	redsss := rand.Int63n(20)
+	redsssStr := strconv.FormatInt(redsss, 10)
+	redFfff, _ := strconv.ParseFloat(redsssStr, 64)
+	user := new(model.MemberInfo)
+	userErr := user.GetConn().Where("open_id = ?", openId).Find(&user).Error
+	if userErr != nil && !strings.Contains(userErr.Error(), RNF) {
+		fmt.Println(userErr.Error(), "红包获取用户出错")
+	}
+	balance := user.Balance
+	balaF, _ := strconv.ParseFloat(balance, 64)
+
+	redA := redFfff / float64(100)
+	balanceNew := balaF + redA
+	balanStr := strconv.FormatFloat(balanceNew, 'f', 2, 64)
+	redAsTR := strconv.FormatFloat(redA, 'f', 2, 64)
+
+	user.Balance = balanStr
+	updaUserErr := user.GetConn().Save(&user).Error
+	if updaUserErr != nil && !strings.Contains(updaUserErr.Error(), RNF) {
+		fmt.Println("=======更新出错 user ")
+	}
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"
-	response.RedPacket = redStr
+	fmt.Println(redStr)
+	response.RedPacket = redAsTR
 	ret_str, _ := json.Marshal(response)
 
 	return string(ret_str)

@@ -535,7 +535,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	fmt.Println(timeStamp)
 	tStr := strconv.FormatInt(timeStamp, 10)
 
-	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
+	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "200", tStr)
 	if signErr != nil {
 		fmt.Println(signErr.Error())
 		response.Code = CODE_ERROR
@@ -2590,7 +2590,7 @@ func PayPeekAnswer(ctx *macaron.Context) string {
 	payF = payF / 100
 	payFs := strconv.FormatFloat(payF, 'f', 2, 64)
 	fmt.Println(payFs)
-	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
+	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "100", tStr)
 	fmt.Println(sings)
 	if signErr != nil {
 		fmt.Println(signErr.Error())
@@ -2896,7 +2896,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		timeStamp := time.Now().Unix()
 		fmt.Println(timeStamp)
 		tStr := strconv.FormatInt(timeStamp, 10)
-		sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
+		sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "200", tStr)
 		if signErr != nil {
 			fmt.Println(signErr.Error())
 			response.Code = CODE_ERROR

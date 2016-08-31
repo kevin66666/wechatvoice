@@ -21,7 +21,7 @@ import (
 //0 创建 1 锁定 2 完成 3
 func init() {
 	c := cron.New()
-	c.AddFunc("@every 1m", func() { UpdateAllQuestions() })
+	c.AddFunc("@every 5m", func() { UpdateAllQuestions() })
 	c.Start()
 }
 
@@ -48,7 +48,7 @@ func UpdateInfo(info model.WechatVoiceQuestions) {
 	fmt.Println(b4)
 	fmt.Println(a)
 	fmt.Println(times)
-	if times > 10 {
+	if times > 5 {
 		info.IsLocked = "0"
 		info.LockTime = 0
 		err := info.GetConn().Update(&info).Error
@@ -430,6 +430,7 @@ type LawOrder struct {
 	Answer    string `json:"answer"`
 	IsPlay    bool   `json:"isPlay"`
 	CanDelete bool   `json:"canDelete"`
+	QuestionType string `json:"questionType"`
 }
 
 func GetLayerOrderList(ctx *macaron.Context) string {
@@ -571,7 +572,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
-
+		
 		fmt.Println("-===asdasdasd")
 		fmt.Println(aList)
 		fmt.Println("asdasdasdasd")
@@ -612,19 +613,24 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 
 		single.Answer = k.VoicePath
 		single.IsPlay = true
+
 		var status string
 		//status: //0 代表抢答（直接提问的） 1代表指定提问  2代表追问
-
+		var qType string
 		if k.QType == "1" {
 			//追加
 			status = "2"
+			qType = "2"
 		} else if k.QType == "2" {
 			//指定
 			status = "1"
+			qType = "1"
 		} else {
 			status = "0"
+			qType = "0"
 		}
 		single.Status = status
+		single.QuestionType = qType
 		/**
 			OrderId string `json:"orderId"`
 		Status string `json:"status"`

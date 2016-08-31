@@ -2999,6 +2999,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		question.OrderNumber = orderNumber
 		question.PaymentInfoInt = payInt
 		question.Important = "1"
+		question.IsPaied = "1"
 		question.ParentQuestionId = req.OrderId
 		question.AnswerOpenId = oldQ.AnswerOpenId
 		createErr := question.GetConn().Create(&question).Error

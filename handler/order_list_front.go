@@ -572,7 +572,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
-		
+
 		fmt.Println("-===asdasdasd")
 		fmt.Println(aList)
 		fmt.Println("asdasdasdasd")

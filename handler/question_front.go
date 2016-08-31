@@ -49,6 +49,7 @@ const (
 	AFTER_PAY_JUMP_PAGE_FAILD   = "payFailed.html?"
 	AFTER_PAY_JUMP_PAGE_SUCCESS = "paySuccess.html?"
 	MPID                        = "gh_2ee59b178d66"
+	MONEY = "200"
 
 	WECHAT_PREPAY_URL = "/wechatvoice/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
 )
@@ -480,7 +481,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	}
 	fmt.Println("here.....")
 
-	orderNumber := util.GenerateOrderNumber()
+	orderNumber := GenerateOrderNumber()
 	question := new(model.WechatVoiceQuestions)
 	uuid := util.GenerateUuid()
 	question.Uuid = uuid
@@ -535,7 +536,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	fmt.Println(timeStamp)
 	tStr := strconv.FormatInt(timeStamp, 10)
 
-	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "200", tStr)
+	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, MONEY, tStr)
 	if signErr != nil {
 		fmt.Println(signErr.Error())
 		response.Code = CODE_ERROR
@@ -679,7 +680,7 @@ func CreateNewSpecialQuestion(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 
-	orderNumber := util.GenerateOrderNumber()
+	orderNumber :=GenerateOrderNumber()
 	question := new(model.WechatVoiceQuestions)
 	question.Uuid = util.GenerateUuid()
 	question.CategoryId = req.CateId
@@ -1013,7 +1014,7 @@ func AppendQuestion(ctx *macaron.Context) string {
 	questionNew.Important = "1"
 	questionNew.QuestionType = "1"
 	questionNew.ParentQuestionId = req.QuestionId
-	on := util.GenerateOrderNumber()
+	on := GenerateOrderNumber()
 	questionNew.OrderNumber = on
 	questNewErr := questionNew.GetConn().Create(&questionNew).Error
 
@@ -2574,7 +2575,7 @@ func PayPeekAnswer(ctx *macaron.Context) string {
 	fmt.Println(timeStamp)
 	tStr := strconv.FormatInt(timeStamp, 10)
 
-	orderNumber := util.GenerateOrderNumber()
+	orderNumber := GenerateOrderNumber()
 	orderInfo := new(model.WechatVoiceQuestions)
 	orderInfoErr := orderInfo.GetConn().Where("order_number = ?", req.OrderId).Find(&orderInfo).Error
 
@@ -2846,7 +2847,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 	fmt.Println("here.....1")
 	if req.OrderId == "-1" {
 		uuid := util.GenerateUuid()
-		orderNumber := util.GenerateOrderNumber()
+		orderNumber := GenerateOrderNumber()
 
 		question.Uuid = uuid
 		question.CategoryId = cateId
@@ -2896,7 +2897,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		timeStamp := time.Now().Unix()
 		fmt.Println(timeStamp)
 		tStr := strconv.FormatInt(timeStamp, 10)
-		sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "200", tStr)
+		sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, MONEY, tStr)
 		if signErr != nil {
 			fmt.Println(signErr.Error())
 			response.Code = CODE_ERROR
@@ -2959,7 +2960,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 	} else {
 		//追加
 		uuid := util.GenerateUuid()
-		orderNumber := util.GenerateOrderNumber()
+		orderNumber := GenerateOrderNumber()
 		question := new(model.WechatVoiceQuestions)
 		question.Uuid = uuid
 		question.CategoryId = cateId

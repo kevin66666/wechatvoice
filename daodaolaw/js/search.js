@@ -199,7 +199,7 @@ var EverySearch=React.createClass({
 				dataType:'json',
 				success:function(data){
 					if(data.code===10000){
-						vat _this=this
+						var _this=this
 						WeixinJSBridge.invoke(
                		'getBrandWCPayRequest', {
                      "appId": data.appId,     //公众号名称，由商户传入

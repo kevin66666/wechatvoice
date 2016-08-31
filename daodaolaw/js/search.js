@@ -199,7 +199,7 @@ var EverySearch=React.createClass({
 				dataType:'json',
 				success:function(data){
 					if(data.code===10000){
-						this.props.resetList(index)
+						vat _this=this
 						WeixinJSBridge.invoke(
                		'getBrandWCPayRequest', {
                      "appId": data.appId,     //公众号名称，由商户传入
@@ -211,6 +211,7 @@ var EverySearch=React.createClass({
                 },
                 function(res){
                   if(res.err_msg == "get_brand_wcpay_request:ok" ) {     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+										_this.props.resetList(index)
                     location.href = 'order-detail.html?orderId='+data.orderId
                   }else if(res.err_msg == "get_brand_wcpay_request:cancel"){
                     // location.href = "pay-fail.html?r=1&orderId="+data.orderId
@@ -276,7 +277,7 @@ var EverySearch=React.createClass({
 			    <p>{info.question}</p>
 			    <p className="over-hidden">
 			    	<span className="pull-left">{info.typeName}&nbsp;|&nbsp;{info.name}律师&nbsp;|&nbsp;{info.selfIntr}</span>
-			    	<span className="pull-right margin-md-t">{star}</span>
+			    	<span className="pull-right">{star}</span>
 			    </p>
 				  <p className="pull-left"><a href={url}><img src={info.pic}/></a></p>
 			    <p className="voice pull-left">
@@ -284,7 +285,7 @@ var EverySearch=React.createClass({
 				    <span className="price" onTouchEnd={this.pay.bind(this,info,index)}>{text}</span>
 				    <img src="img/xiaoxi.png"/>
 			    </p>
-			    <p className="pull-right">{info.time}</p>
+			    <p className="pull-right margin-t-16 wboll-T6">{info.time}</p>
 			  </div>
 			</div>
 		)
@@ -296,7 +297,7 @@ var Ask=React.createClass({
 			typeId:'',
 			content:'',
 			typeName:'',
-			typePrice:'',
+			typePrice:'2',
 			isShowType:false,
 			allType:[]
 		}

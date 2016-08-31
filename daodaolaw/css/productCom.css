@@ -581,9 +581,10 @@ ul, li {
   border-bottom: 1px solid #eaeaea;
   padding: 12px 5px;
 }
-.quest-list .media p,.quest-list .media span {
+.quest-list .media p {
   font-size: 14px;
 }
+
 .quest-list p {
   margin-bottom: 5px;
 }
@@ -622,7 +623,8 @@ ul, li {
   color: #fff;
 }
 .quest-list .voice .price {
-  padding: 8px 10px 8px 30px;
+  /*padding: 8px 10px 8px 30px;*/
+  font-size: 14px;
 }
 .quest-list .voice>img,.user-order .voice>img,.add-voice>img,.laywer-order-list .voice>img {
   position: absolute;

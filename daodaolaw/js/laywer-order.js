@@ -2,7 +2,10 @@ var getDataMixin={
   getInitialState:function(){
     return {
       orderInfo:[],
-      isAddMore:true
+      isAddMore:true,
+      orderId:'',
+      confirmDispN:'dispN',
+      confirm:false
     }
   },
   req:function(that,url,type){
@@ -51,11 +54,18 @@ var LaywerOrder=React.createClass({
     newData[name]=val
     this.setState(newData)
   },
+  tips:function(text){
+    this.changeLoad('load',true)
+    this.changeLoad('tips',text)
+    setTimeout(function(){
+      this.changeLoad('load',false)
+    }.bind(this),2000)
+  },
 	render:function(){
 		return (
 			<div>
 				<OrderNav/>
-				<OrderList changeLoad={this.changeLoad}/>
+				<OrderList changeLoad={this.changeLoad} tips={this.tips}/>
 				<Loading load={this.state.load} tips={this.state.tips}/>
 			</div>
 		)
@@ -75,8 +85,8 @@ var OrderList=React.createClass({
 	render:function(){
 		return (
 			<div className="tab-content">
-				<UnsolvedList changeLoad={this.props.changeLoad}/>
-				<ResolvedList changeLoad={this.props.changeLoad}/>
+				<UnsolvedList tips={this.props.tips}/>
+				<ResolvedList tips={this.props.tips}/>
 			</div>
 		)
 	}
@@ -104,18 +114,11 @@ var UnsolvedList=React.createClass({
   			if(data.code===10000){
   				location.href='answer.html?orderId='+orderId;
   			}else if(data.code===10001){
-  				this.tips('问题已被锁定')
+  				this.props.tips('问题已被锁定')
   			}
   		}.bind(this)
   	})
   },
-  tips:function(text){
-		this.props.changeLoad('load',true)
-    this.props.changeLoad('tips',text)
-    setTimeout(function(){
-      this.props.changeLoad('load',false)
-    }.bind(this),2000)
-	},
 	render:function(){
 		var list=<p className="no-info">没有相关信息</p>
 		var orderInfo=this.state.orderInfo
@@ -174,19 +177,66 @@ var ResolvedList=React.createClass({
     })
     this.setState({orderInfo:newInfo})
   },
+  resetList:function(orderId){
+    var index='';
+    var newInfo=this.state.orderInfo;
+    newInfo.map(function(dom,i){
+      if(dom.orderId===orderId){
+        index=i
+        return 
+      }
+    })
+    newInfo.splice(index,1)
+    this.setState({orderInfo:newInfo})
+  },
+  delet:function(orderId){
+    this.changeDisp('confirmDispN','dispB')
+    this.setState({orderId:orderId})
+  },
+  doDelet:function(){
+    var data={orderId:this.state.orderId}
+    $.ajax({
+      url:'http://www.mylvfa.com/voice/order/deletLawOrder',
+      type:'POST',
+      data:JSON.stringify(data),
+      dataType:'json',
+      contentType: "application/json",
+      success:function(data){
+        if(data.code===10000){
+          this.resetList(this.state.orderId)
+        }else{
+          this.props.tips('删除订单失败')
+        }
+      }.bind(this),
+      error:function(err){
+        console.log('删除订单失败:',err)
+      }
+    })
+  },
+  changeDisp:function(name,val){
+    var newState={}
+    newState[name]=val
+    this.setState(newState)
+  },
+  changeChose:function(status){
+    if(status){
+      this.doDelet()
+    }
+  },
 	render:function(){
 		var list=<p className="no-info">没有相关信息</p>
 		var orderInfo=this.state.orderInfo
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
 			list=orderInfo.map(function(dom){
-				return <PerOrder dom={dom} changePlay={this.changePlay} end={this.end} changeLoad={this.props.changeLoad} getOrderId={this.props.getOrderId} changeEvaluate={this.props.changeEvaluate}/>
+				return <PerOrder dom={dom} changePlay={this.changePlay} end={this.end} delet={this.delet} tips={this.props.tips} changeLoad={this.props.changeLoad} />
 			}.bind(this))
 		}
 		return (
 			<div className="tab-pane resolved">
 				{list}
 				<a href="javascript:void(0)" className="wBtn-showMore clr-gray" onTouchEnd={this.addMore}>{isAddMore}</a>
+        <Confirm changeChose={this.changeChose} changeDisp={this.changeDisp} confirmDispN={this.state.confirmDispN}/>
 			</div>
 		)
 	}
@@ -238,6 +288,7 @@ var PerOrder=React.createClass({
 			  <div className="laywer-order-list">
 					<p className="over-hidden">
 						<span className="pull-left">订单号: {dom.orderId}</span>
+            <span className="pull-right del-order" onTouchEnd={this.props.delet.bind(this,dom.orderId)}>删除</span>
 					</p>
 					<p>{dom.content}</p>
 					<p className="over-hidden">
@@ -256,5 +307,4 @@ var PerOrder=React.createClass({
 	}
 })
 
-var Per
 React.render(<LaywerOrder/>,document.getElementById('laywer-order'))

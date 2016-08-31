@@ -178,7 +178,7 @@ var UnsolvedList=React.createClass({
 				return  <div className="laywer-order-list padding-bottom-20">
 									<p className="over-hidden">
 										<span className="pull-left">订单号: {dom.orderId}</span>
-										<span className="pull-right del-order"  onTouchEnd={this.delet.bind(this,dom.orderId)}>删除</span>
+										<span className="pull-right del-order dispN"  onTouchEnd={this.delet.bind(this,dom.orderId)}>删除</span>
 									</p>
 									<p>详情: {dom.content}</p>
 									<p className="over-hidden">
@@ -349,7 +349,7 @@ var PerOrder=React.createClass({
 			<div className="laywer-order-list user-order">
 				<p className="over-hidden">
 					<span className="pull-left">订单号: {dom.orderId}</span>
-					<span className="pull-right del-order" onTouchEnd={this.props.delet.bind(this,dom.orderId)}>删除</span>
+					<span className="pull-right del-order dispN" onTouchEnd={this.props.delet.bind(this,dom.orderId)}>删除</span>
 				</p>
 				<p>详情: {dom.content}</p>
 				<p className="over-hidden">

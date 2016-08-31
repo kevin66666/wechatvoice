@@ -91,7 +91,7 @@ func GetQuestionQuery(req QuestionQuery) ([]WechatVoiceQuestions, int64, error) 
 	err = query.Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
 	return list, count, err
 }
-func GetQuestionQueryNew(req QuestionQuery, logList []string) ([]WechatVoiceQuestions, int64, error) {
+func GetQuestionQueryNew(req QuestionQuery) ([]WechatVoiceQuestions, int64, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
@@ -107,13 +107,10 @@ func GetQuestionQueryNew(req QuestionQuery, logList []string) ([]WechatVoiceQues
 		query = query.Where("category_id = ?", req.CategoryId)
 	}
 	// query = query.Order("id desc")
-	if len(logList) > 0 {
-		err = query.Not("uuid", logList).Order("id desc").Find(&list1).Count(&count).Error
-		err = query.Not("uuid", logList).Limit(req.EndLine - req.StartLine).Order("id desc").Find(&list).Error
-	} else {
-		err = query.Find(&list1).Count(&count).Error
-		err = query.Order("id desc").Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
-	}
+
+	err = query.Find(&list1).Count(&count).Error
+	err = query.Order("id desc").Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
+
 	// err = query.Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
 	return list, count, err
 }

@@ -48,7 +48,7 @@ var Ask=React.createClass({
 						//修改title
 						$('title').html('追问')
 						var $body = $('body');
-			      document.title = '追问';
+			      document.title = title;
 			      var $iframe = $('<iframe src="/favicon.ico" width="0" height="0"></iframe>').on('load', function() {
 			      setTimeout(function() {
 			        $iframe.off('load').remove()

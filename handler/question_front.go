@@ -235,22 +235,9 @@ func QuestionQuery(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	//用户的逻辑来说 需要将用户删除的订单排除
-	logList, logListErr := model.GetUserDeletedList(openId)
-	if logListErr != nil && !strings.Contains(logListErr.Error(), RNF) {
-		response.Code = CODE_ERROR
-		response.Msg = logListErr.Error()
-		ret_str, _ := json.Marshal(response)
-		return string(ret_str)
-	}
-
-	log.Println(len(logList))
 	logIdList := make([]string, 0)
-	for _, k := range logList {
-		logIdList = append(logIdList, k.OrderId)
-	}
 	log.Println(logIdList)
-	questionList, count, queryErr := model.GetQuestionQueryNew(*req, logIdList) // 这个方法在这备用
+	questionList, count, queryErr := model.GetQuestionQueryNew(*req) // 这个方法在这备用
 	//questionList, count, queryErr := model.GetQuestionQuery(*req)
 	fmt.Println(questionList)
 	if queryErr != nil && !strings.Contains(queryErr.Error(), RNF) {
@@ -3353,7 +3340,8 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 		fmt.Println(lawErr.Error())
 	}
 	questionInfo.VoicePath = voicePath
-	questionInfo.IsSolved = "2"
+	//已回答的状态
+	questionInfo.IsSolved = "3"
 	questionInfo.SolvedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
 	questionInfo.AnswerOpenId = cookie
 	questionInfo.AnswerName = law.Name

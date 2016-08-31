@@ -18,6 +18,7 @@ import (
 	"github.com/robfig/cron"
 )
 
+//0 创建 1 锁定 2 完成 3
 func init() {
 	c := cron.New()
 	c.AddFunc("@every 1m", func() { UpdateAllQuestions() })
@@ -607,7 +608,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		}
 		single.CanDelete = flag
 		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
-		single.Price = price
+		single.Price = 1.6
 
 		single.Answer = k.VoicePath
 		single.IsPlay = true
@@ -875,6 +876,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 	redStr := strconv.FormatFloat(redFr, 'f', 2, 64)
 
 	orderInfo.IsRanked = "1"
+	orderInfo.IsSolved = "2"
 	//var star string
 	number := strconv.FormatInt(req.Number, 10)
 	// strconv.FormatInt(i, base)
@@ -898,12 +900,12 @@ func EvalAnswers(ctx *macaron.Context) string {
 	reds.Re_openid = orderInfo.AnswerOpenId
 	reds.Nick_name = "叨叨律法"
 	reds.SendNickName = orderInfo.AnswerName
-	reds.Wishing = "您的订单已完成"
-	reds.Amount = int64(a)
-	reds.MpId = ""
+	reds.Wishing = "您回答的问题已经完成"
+	reds.Amount = int64(160)
+	reds.MpId = MPID
 	fmt.Println(reds)
-	// suc, strsuc := SendRedPacket(reds)
-	// fmt.Println("===========================", suc, strsuc)
+	suc, strsuc := SendRedPacket(reds)
+	fmt.Println("===========================", suc, strsuc)
 	//记录律师信息
 	law := new(model.LawyerInfo)
 	lawErr := law.GetConn().Where("uuid = ?", orderInfo.AnswerId).Find(&law).Error

@@ -771,7 +771,7 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.Content = k.Description
 		single.TypeId = k.CategoryId
 		single.Type = k.Category
-		single.Time = k.CreateTime[0:10]
+		single.Time = k.CreateTime
 		single.Answer = k.VoicePath
 		single.IsPlay = true
 

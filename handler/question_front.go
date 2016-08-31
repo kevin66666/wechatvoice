@@ -270,13 +270,13 @@ func QuestionQuery(ctx *macaron.Context) string {
 		single.TypeId = k.CategoryId
 		single.TypeName = k.Category
 		single.PeekPay = "1"
-		var times string
-		if k.SolvedTime != "" {
-			times = k.SolvedTime[0:10]
-		} else {
-			times = "2016-08-31"
-		}
-		single.AnswerTime = times
+		//var times string
+		//if k.SolvedTime != "" {
+		//	times = k.SolvedTime[0:10]
+		//} else {
+		//	times = "2016-08-31"
+		//}
+		single.AnswerTime = k.AnswerdTime
 		cateInfo := new(model.WechatVoiceQuestionSettings)
 		cateErr := cateInfo.GetConn().Where("category_id = ?", k.CategoryId).Find(&cateInfo).Error
 		if cateErr != nil && !strings.Contains(cateErr.Error(), RNF) {

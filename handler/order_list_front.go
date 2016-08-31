@@ -899,7 +899,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 	reds.Remark = "订单已完成"
 	reds.Re_openid = orderInfo.AnswerOpenId
 	reds.Nick_name = "叨叨律法"
-	reds.SendNickName = orderInfo.AnswerName
+	reds.SendNickName = "叨叨律法"
 	reds.Wishing = "您回答的问题已经完成"
 	reds.Amount = int64(160)
 	reds.MpId = MPID

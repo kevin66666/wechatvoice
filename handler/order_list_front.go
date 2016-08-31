@@ -426,7 +426,7 @@ type LawOrder struct {
 	Content   string `json:"content"`
 	Type      string `json:"type"`
 	Time      string `json:"time"`
-	Price     int64  `json:"price"`
+	Price     string `json:"price"`
 	Answer    string `json:"answer"`
 	IsPlay    bool   `json:"isPlay"`
 	CanDelete bool   `json:"canDelete"`
@@ -608,7 +608,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		}
 		single.CanDelete = flag
 		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
-		single.Price = 1.6
+		single.Price = "1.6"
 
 		single.Answer = k.VoicePath
 		single.IsPlay = true

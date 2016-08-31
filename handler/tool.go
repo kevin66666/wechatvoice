@@ -429,8 +429,8 @@ func FormatBizQueryParaMap(m map[string]string) string {
 }
 func SendRedPacket(red *RedPackages) (int64, string) {
 	nonceStr := util.GenerateUuid()
-	mchid := ""
-	key := ""
+	mchid := "1344737201"
+	key := "C4CA4238A0B923820DCC509A6F75849B"
 	appid := ""
 	amountStr := strconv.FormatInt(red.Amount, 10)
 	mch_billno := mchid + time.Now().Format("20060102") + strconv.FormatInt(time.Now().Unix(), 10)

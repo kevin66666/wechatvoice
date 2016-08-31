@@ -548,9 +548,10 @@ func SendRedPacket(red *RedPackages) (int64, string) {
 	}
 	//fmt.Println(r)
 	var success int64
-	fmt.Println("=======")
+	//	fmt.Println(r)
+	fmt.Println("=======xxxxxxxxxxxxaaaa")
 	fmt.Println(r)
-	fmt.Println("=======")
+	fmt.Println("=======aaaaaa")
 	if r.Result_Code == "SUCCESS" {
 		success = 1
 	} else {

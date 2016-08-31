@@ -607,7 +607,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 			flag = false
 		}
 		single.CanDelete = flag
-		price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
+		// price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
 		single.Price = "1.6"
 
 		single.Answer = k.VoicePath

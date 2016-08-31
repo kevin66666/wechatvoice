@@ -70,8 +70,8 @@
       <file leaf-file-name="question_front.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handler/question_front.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="338">
-              <caret line="3001" column="37" selection-start-line="3001" selection-start-column="37" selection-end-line="3001" selection-end-column="37" />
+            <state relative-caret-position="266">
+              <caret line="1016" column="33" selection-start-line="1016" selection-start-column="14" selection-end-line="1016" selection-end-column="33" />
               <folding>
                 <element signature="e#1746#2423#0" expanded="false" />
                 <element signature="n#!!block;n#Print#0" expanded="false" />
@@ -752,12 +752,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1472657237488</updated>
-      <workItem from="1472657242408" duration="3824000" />
+      <workItem from="1472657242408" duration="3964000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3824000" />
+    <option name="totallyTimeSpent" value="3964000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -879,8 +879,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/handler/question_front.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="3001" column="37" selection-start-line="3001" selection-start-column="37" selection-end-line="3001" selection-end-column="37" />
+        <state relative-caret-position="266">
+          <caret line="1016" column="33" selection-start-line="1016" selection-start-column="14" selection-end-line="1016" selection-end-column="33" />
           <folding>
             <element signature="e#1746#2423#0" expanded="false" />
             <element signature="n#!!block;n#Print#0" expanded="false" />

@@ -2959,7 +2959,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 
 	} else {
 		//追加
-		uuid := util.GenerateUuid()
+		uuid := GenerateOrderNumber()
 		orderNumber := GenerateOrderNumber()
 		question := new(model.WechatVoiceQuestions)
 		question.Uuid = uuid

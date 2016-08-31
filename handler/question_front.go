@@ -281,7 +281,7 @@ func QuestionQuery(ctx *macaron.Context) string {
 		single.Answer = k.VoicePath
 		single.TypeId = k.CategoryId
 		single.TypeName = k.Category
-		single.PeekPay = "1.00"
+		single.PeekPay = "1"
 		var times string
 		if k.SolvedTime != "" {
 			times = k.SolvedTime[0:10]

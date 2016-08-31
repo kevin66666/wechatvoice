@@ -896,7 +896,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 	reds := new(RedPackages)
 	reds.Act_name = "发送红包"
 	reds.Client_ip = "127.0.0.1"
-	reds.Remark = ""
+	reds.Remark = "订单已完成"
 	reds.Re_openid = orderInfo.AnswerOpenId
 	reds.Nick_name = "叨叨律法"
 	reds.SendNickName = orderInfo.AnswerName

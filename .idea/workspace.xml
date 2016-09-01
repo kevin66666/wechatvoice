@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="808b08d6-edd0-410c-a782-2ab434dd0947" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/order_list_front.go" afterPath="$PROJECT_DIR$/handler/order_list_front.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/router/router.go" afterPath="$PROJECT_DIR$/router/router.go" />
     </list>
     <ignored path="wechatvoice.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,8 +26,8 @@
       <file leaf-file-name="order_list_front.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handler/order_list_front.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="406">
-              <caret line="1252" column="37" selection-start-line="1252" selection-start-column="37" selection-end-line="1252" selection-end-column="37" />
+            <state relative-caret-position="742">
+              <caret line="1266" column="34" selection-start-line="1266" selection-start-column="34" selection-end-line="1266" selection-end-column="34" />
               <folding>
                 <element signature="e#17#243#0" expanded="true" />
                 <element signature="n#!!block;n#ToUserOrders#0" expanded="false" />
@@ -735,12 +734,12 @@
       <option name="presentableId" value="Default" />
       <updated>1472657237488</updated>
       <workItem from="1472657242408" duration="5334000" />
-      <workItem from="1472737651650" duration="1770000" />
+      <workItem from="1472737651650" duration="1857000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7104000" />
+    <option name="totallyTimeSpent" value="7191000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -945,8 +944,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/handler/order_list_front.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="1252" column="37" selection-start-line="1252" selection-start-column="37" selection-end-line="1252" selection-end-column="37" />
+        <state relative-caret-position="742">
+          <caret line="1266" column="34" selection-start-line="1266" selection-start-column="34" selection-end-line="1266" selection-end-column="34" />
           <folding>
             <element signature="e#17#243#0" expanded="true" />
             <element signature="n#!!block;n#ToUserOrders#0" expanded="false" />

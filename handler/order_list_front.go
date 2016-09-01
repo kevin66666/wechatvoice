@@ -1264,7 +1264,7 @@ func GetQuestionsToAsk(ctx *macaron.Context)string{
 			return string(ret_str)
 		}
 		response.Code = CODE_SUCCESS
-		response.Msg = errSave.Error()
+		response.Msg = "ok"
 		ret_str,_:=json.Marshal(response)
 		return string(ret_str)
 	}

@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="808b08d6-edd0-410c-a782-2ab434dd0947" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/question_front.go" afterPath="$PROJECT_DIR$/handler/question_front.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wendang/aaa.txt" afterPath="$PROJECT_DIR$/wendang/aaa.txt" />
     </list>
     <ignored path="wechatvoice.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -95,8 +94,8 @@
       <file leaf-file-name="question_front.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handler/question_front.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="3290" column="42" selection-start-line="3290" selection-start-column="42" selection-end-line="3290" selection-end-column="42" />
+            <state relative-caret-position="456">
+              <caret line="3291" column="33" selection-start-line="3291" selection-start-column="33" selection-end-line="3291" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -787,12 +786,12 @@
       <updated>1472657237488</updated>
       <workItem from="1472657242408" duration="5334000" />
       <workItem from="1472737651650" duration="2409000" />
-      <workItem from="1472740264500" duration="3106000" />
+      <workItem from="1472740264500" duration="3421000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10849000" />
+    <option name="totallyTimeSpent" value="11164000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -1074,8 +1073,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/handler/question_front.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="3290" column="42" selection-start-line="3290" selection-start-column="42" selection-end-line="3290" selection-end-column="42" />
+        <state relative-caret-position="456">
+          <caret line="3291" column="33" selection-start-line="3291" selection-start-column="33" selection-end-line="3291" selection-end-column="33" />
           <folding />
         </state>
       </provider>

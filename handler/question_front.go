@@ -3289,6 +3289,7 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	questionInfo.SolvedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
 	questionInfo.AnswerId = law.Uuid
 	questionInfo.AnswerName = law.Name
+	questionInfo.IsPaied = "1"
 	questionInfo.AnswerHeadImg = law.HeadImgUrl
 	questionInfo.AnswerdTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
 	updateErr := questionInfo.GetConn().Save(&questionInfo).Error

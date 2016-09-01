@@ -1226,7 +1226,7 @@ func GetQuestionsToAsk(ctx *macaron.Context)string{
 	response := new(CheckResponse)
 	question:=new(model.WechatVoiceQuestions)
 	questionErr:=question.GetConn().Where("uuid = ?",req.OrderId).Find(&question).Error
-	if questionErr.Error()!=nil&&!strings.Contains(questionErr.Error(),RNF){
+	if questionErr!=nil&&!strings.Contains(questionErr.Error(),RNF){
 		fmt.Println("errors",questionErr.Error())
 		response.Code = CODE_ERROR
 		response.Msg = questionErr.Error()

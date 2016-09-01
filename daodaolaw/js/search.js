@@ -134,7 +134,7 @@ var Search=React.createClass({
 			<div>
 				<SearchBar getVal={this.getVal} search={this.search} changeDisp={this.changeDisp}/>
 				<SearchList isShowList={this.state.isShowList} searchList={this.state.searchList} getSearchList={this.getSearchList} changeFold={this.changeFold} isAddMore={this.state.isAddMore} resetList={this.resetList} changeLoad={this.changeLoad}/>
-				<Ask isShowAsk={this.state.isShowAsk} getVal={this.getVal} tips={this.tips}/>
+				< isShowAsk={this.state.isShowAsk} getVal={this.getVal} tips={this.tips}/>
 				<Loading load={this.state.load} tips={this.state.tips}/>
 			</div>
 		)
@@ -148,7 +148,7 @@ var SearchBar=React.createClass({
 		return (
 			<div className="search-bar">
 				<label>
-					<input type="text" placeholder="我要搜索" onChange={this.handleChange} onFocus={this.props.changeDisp.bind(this,'isShowList')}/>
+					<input type="text" placeholder="我要搜索" onChange={this.handleChange} onFAskocus={this.props.changeDisp.bind(this,'isShowList')}/>
 					<span className="icon" onTouchEnd={this.props.search}><i className="fa fa-search" aria-hidden="true"></i></span>
 				</label>
 				<span className="ask" onTouchEnd={this.props.changeDisp.bind(this,'isShowAsk')}>我要提问</span>
@@ -249,7 +249,7 @@ var EverySearch=React.createClass({
 	render:function(){
 		var info=this.props.info;
 		var index=this.props.index;
-		var url="ask.html?laywerId="+info.laywerId+'&typeId='+info.typeId+'&orderId=-1&isAdd=0';
+		var url=".html?laywerId="+info.laywerId+'&typeId='+info.typeId+'&orderId=-1&isAdd=0';
 		var isAddNum=info.addNum>0?'text-center padding-md-t':'dispN';
 		var isShow=info.isShow?'padding-md-t add-Info':'dispN';
 		var addInfo=''
@@ -262,7 +262,7 @@ var EverySearch=React.createClass({
 								    <span className="price" onTouchEnd={this.toDetail.bind(this,dom.orderId)}>点击听取</span>
 								    <img src="img/xiaoxi.png"/>
 							    </p>
-						  	</li>
+						  	</li>ask
 			}.bind(this))
 		}
 		var star=[]

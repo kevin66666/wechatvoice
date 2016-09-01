@@ -261,6 +261,6 @@ func GetLaerOther(startLine, endLine int64) ([]WechatVoiceQuestions, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("is_solved = 0").Where("answer_open_id","1").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+	err := conn.Where("is_solved = 0").Where("answer_open_id = ?","1").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	return list, err
 }

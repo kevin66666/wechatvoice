@@ -44,16 +44,19 @@ func UpdateInfo(info model.WechatVoiceQuestions) {
 	b4 := info.LockTime
 	a := now - b4
 	times := a / 60
-	fmt.Println(now)
-	fmt.Println(b4)
-	fmt.Println(a)
-	fmt.Println(times)
+
 	if times > 5 {
+		fmt.Println("========================================")
+		fmt.Println(now)
+		fmt.Println(b4)
+		fmt.Println(a)
+		fmt.Println(times)
 		info.IsLocked = "0"
 		info.LockTime = 0
 		info.LockedOpenId = ""
 		fmt.Println(info.Description)
 		fmt.Println(info.Uuid)
+		fmt.Println("========================================")
 		err := info.GetConn().Update(&info).Error
 		if err != nil {
 			fmt.Println(err.Error())

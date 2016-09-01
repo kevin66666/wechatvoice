@@ -1236,11 +1236,13 @@ func GetQuestionsToAsk(ctx *macaron.Context)string{
 	if question.IsLocked =="1"{
 		if question.LockedOpenId == openId{
 			//锁定到自己 OK 可以
+			fmt.Println("锁定到了自己 可以回答")
 			response.Code = CODE_SUCCESS
 			response.Msg = "ok"
 			ret_str,_:=json.Marshal(response)
 			return string(ret_str)
 		}else{
+			fmt.Println("锁定到了别人 不行")
 			response.Code = CODE_ERROR
 			response.Msg = "已锁定"
 			ret_str,_:=json.Marshal(response)
@@ -1248,6 +1250,8 @@ func GetQuestionsToAsk(ctx *macaron.Context)string{
 		}
 	}else{
 		//说明没锁定 锁定给当前用户
+		fmt.Println("没有锁定可以回答")
+
 		question.IsLocked = "1"
 		question.LockTime = time.Now().Unix()
 		question.LockedOpenId = openId

@@ -2976,6 +2976,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		question.CustomerId = customer.Uuid
 		question.CustomerName = customer.Name
 		question.CustomerOpenId = openId
+		question.IsPaied = "1"
 		typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
 		typepriceNew := typePriceInt * 100
 		typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)

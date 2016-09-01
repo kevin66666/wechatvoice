@@ -49,7 +49,7 @@ const (
 	AFTER_PAY_JUMP_PAGE_FAILD   = "payFailed.html?"
 	AFTER_PAY_JUMP_PAGE_SUCCESS = "paySuccess.html?"
 	MPID                        = "gh_2ee59b178d66"
-	MONEY                       = "200"
+	MONEY                       = "1"
 
 	WECHAT_PREPAY_URL = "/wechatvoice/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
 )
@@ -2591,7 +2591,7 @@ func PayPeekAnswer(ctx *macaron.Context) string {
 	payF = payF / 100
 	payFs := strconv.FormatFloat(payF, 'f', 2, 64)
 	fmt.Println(payFs)
-	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "100", tStr)
+	sign, prepayId, sings, signErr := PayBill(nstr, nSt, openId, orderNumber, "1", tStr)
 	fmt.Println(sings)
 	if signErr != nil {
 		fmt.Println(signErr.Error())
@@ -3364,7 +3364,7 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 
 	questionInfo.VoicePath = voicePath
 	//已回答的状态
-	questionInfo.IsSolved = "3"
+	questionInfo.IsSolved = "2"
 	questionInfo.SolvedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
 	questionInfo.AnswerOpenId = cookie
 	updateErr := questionInfo.GetConn().Save(&questionInfo).Error

@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="808b08d6-edd0-410c-a782-2ab434dd0947" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/handler/question_front.go" afterPath="$PROJECT_DIR$/handler/question_front.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wendang/aaa.txt" afterPath="$PROJECT_DIR$/wendang/aaa.txt" />
     </list>
     <ignored path="wechatvoice.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,8 +27,8 @@
       <file leaf-file-name="order_list_front.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/handler/order_list_front.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1644">
-              <caret line="901" column="17" selection-start-line="901" selection-start-column="8" selection-end-line="901" selection-end-column="17" />
+            <state relative-caret-position="420">
+              <caret line="1240" column="35" selection-start-line="1240" selection-start-column="35" selection-end-line="1240" selection-end-column="35" />
               <folding>
                 <element signature="e#17#243#0" expanded="true" />
                 <element signature="n#!!block;n#ToUserOrders#0" expanded="false" />
@@ -74,8 +75,8 @@
       <file leaf-file-name="aaa.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/wendang/aaa.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="744">
-              <caret line="69" column="22" selection-start-line="69" selection-start-column="12" selection-end-line="69" selection-end-column="22" />
+            <state relative-caret-position="276">
+              <caret line="273" column="14" selection-start-line="273" selection-start-column="12" selection-end-line="273" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -94,8 +95,8 @@
       <file leaf-file-name="question_front.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handler/question_front.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
-              <caret line="3285" column="34" selection-start-line="3285" selection-start-column="34" selection-end-line="3285" selection-end-column="34" />
+            <state relative-caret-position="432">
+              <caret line="3290" column="42" selection-start-line="3290" selection-start-column="42" selection-end-line="3290" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -151,6 +152,7 @@
         <option value="$PROJECT_DIR$/daodaolaw/js/search.js" />
         <option value="$PROJECT_DIR$/handler/order_list_front.go" />
         <option value="$PROJECT_DIR$/daodaolaw/js/laywer-order.js" />
+        <option value="$PROJECT_DIR$/wendang/aaa.txt" />
         <option value="$PROJECT_DIR$/handler/question_front.go" />
       </list>
     </option>
@@ -785,12 +787,12 @@
       <updated>1472657237488</updated>
       <workItem from="1472657242408" duration="5334000" />
       <workItem from="1472737651650" duration="2409000" />
-      <workItem from="1472740264500" duration="1987000" />
+      <workItem from="1472740264500" duration="3106000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9730000" />
+    <option name="totallyTimeSpent" value="10849000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -1022,14 +1024,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/wendang/aaa.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="744">
-          <caret line="69" column="22" selection-start-line="69" selection-start-column="12" selection-end-line="69" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/daodaolaw/js/laywer-order.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="70">
@@ -1046,10 +1040,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/router/router.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="416">
+          <caret line="62" column="53" selection-start-line="62" selection-start-column="39" selection-end-line="62" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/wendang/aaa.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="273" column="14" selection-start-line="273" selection-start-column="12" selection-end-line="273" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/handler/order_list_front.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1644">
-          <caret line="901" column="17" selection-start-line="901" selection-start-column="8" selection-end-line="901" selection-end-column="17" />
+        <state relative-caret-position="420">
+          <caret line="1240" column="35" selection-start-line="1240" selection-start-column="35" selection-end-line="1240" selection-end-column="35" />
           <folding>
             <element signature="e#17#243#0" expanded="true" />
             <element signature="n#!!block;n#ToUserOrders#0" expanded="false" />
@@ -1062,18 +1072,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/router/router.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="62" column="53" selection-start-line="62" selection-start-column="39" selection-end-line="62" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/handler/question_front.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="3285" column="34" selection-start-line="3285" selection-start-column="34" selection-end-line="3285" selection-end-column="34" />
+        <state relative-caret-position="432">
+          <caret line="3290" column="42" selection-start-line="3290" selection-start-column="42" selection-end-line="3290" selection-end-column="42" />
           <folding />
         </state>
       </provider>

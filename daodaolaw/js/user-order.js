@@ -184,7 +184,7 @@ var UnsolvedList=React.createClass({
 									<p>详情: {dom.content}</p>
 									<p className="over-hidden">
 										<span className="pull-left">类型:{dom.typeName}&nbsp;|&nbsp;{questionType}</span>
-										<span className="pull-right">时间:{dom.time}</span>
+										<span className="pull-right">{dom.time}</span>
 									</p>
 								</div>
 			}.bind(this))
@@ -355,7 +355,7 @@ var PerOrder=React.createClass({
 				<p>详情: {dom.content}</p>
 				<p className="over-hidden">
 					<span className="pull-left">类型:{dom.typeName}&nbsp;|&nbsp;{questionType}</span>
-					<span className="pull-right">时间:{dom.time}</span>
+					<span className="pull-right">{dom.time}</span>
 				</p>
 				<div className="over-hidden padding-md-b">
 					<span className="user-add-num" onTouchEnd={this.addOne.bind(this,dom)}>可追问{dom.addNum}次</span>

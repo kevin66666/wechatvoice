@@ -3292,10 +3292,7 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	questionInfo.IsPaied = "1"
 	questionInfo.AnswerHeadImg = law.HeadImgUrl
 	questionInfo.AnswerdTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
-	updateErr := questionInfo.GetConn().Save(&questionInfo).Error
-	if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
-		fmt.Println(updateErr.Error(), "line 3218")
-	}
+
 
 	//savePath := dirName1 + dirname2
 	var accessToken string
@@ -3370,6 +3367,11 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	questionInfo.IsSolved = "3"
 	questionInfo.SolvedTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
 	questionInfo.AnswerOpenId = cookie
+	updateErr := questionInfo.GetConn().Save(&questionInfo).Error
+	if updateErr != nil && !strings.Contains(updateErr.Error(), RNF) {
+		fmt.Println(updateErr.Error(), "line 3218")
+	}
+
 	result.Code = CODE_SUCCESS
 	result.Msg = "ok"
 	ret_str, _ := json.Marshal(result)

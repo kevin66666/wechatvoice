@@ -134,7 +134,7 @@ var UnsolvedList=React.createClass({
 									</p>
 									<p>{dom.content}</p>
 									<p className="over-hidden">
-										<span className="pull-left">类型:{dom.typeName}&nbsp;|&nbsp;{questionType}</span>
+										<span className="pull-left">类型:{dom.type}&nbsp;|&nbsp;{questionType}</span>
 										<span className="pull-right">时间:{dom.time}</span>
 									</p>
 									<p className="text-right">￥{dom.price}</p>
@@ -294,7 +294,7 @@ var PerOrder=React.createClass({
 					</p>
 					<p>{dom.content}</p>
 					<p className="over-hidden">
-						<span className="pull-left">类型:{dom.typeName}&nbsp;|&nbsp;{questionType}</span>
+						<span className="pull-left">类型:{dom.type}&nbsp;|&nbsp;{questionType}</span>
 						<span className="pull-right">时间:{dom.time}</span>
 					</p>
 					<div className="over-hidden padding-md-b">

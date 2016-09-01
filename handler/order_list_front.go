@@ -423,13 +423,13 @@ type LawOrder struct {
 	OrderId string `json:"orderId"`
 	Status  string `json:"status"`
 	//status: //0 代表抢答（直接提问的） 1代表指定提问  2代表追问
-	Content   string `json:"content"`
-	Type      string `json:"type"`
-	Time      string `json:"time"`
-	Price     string `json:"price"`
-	Answer    string `json:"answer"`
-	IsPlay    bool   `json:"isPlay"`
-	CanDelete bool   `json:"canDelete"`
+	Content      string `json:"content"`
+	Type         string `json:"type"`
+	Time         string `json:"time"`
+	Price        string `json:"price"`
+	Answer       string `json:"answer"`
+	IsPlay       bool   `json:"isPlay"`
+	CanDelete    bool   `json:"canDelete"`
 	QuestionType string `json:"questionType"`
 }
 
@@ -661,19 +661,20 @@ type MemberListReponse struct {
 	List []MemberOrder `json:"list"`
 }
 type MemberOrder struct {
-	OrderId   string `json:"orderId"`
-	Status    string `json:"status"`
-	Content   string `json:"content"`
-	Type      string `json:"typeName"`
-	TypeId    string `json:"typeId"`
-	Time      string `json:"time"`
-	Price     int64  `json:"price"`
-	AddNum    int64  `json:"addNum"`
-	Answer    string `json:"answer"`
-	CanEval   bool   `json:"canEval"`
-	LawyerId  string `json:"laywerId"`
-	IsPlay    bool   `json:"isPlay"`
-	CanDelete bool   `json:"canDelete"`
+	OrderId      string `json:"orderId"`
+	Status       string `json:"status"`
+	Content      string `json:"content"`
+	Type         string `json:"typeName"`
+	TypeId       string `json:"typeId"`
+	Time         string `json:"time"`
+	Price        int64  `json:"price"`
+	AddNum       int64  `json:"addNum"`
+	Answer       string `json:"answer"`
+	CanEval      bool   `json:"canEval"`
+	LawyerId     string `json:"laywerId"`
+	IsPlay       bool   `json:"isPlay"`
+	CanDelete    bool   `json:"canDelete"`
+	QuestionType string `json:"questionType"`
 	// AddInfo []AddInfo1 `json:"addInfo"`
 }
 type AddInfo1 struct {
@@ -811,6 +812,16 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 			a = true
 		}
 		single.CanEval = a
+
+		var qType string
+		if k.QType == "1" {
+			qType = "2"
+		} else if k.QType == "2" {
+			qType = "1"
+		} else {
+			qType = "0"
+		}
+		single.QuestionType = qType
 		retList = append(retList, *single)
 	}
 	response.Code = CODE_SUCCESS
@@ -900,7 +911,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 	//给律师发红包
 	//如果评分大于2 那么 看问题类型 发红包 给红包
 	//如果小于2 那么直接返回来
-	if req.Number>2 {
+	if req.Number > 2 {
 		//大于2分
 		if orderInfo.QType != "1" {
 
@@ -986,7 +997,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 
 			return string(ret_str)
 
-		}else{
+		} else {
 			//保存orderInfo
 			orderInfo.IsRanked = "1"
 			orderInfo.IsSolved = "2"
@@ -1023,11 +1034,11 @@ func EvalAnswers(ctx *macaron.Context) string {
 			}
 			response.Code = CODE_SUCCESS
 			response.Msg = MSG_SUCCESS
-			ret_str,_:=json.Marshal(response)
+			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
 
-	}else{
+	} else {
 		//小于2 走后台呗
 		orderInfo.IsRanked = "1"
 		orderInfo.IsSolved = "2"
@@ -1065,7 +1076,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 		}
 		response.Code = CODE_SUCCESS
 		response.Msg = MSG_SUCCESS
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 
@@ -1423,6 +1434,6 @@ func EvalAnswersTest(ctx *macaron.Context) {
 
 	// return string(ret_str)
 }
-func OrderGenerate(ctx *macaron.Context)string{
+func OrderGenerate(ctx *macaron.Context) string {
 	return GenerateOrderNumber()
 }

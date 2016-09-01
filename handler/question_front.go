@@ -483,7 +483,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 
 	orderNumber := GenerateOrderNumber()
 	question := new(model.WechatVoiceQuestions)
-	uuid := util.GenerateUuid()
+	uuid := orderNumber
 	question.Uuid = uuid
 	question.CategoryId = cateId
 	question.Category = cate.CategoryName
@@ -2846,7 +2846,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 	question := new(model.WechatVoiceQuestions)
 	fmt.Println("here.....1")
 	if req.OrderId == "-1" {
-		uuid := util.GenerateUuid()
+		uuid := GenerateOrderNumber()
 		orderNumber := GenerateOrderNumber()
 
 		question.Uuid = uuid

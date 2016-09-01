@@ -3013,6 +3013,19 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
+		pay := new(model.WechatVoicePaymentInfo)
+		pay.OrderId = orderNumber
+		pay.OpenId = openId
+		pay.QuestionId = uuid
+		pay.IsPaied = "1"
+		er1r:=pay.GetConn().Create(&pay).Error
+		if er1r!=nil{
+			fmt.Println(er1r.Error())
+			response.Code = CODE_ERROR
+			response.Msg = er1r.Error()
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
 		response.Code = CODE_SUCCESS
 		response.Msg = MSG_SUCCESS
 		ret_str, _ := json.Marshal(response)

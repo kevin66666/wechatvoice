@@ -109,8 +109,8 @@ func GetQuestionQueryNew(req QuestionQuery) ([]WechatVoiceQuestions, int64, erro
 	}
 	// query = query.Order("id desc")
 
-	err = query.Find(&list1).Count(&count).Error
-	err = query.Order("id desc").Offset(req.StartLine-1).Limit(req.EndLine - req.StartLine+1).Find(&list).Error
+	err = query.Not("q_type","2").Find(&list1).Count(&count).Error
+	err = query.Not("q_type","2").Order("solved_time desc").Offset(req.StartLine-1).Limit(req.EndLine - req.StartLine+1).Find(&list).Error
 
 	// err = query.Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
 	return list, count, err
@@ -148,8 +148,8 @@ func QueryLawyerQuestions(startLine int64, endLine int64, userOpenId string) ([]
 	l1 := make([]WechatVoiceQuestions, 0)
 	var err error
 	var count int64
-	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Order("id desc").Find(&l1).Count(&count).Error
-	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Order("solved_time desc").Find(&l1).Count(&count).Error
+	err = conn.Where("answer_open_id = ?", userOpenId).Where("is_paied = 1").Where("is_solved =?", "2").Order("solved_time desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	return list, count, err
 }
 

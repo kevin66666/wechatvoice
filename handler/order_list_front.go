@@ -885,18 +885,18 @@ func EvalAnswers(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 
-	amountF, _ := strconv.ParseFloat(orderInfo.PaymentInfo, 64)
-	amountF = amountF * 100
-	lp, _ := strconv.ParseFloat(setting.LawyerFeePercent, 64)
-	red := 100.00 - lp
-	amountLeft := (amountF * red) / 100
-	amount := int64(amountLeft)
-	redint := rand.Int63n(amount)
-	// log.Println(redStr)
-	redIntStr := strconv.FormatInt(redint, 10)
-	redF, _ := strconv.ParseFloat(redIntStr, 64)
-	redFr := redF / 100
-	redStr := strconv.FormatFloat(redFr, 'f', 2, 64)
+	//amountF, _ := strconv.ParseFloat(orderInfo.PaymentInfo, 64)
+	//amountF = amountF * 100
+	//lp, _ := strconv.ParseFloat(setting.LawyerFeePercent, 64)
+	//red := 100.00 - lp
+	//amountLeft := (amountF * red) / 100
+	//amount := int64(amountLeft)
+	//redint := rand.Int63n(amount)
+	//// log.Println(redStr)
+	//redIntStr := strconv.FormatInt(redint, 10)
+	//redF, _ := strconv.ParseFloat(redIntStr, 64)
+	//redFr := redF / 100
+	//redStr := strconv.FormatFloat(redFr, 'f', 2, 64)
 
 	orderInfo.IsRanked = "1"
 	orderInfo.IsSolved = "2"
@@ -912,8 +912,8 @@ func EvalAnswers(ctx *macaron.Context) string {
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	a := amountF * lp
-	astr := strconv.FormatFloat(a, 'f', 2, 64)
+	//a := amountF * lp
+	//astr := strconv.FormatFloat(a, 'f', 2, 64)
 	//给律师发红包
 	//如果评分大于2 那么 看问题类型 发红包 给红包
 	//如果小于2 那么直接返回来
@@ -987,8 +987,8 @@ func EvalAnswers(ctx *macaron.Context) string {
 			payment.SwiftNumber = pay.WeixinSwiftNumber
 			payment.MemberId = orderInfo.CustomerId
 			payment.OpenId = openId
-			payment.RedPacketAmount = redStr
-			payment.LawyerAmount = astr
+			payment.RedPacketAmount = redAsTR
+			payment.LawyerAmount = redAsTR
 			payment.OrderId = req.OrderId
 			errPay := payment.GetConn().Create(&payment).Error
 			if errPay != nil {
@@ -997,7 +997,7 @@ func EvalAnswers(ctx *macaron.Context) string {
 
 			response.Code = CODE_SUCCESS
 			response.Msg = "ok"
-			fmt.Println(redStr)
+			fmt.Println(redAsTR)
 			response.RedPacket = redAsTR
 			ret_str, _ := json.Marshal(response)
 

@@ -3200,18 +3200,24 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 
 	if orderFirst.Uuid != "" {
 		//说明有追加问题
-		single1 := new(AddInfo)
-		single1.OrderId = orderFirst.Uuid
-		single1.Question = orderFirst.Description
-		single1.Answer = orderFirst.VoicePath
-		list = append(list, *single1)
-		if orderSecond.Uuid != "" {
-			single2 := new(AddInfo)
-			single2.OrderId = orderSecond.Uuid
-			single2.Question = orderSecond.Description
-			single2.Answer = orderSecond.VoicePath
-			list = append(list, *single2)
+		if orderFirst.IsSolved=="2"{
+			single1 := new(AddInfo)
+			single1.OrderId = orderFirst.Uuid
+			single1.Question = orderFirst.Description
+			single1.Answer = orderFirst.VoicePath
+			list = append(list, *single1)
+			if orderSecond.Uuid != "" {
+				if orderSecond.IsSolved=="2" {
+					single2 := new(AddInfo)
+					single2.OrderId = orderSecond.Uuid
+					single2.Question = orderSecond.Description
+					single2.Answer = orderSecond.VoicePath
+					list = append(list, *single2)
+				}
+			}
 		}
+
+
 	}
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"

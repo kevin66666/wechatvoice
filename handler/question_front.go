@@ -499,7 +499,7 @@ func CreateNewQuestion(ctx *macaron.Context) string {
 	question.QType = "0"
 	question.IsAnswerd = "0"
 	question.IsLocked = "0"
-
+	question.AnswerOpenId = "1"
 	question.Pv = 0
 	// typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
 	// typepriceNew := typePriceInt * 100
@@ -2861,6 +2861,7 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		question.CustomerName = customer.Name
 		question.CustomerOpenId = openId
 		question.IsLocked = "0"
+
 		typePriceInt, _ := strconv.ParseFloat(typePrice, 64)
 		typepriceNew := typePriceInt * 100
 		typePriceNewStr := strconv.FormatFloat(typepriceNew, 'f', 2, 64)

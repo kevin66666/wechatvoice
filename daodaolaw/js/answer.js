@@ -9,6 +9,7 @@ var Answer=React.createClass({
 			typeId:'',           
 			typeName:'',
 			content:'',
+			questionType:'',
 			img:'img/luyin.png',
 			isRecord:true,
 			load:false,
@@ -29,7 +30,8 @@ var Answer=React.createClass({
 					this.setState({
 						info:data,
 						typeName:data.typeName,
-						content:data.content
+						content:data.content,
+						questionType:data.questionType
 					})
 				}else{
 					this.tips(data.msg)
@@ -202,10 +204,15 @@ var Answer=React.createClass({
 	},
 	render:function(){
 		var info=this.state.info;
+		var text=''
+		if(this.state.questionType==0){
+			text='5分钟未解答完毕视为放弃；获得3星以上评价得1.6元'
+		}
 		return (
 			<div className="answer">
 				<p>类型: {this.state.typeName}</p>
 				<p className="content">{info.content}</p>
+				<p className="remind">{text}</p>
 				<p><img src={this.state.img} onTouchStart={this.record}/></p>
 				<p>(点击开始录音,再次点击结束录音)</p>
 				<audio src="" controls></audio>

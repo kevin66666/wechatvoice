@@ -623,7 +623,7 @@ ul, li {
   color: #fff;
 }
 .quest-list .voice .price {
-  /*padding: 8px 10px 8px 30px;*/
+  padding: 8px 10px 8px 25px;
   font-size: 14px;
 }
 .quest-list .voice>img,.user-order .voice>img,.add-voice>img,.laywer-order-list .voice>img {
@@ -706,7 +706,7 @@ ul, li {
 }
 .answer .content {
   width: 80%;
-  margin: 0 auto 100px;
+  margin: 0 auto 5px;
   border: 1px solid #b3b3b3;
   padding: 10px 12px;
   height: 150px;
@@ -714,13 +714,17 @@ ul, li {
   border-radius: 3px;
   text-align: left;
 }
+.answer .remind {
+  margin: 0 auto 90px;
+  text-align: left;
+}
 @media screen and (max-width: 320px) {
   .answer {
     margin-top: 12px;
     padding: 12px 0 20px;
   }
-  .answer .content {
-    margin-bottom: 35px;
+  .answer .remind {
+    margin-bottom: 30px;
   }
 }
 .answer p>img {

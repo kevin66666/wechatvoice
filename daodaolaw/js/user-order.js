@@ -175,15 +175,16 @@ var UnsolvedList=React.createClass({
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
 			list=orderInfo.map(function(dom){
+        var questionType=['普通咨询','定向咨询','追问咨询'][dom.questionType];
 				return  <div className="laywer-order-list padding-bottom-20">
 									<p className="over-hidden">
-										<span className="pull-left">订单号: {dom.orderId}</span>
-										<span className="pull-right del-order"  onTouchEnd={this.delet.bind(this,dom.orderId)}>删除</span>
+										<span className="pull-left">订单号:{dom.orderId}</span>
+										<span className="pull-right del-order" onTouchEnd={this.delet.bind(this,dom.orderId)}>删除</span>
 									</p>
 									<p>详情: {dom.content}</p>
 									<p className="over-hidden">
-										<span className="pull-left">类型: {dom.typeName}</span>
-										<span className="pull-right">时间: {dom.time}</span>
+										<span className="pull-left">类型:{dom.typeName}&nbsp;|&nbsp;{questionType}</span>
+										<span className="pull-right">时间:{dom.time}</span>
 									</p>
 								</div>
 			}.bind(this))
@@ -344,6 +345,7 @@ var PerOrder=React.createClass({
 	render:function(){
 		var dom=this.props.dom;
 		var src=['img/xiaoxi.png','img/half.png'][this.state.imgIndex]
+    var questionType=['普通咨询','定向咨询','追问咨询'][dom.questionType];
 		return (
 			<div className="laywer-order-list user-order">
 				<p className="over-hidden">
@@ -352,8 +354,8 @@ var PerOrder=React.createClass({
 				</p>
 				<p>详情: {dom.content}</p>
 				<p className="over-hidden">
-					<span className="pull-left">类型: {dom.typeName}</span>
-					<span className="pull-right">时间: {dom.time}</span>
+					<span className="pull-left">类型:{dom.typeName}&nbsp;|&nbsp;{questionType}</span>
+					<span className="pull-right">时间:{dom.time}</span>
 				</p>
 				<div className="over-hidden padding-md-b">
 					<span className="user-add-num" onTouchEnd={this.addOne.bind(this,dom)}>可追问{dom.addNum}次</span>
@@ -393,8 +395,8 @@ var Evaluate=React.createClass({
 			 	success:function(data){
 			 		if(data.code===10000){
 			 			//发红包 redPacket 接口
-						this.props.changeEvaluate(false)
-						this.props.changeMoney(true,data.redPacket)
+						// this.props.changeEvaluate(false)
+						// this.props.changeMoney(true,data.redPacket)
 			 		}else{
 				    this.props.tips('评价失败')
 			   }
@@ -419,7 +421,7 @@ var Evaluate=React.createClass({
     return (
       <div className={isShowEvaluate} onTouchEnd={this.close}>
         <div className="chose-evaluate">
-          <p className="title">*请对本次服务做出评价<br/>评价后可领取随机红包</p>
+          <p className="title">*请对本次服务做出评价<br/><span className="dispN">评价后可领取随机红包</span></p>
           <p className="chose-btn">
           	{star}
           </p>

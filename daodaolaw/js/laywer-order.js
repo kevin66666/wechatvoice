@@ -125,16 +125,17 @@ var UnsolvedList=React.createClass({
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
 			list=orderInfo.map(function(dom){
-        var status=['抢答','定向咨询','追问'][dom.status];
+        var status=['抢答','解答','解答'][dom.status];
+        var questionType=['普通咨询','定向咨询','追问咨询'][dom.questionType];
 				return  <div className="laywer-order-list">
 									<p className="over-hidden">
-										<span className="pull-left">订单号: {dom.orderId}</span>
+										<span className="pull-left">订单号:{dom.orderId}</span>
 										<span className="pull-right status" onTouchEnd={this.toAnswer.bind(this,dom.orderId)}>{status}</span>
 									</p>
 									<p>{dom.content}</p>
 									<p className="over-hidden">
-										<span className="pull-left">类型: {dom.type}</span>
-										<span className="pull-right">时间: {dom.time}</span>
+										<span className="pull-left">类型:{dom.typeName}&nbsp;|&nbsp;{questionType}</span>
+										<span className="pull-right">时间:{dom.time}</span>
 									</p>
 									<p className="text-right">￥{dom.price}</p>
 								</div>
@@ -284,16 +285,17 @@ var PerOrder=React.createClass({
 	render:function(){
 		var dom=this.props.dom;
 		var src=['img/xiaoxi.png','img/half.png'][this.state.imgIndex]
+    var questionType=['普通咨询','定向咨询','追问咨询'][dom.questionType];
 		return (
 			  <div className="laywer-order-list">
 					<p className="over-hidden">
-						<span className="pull-left">订单号: {dom.orderId}</span>
+						<span className="pull-left">订单号:{dom.orderId}</span>
             <span className="pull-right del-order" onTouchEnd={this.props.delet.bind(this,dom.orderId)}>删除</span>
 					</p>
 					<p>{dom.content}</p>
 					<p className="over-hidden">
-						<span className="pull-left">类型: {dom.type}</span>
-						<span className="pull-right">时间: {dom.time}</span>
+						<span className="pull-left">类型:{dom.typeName}&nbsp;|&nbsp;{questionType}</span>
+						<span className="pull-right">时间:{dom.time}</span>
 					</p>
 					<div className="over-hidden padding-md-b">
 						<p className="voice pull-right">

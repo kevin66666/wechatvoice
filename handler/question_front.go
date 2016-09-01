@@ -49,7 +49,7 @@ const (
 	AFTER_PAY_JUMP_PAGE_FAILD   = "payFailed.html?"
 	AFTER_PAY_JUMP_PAGE_SUCCESS = "paySuccess.html?"
 	MPID                        = "gh_2ee59b178d66"
-	MONEY = "200"
+	MONEY                       = "200"
 
 	WECHAT_PREPAY_URL = "/wechatvoice/pay/unifiedorder?appid=%s&mch_id=%s&body=%s&out_trade_no=%s&total_fee=%d&spbill_create_ip=%s&key=%s&openid=%s&url=%s&notify_url=%s"
 )
@@ -680,7 +680,7 @@ func CreateNewSpecialQuestion(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 
-	orderNumber :=GenerateOrderNumber()
+	orderNumber := GenerateOrderNumber()
 	question := new(model.WechatVoiceQuestions)
 	question.Uuid = util.GenerateUuid()
 	question.CategoryId = req.CateId
@@ -3267,11 +3267,11 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 		fmt.Println(qErr.Error(), "line 3213")
 	}
 	var flag1 bool
-	flag1 = questionInfo.AnswerOpenId==cookie
-	if questionInfo.IsSolved=="2"&&!flag1{
+	flag1 = questionInfo.AnswerOpenId == cookie
+	if questionInfo.IsSolved == "2" && !flag1 {
 		result.Code = CODE_ERROR
-		result. Msg = "问题已经被别人先一步抢答啦"
-		ret_str,_:=json.Marshal(result)
+		result.Msg = "问题已经被别人先一步抢答啦"
+		ret_str, _ := json.Marshal(result)
 		return string(ret_str)
 	}
 	law := new(model.LawyerInfo)
@@ -3390,16 +3390,27 @@ func GetAswerResponseById(ctx *macaron.Context) string {
 	response.Msg = "ok"
 	response.TypeName = wechatInfo.Category
 	response.Content = wechatInfo.Description
+	var qType string
+	if wechatInfo.QType == "1" {
+		//
+		qType = "2"
+	} else if wechatInfo.QType == "2" {
+		qType = "1"
+	} else {
+		qType = "0"
+	}
+	response.QuestionType = qType
 	ret_Str, _ := json.Marshal(response)
 	return string(ret_Str)
 	// return ""
 }
 
 type ResponseOrderDetail struct {
-	Code     int64  `json:"code"`
-	Msg      string `json:"msg"`
-	Content  string `json:"content"`
-	TypeName string `json:"typeName"`
+	Code         int64  `json:"code"`
+	Msg          string `json:"msg"`
+	Content      string `json:"content"`
+	TypeName     string `json:"typeName"`
+	QuestionType string `json:"questionType"`
 }
 
 func QuestionQueryNew(ctx *macaron.Context) string {

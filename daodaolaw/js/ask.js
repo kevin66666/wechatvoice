@@ -84,7 +84,7 @@ var Ask=React.createClass({
 	},
 	limitNum:function(e){
     var value=e.target.value
-    if(value.length>100){
+    if(value.length>300){
       e.preventDefault()
     }
   },
@@ -169,7 +169,7 @@ var Ask=React.createClass({
 					<img src={init.pic}/><br/>
 					{init.name}&nbsp;&nbsp;|&nbsp;&nbsp;{init.selfIntr}
 				</p>
-				<div className="content"><textarea rows="8" placeholder="最多100个字" onChange={this.handleChange} onKeyPress={this.limitNum}></textarea></div>
+				<div className="content"><textarea rows="8" placeholder="最多300个字" onChange={this.handleChange} onKeyPress={this.limitNum}></textarea></div>
 				<p className="price">{typePrice}</p>
 				<div className="btn-ask"><p onTouchEnd={this.doAsk}>写好了</p></div>
 			</div>

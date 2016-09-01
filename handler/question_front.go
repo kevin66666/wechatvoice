@@ -238,6 +238,8 @@ func QuestionQuery(ctx *macaron.Context) string {
 	}
 	logIdList := make([]string, 0)
 	log.Println(logIdList)
+	log.Println("=-=========")
+	log.Println(body)
 	questionList, count, queryErr := model.GetQuestionQueryNew(*req) // 这个方法在这备用
 	//questionList, count, queryErr := model.GetQuestionQuery(*req)
 	fmt.Println(questionList)

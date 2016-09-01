@@ -21,7 +21,7 @@ import (
 //0 创建 1 锁定 2 完成 3
 func init() {
 	c := cron.New()
-	c.AddFunc("@every 1m", func() { UpdateAllQuestions() })
+	c.AddFunc("@every 5m", func() { UpdateAllQuestions() })
 	c.Start()
 }
 

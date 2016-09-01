@@ -110,7 +110,7 @@ func GetQuestionQueryNew(req QuestionQuery) ([]WechatVoiceQuestions, int64, erro
 	// query = query.Order("id desc")
 
 	err = query.Find(&list1).Count(&count).Error
-	err = query.Order("id desc").Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
+	err = query.Order("id desc").Offset(req.StartLine-1).Limit(req.EndLine - req.StartLine+1).Find(&list).Error
 
 	// err = query.Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
 	return list, count, err

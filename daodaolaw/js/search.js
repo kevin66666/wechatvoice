@@ -335,8 +335,8 @@ var Ask=React.createClass({
   	this.setState({
   		isShowType:false,
   		typeId:id,
-  		typeName:name,
-  		typePrice:price
+  		typeName:name
+  		// typePrice:price
   	})
   },
   ask:function(){

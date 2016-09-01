@@ -51,6 +51,7 @@ func UpdateInfo(info model.WechatVoiceQuestions) {
 	if times > 5 {
 		info.IsLocked = "0"
 		info.LockTime = 0
+		info.LockedOpenId = ""
 		err := info.GetConn().Update(&info).Error
 		if err != nil {
 			fmt.Println(err.Error())
@@ -1212,6 +1213,57 @@ func GetQuestionToAnswer(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 
+}
+
+func GetQuestionsToAsk(ctx *macaron.Context)string{
+	body, _ := ctx.Req.Body().String()
+	req := new(QuestionId)
+	json.Unmarshal([]byte(body), req)
+	cookieStr, _ := ctx.GetSecureCookie("userloginstatus")
+	openId := strings.Split(cookieStr, "|")[0]
+	log.Println(openId)
+
+	response := new(CheckResponse)
+	question:=new(model.WechatVoiceQuestions)
+	questionErr:=question.GetConn().Where("uuid = ?",req.OrderId).Find(&question).Error
+	if questionErr.Error()!=nil&&!strings.Contains(questionErr.Error(),RNF){
+		fmt.Println("errors",questionErr.Error())
+		response.Code = CODE_ERROR
+		response.Msg = questionErr.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
+	if question.IsLocked =="1"{
+		if question.LockedOpenId == openId{
+			//锁定到自己 OK 可以
+			response.Code = CODE_SUCCESS
+			response.Msg = "ok"
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}else{
+			response.Code = CODE_ERROR
+			response.Msg = "已锁定"
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+	}else{
+		//说明没锁定 锁定给当前用户
+		question.IsLocked = "1"
+		question.LockTime = time.Now().Unix()
+		question.LockedOpenId = openId
+		errSave :=question.GetConn().Save(&question).Error
+		if errSave!=nil&&!strings.Contains(errSave.Error(),RNF){
+			response.Code = CODE_ERROR
+			response.Msg = errSave.Error()
+			fmt.Println("保存出错",errSave.Error())
+			ret_str,_:=json.Marshal(response)
+			return string(ret_str)
+		}
+		response.Code = CODE_SUCCESS
+		response.Msg = errSave.Error()
+		ret_str,_:=json.Marshal(response)
+		return string(ret_str)
+	}
 }
 
 type DeleteOrderRequest struct {

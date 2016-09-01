@@ -21,6 +21,7 @@ type WechatVoiceQuestions struct {
 	AnswerId          string
 	IsLocked          string
 	LockTime          int64
+	LockedOpenId string
 	AnswerName        string
 	AnswerOpenId      string
 	NeedId            string

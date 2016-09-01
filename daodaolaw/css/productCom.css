@@ -717,6 +717,8 @@ ul, li {
 .answer .remind {
   margin: 0 auto 90px;
   text-align: left;
+  color: #b3b3b3;
+  text-align: center;
 }
 @media screen and (max-width: 320px) {
   .answer {

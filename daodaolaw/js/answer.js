@@ -206,7 +206,7 @@ var Answer=React.createClass({
 		var info=this.state.info;
 		var text=''
 		if(this.state.questionType==0){
-			text='5分钟未解答完毕视为放弃；获得3星以上评价得1.6元'
+			text='5分钟未解答完视为放弃,获得3星以上评价得1.6元'
 		}
 		return (
 			<div className="answer">

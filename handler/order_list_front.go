@@ -567,7 +567,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		fmt.Println("--------------------------------------这个时候列表里的数据有", dirLen, "条--------------------------------------")
 		//锁定问题部分
 		start1 := req.StartLine
-		end1 := req.StartLine - req.EndLine - int64(dirLen)
+		end1 := req.EndLine - req.StartLine - int64(dirLen)
 		lockList, lockErr := model.GetLockedInfo(start1, end1, openId)
 		if lockErr != nil && !strings.Contains(lockErr.Error(), RNF) {
 			response.Code = CODE_ERROR

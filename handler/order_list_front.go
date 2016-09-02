@@ -564,14 +564,34 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 				list = append(list, k)
 			}
 		}
+		fmt.Println("--------------------------------------这个时候列表里的数据有", dirLen, "条--------------------------------------")
 		//锁定问题部分
-		// lockList := make([]model.WechatVoiceQuestions, 0)
+		start1 := req.StartLine
+		end1 := req.StartLine - req.EndLine - int64(dirLen)
+		lockList, lockErr := model.GetLockedInfo(start1, end1, openId)
+		if lockErr != nil && !strings.Contains(lockErr.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = lockErr.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+
+		lockLen := len(lockList)
+		if lockLen > 0 {
+			for _, k := range lockList {
+				list = append(list, k)
+			}
+		}
+		fmt.Println("--------------------------------------这个时候锁定列表中有", lockLen, "条--------------------------------------")
+		fmt.Println("--------------------------------------这个时候列表里的数据有", len(list), "条--------------------------------------")
+		nowTotal := len(list)
+
 		aList := make([]model.WechatVoiceQuestions, 0)
 		var aErr error
-		if int64(dirLen) < (req.EndLine - req.StartLine) {
+		if int64(nowTotal) < (req.EndLine - req.StartLine) {
 			//说明数量不够 需要后期去补充
-			need := req.EndLine - int64(dirLen)
-			fmt.Println("=======>>>>>>")
+			need := req.EndLine - int64(nowTotal)
+			fmt.Println("=======>>>>>>", need, "这个时候需要放入这么多条随意的数据")
 			// lockList, lockErr = model.GetLockedInfo(req.StartLine, need)
 
 			aList, aErr = model.GetLaerOther(req.StartLine, need)

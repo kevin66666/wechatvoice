@@ -625,7 +625,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		var qType string
 		if k.QType == "1" {
 			//追加
-			price = ""
+			price = "0.0"
 			status = "2"
 			qType = "2"
 		} else if k.QType == "2" {

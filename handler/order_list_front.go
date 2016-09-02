@@ -677,7 +677,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 			// 	fmt.Println("请求的数据是未完成 这里是按照时间")
 
 			// }
-			single.Time = k.CreateTime
+			single.Time = k.SolvedTime
 
 			var flag bool
 			if k.IsSolved == "2" {

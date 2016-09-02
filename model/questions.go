@@ -268,6 +268,6 @@ func GetAppendInfo(questionId string) ([]WechatVoiceQuestions, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("parent_question_id = ", questionId).Order("id desc").Find(&list).Error
+	err := conn.Where("parent_question_id = ?", questionId).Order("id desc").Find(&list).Error
 	return list, err
 }

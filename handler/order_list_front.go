@@ -615,7 +615,7 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		}
 		single.CanDelete = flag
 		// price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
-		single.Price = "1.6"
+		var price string
 
 		single.Answer = k.VoicePath
 		single.IsPlay = true
@@ -625,16 +625,20 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		var qType string
 		if k.QType == "1" {
 			//追加
+			price = ""
 			status = "2"
 			qType = "2"
 		} else if k.QType == "2" {
 			//指定
+			price = "1.6"
 			status = "1"
 			qType = "1"
 		} else {
+			price = "1.6"
 			status = "0"
 			qType = "0"
 		}
+		single.Price = price
 		single.Status = status
 		single.QuestionType = qType
 		/**

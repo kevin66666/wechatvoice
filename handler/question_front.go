@@ -3018,12 +3018,12 @@ func AskSpecialQuestion(ctx *macaron.Context) string {
 		pay.OpenId = openId
 		pay.QuestionId = uuid
 		pay.IsPaied = "1"
-		er1r:=pay.GetConn().Create(&pay).Error
-		if er1r!=nil{
+		er1r := pay.GetConn().Create(&pay).Error
+		if er1r != nil {
 			fmt.Println(er1r.Error())
 			response.Code = CODE_ERROR
 			response.Msg = er1r.Error()
-			ret_str,_:=json.Marshal(response)
+			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
 		response.Code = CODE_SUCCESS
@@ -3214,14 +3214,19 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 
 	if orderFirst.Uuid != "" {
 		//说明有追加问题
-		if orderFirst.IsSolved=="2"{
+		if orderFirst.IsSolved == "2" {
+			fmt.Println("第一个问题已解决", orderFirst.IsSolved, orderFirst.Uuid)
+
 			single1 := new(AddInfo)
 			single1.OrderId = orderFirst.Uuid
 			single1.Question = orderFirst.Description
 			single1.Answer = orderFirst.VoicePath
 			list = append(list, *single1)
+			fmt.Println("list")
 			if orderSecond.Uuid != "" {
-				if orderSecond.IsSolved=="2" {
+				fmt.Println("第二个问题", orderSecond.IsSolved, orderSecond.Uuid)
+				if orderSecond.IsSolved == "2" {
+					fmt.Println("第二个问题已解决", orderSecond.IsSolved, orderSecond.Uuid)
 					single2 := new(AddInfo)
 					single2.OrderId = orderSecond.Uuid
 					single2.Question = orderSecond.Description
@@ -3230,7 +3235,6 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 				}
 			}
 		}
-
 
 	}
 	response.Code = CODE_SUCCESS
@@ -3315,7 +3319,6 @@ func GetFileFrontWx(ctx *macaron.Context) string {
 	questionInfo.IsPaied = "1"
 	questionInfo.AnswerHeadImg = law.HeadImgUrl
 	questionInfo.AnswerdTime = time.Unix(time.Now().Unix(), 0).String()[0:19]
-
 
 	//savePath := dirName1 + dirname2
 	var accessToken string

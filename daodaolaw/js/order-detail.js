@@ -38,22 +38,15 @@ var OrderDetail=React.createClass({
   	var timer=''
   	var _this=this
   	$audio.on('play',function(){
-      timer=setInterval(function(){
-        var imgIndex=_this.state.imgIndex;
-        if(imgIndex<=1){
-          _this.setState({imgIndex:imgIndex+1})
-        }else{
-          _this.setState({imgIndex:0})
-        }
-      },300)
+			 _this.setState({imgIndex:1})
     })
     if(this.state.isPlay){
       $audio[0].play()
+    	this.setState({isPlay:false})
     }else{
       clearInterval(timer)
       $audio[0].pause()
     }
-    this.setState({isPlay:!this.state.isPlay})
     $audio.on('ended',function(){
       clearInterval(timer)
       _this.setState({
@@ -75,17 +68,13 @@ var OrderDetail=React.createClass({
   	var _this=this
   	$audio.on('play',function(){
       timer=setInterval(function(){
-        var imgIndex=index==0?_this.state.imgOne:_this.state.imgTwo;
-        if(imgIndex<=1){
-        	index==0?_this.setState({imgOne:imgIndex+1}):_this.setState({imgTwo:imgIndex+1})
-        }else{
-        	index==0?_this.setState({imgOne:0}):_this.setState({imgTwo:0})
-        }
+        index==0?_this.setState({imgOne:1}):_this.setState({imgTwo:1})
       },300)
     })
     if(index==0){
     	if(this.state.isOnePlay){
 	      $audio[0].play()
+	      this.setState({isOnePlay:false})
 	    }else{
 	      clearInterval(timer)
 	      $audio[0].pause()
@@ -93,12 +82,12 @@ var OrderDetail=React.createClass({
     }else{
     	if(this.state.isTwoPlay){
 	      $audio[0].play()
+	      this.setState({isTwoPlay:false})
 	    }else{
 	      clearInterval(timer)
 	      $audio[0].pause()
 	    }
     }
-    index==0?this.setState({isOnePlay:!this.state.isOnePlay}):this.setState({isTwoPlay:!this.state.isTwoPlay})
     $audio.on('ended',function(){
       clearInterval(timer)
       if(index==0){
@@ -136,20 +125,20 @@ var OrderDetail=React.createClass({
 		var addInfo=''
 		if(info.addInfo&&info.addInfo.length>0){
 			addInfo=info.addInfo.map(function(dom,index){
-				var src='img/xiaoxi.png'
+				var style='add-voice pull-left'
 				if(index==0){
-					src=['img/xiaoxi.png','img/half.png'][this.state.imgOne]
+					style=['add-voice pull-left','add-voice-bg pull-left'][this.state.imgOne]
 				}else{
-					src=['img/xiaoxi.png','img/half.png'][this.state.imgTwo]
+					style=['add-voice pull-left','add-voice-bg pull-left'][this.state.imgTwo]
 				}
 				return 	<li>
 						  		<p>{dom.question}</p>
 						  		<div className="over-hidden">
 						  			<p className="pull-left"><a href={url}><img src={info.pic}/></a></p>
-							  		<p className="add-voice pull-left">
+							  		<p className={style}>
 									    <audio src={dom.answer} controls="controls" ref="record"/>
 									    <span className="price" onTouchEnd={this.play.bind(this,dom.answer,index)}>点击听取</span>
-									    <img src={src}/>
+									    <img src="img/xiaoxi.png"/>
 								    </p>
 							    </div>
 						  	</li>
@@ -159,7 +148,7 @@ var OrderDetail=React.createClass({
 		for(var i=0;i<info.star;i++){
 			star.push(<i className="fa fa-star col-yellow"></i>)
 		}
-		var src=['img/xiaoxi.png','img/half.png'][this.state.imgIndex]
+		var src=['voice pull-left','voice-bg pull-left'][this.state.imgIndex]
 		return (
 			<div className="quest-list">
 				<div className="media margin-lg-t padding-vertical-md">
@@ -173,7 +162,7 @@ var OrderDetail=React.createClass({
 				    <p className="voice pull-left">
 					    <audio src={info.answer} controls="controls"/>
 					    <span className="price" onTouchEnd={this.getAnswer.bind(this,info.answer)}>点击听取</span>
-					    <img src={src}/>
+					    <img src="img/xiaoxi.png"/>
 				    </p>
 				    <p className="pull-right">{info.time}</p>
 				  </div>

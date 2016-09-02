@@ -3193,7 +3193,7 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 		return string(ret_str)
 	}
 	orderSecond := new(model.WechatVoiceQuestions)
-	orderSecondErr := orderSecond.GetConn().Where("parent_question_id = ?", orderFirst.Uuid).Find(&orderSecond).Error
+	orderSecondErr := orderSecond.GetConn().Where("parent_question_id = ?", req.OrderId).Find(&orderSecond).Error
 	if orderSecondErr != nil && !strings.Contains(orderSecondErr.Error(), RNF) {
 		response.Code = CODE_ERROR
 		response.Msg = orderSecondErr.Error()

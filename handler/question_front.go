@@ -3184,23 +3184,29 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 	// 	return string(ret_str)
 	// }
 
-	orderFirst := new(model.WechatVoiceQuestions)
-	orderFirstErr := orderFirst.GetConn().Where("parent_question_id = ?", req.OrderId).Find(&orderFirst).Error
-	if orderFirstErr != nil && !strings.Contains(orderFirstErr.Error(), RNF) {
+	// orderFirst := new(model.WechatVoiceQuestions)
+	// orderFirstErr := orderFirst.GetConn().Where("parent_question_id = ?", req.OrderId).Find(&orderFirst).Error
+	// if orderFirstErr != nil && !strings.Contains(orderFirstErr.Error(), RNF) {
+	// 	response.Code = CODE_ERROR
+	// 	response.Msg = orderFirstErr.Error()
+	// 	ret_str, _ := json.Marshal(response)
+	// 	return string(ret_str)
+	// }
+	// orderSecond := new(model.WechatVoiceQuestions)
+	// orderSecondErr := orderSecond.GetConn().Where("parent_question_id = ?", req.OrderId).Find(&orderSecond).Error
+	// if orderSecondErr != nil && !strings.Contains(orderSecondErr.Error(), RNF) {
+	// 	response.Code = CODE_ERROR
+	// 	response.Msg = orderSecondErr.Error()
+	// 	ret_str, _ := json.Marshal(response)
+	// 	return string(ret_str)
+	// }
+	listNew, errList := model.GetAppendInfo(req.OrderId)
+	if errList != nil && !strings.Contains(errList.Error(), RNF) {
 		response.Code = CODE_ERROR
-		response.Msg = orderFirstErr.Error()
+		response.Msg = errList.Error()
 		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	orderSecond := new(model.WechatVoiceQuestions)
-	orderSecondErr := orderSecond.GetConn().Where("parent_question_id = ?", req.OrderId).Find(&orderSecond).Error
-	if orderSecondErr != nil && !strings.Contains(orderSecondErr.Error(), RNF) {
-		response.Code = CODE_ERROR
-		response.Msg = orderSecondErr.Error()
-		ret_str, _ := json.Marshal(response)
-		return string(ret_str)
-	}
-
 	list := make([]AddInfo, 0)
 	// if len(orderList) > 0 {
 	// 	for _, k := range orderList {
@@ -3212,30 +3218,63 @@ func GetQuestionDetailById(ctx *macaron.Context) string {
 	// 	}
 	// }
 
-	if orderFirst.Uuid != "" {
-		//说明有追加问题
-		if orderFirst.IsSolved == "2" {
-			fmt.Println("第一个问题已解决", orderFirst.IsSolved, orderFirst.Uuid)
+	// if orderFirst.Uuid != "" {
+	// 	//说明有追加问题
+	// 	if orderFirst.IsSolved == "2" {
+	// 		fmt.Println("第一个问题已解决", orderFirst.IsSolved, orderFirst.Uuid)
 
-			single1 := new(AddInfo)
-			single1.OrderId = orderFirst.Uuid
-			single1.Question = orderFirst.Description
-			single1.Answer = orderFirst.VoicePath
-			list = append(list, *single1)
-			fmt.Println("list")
-			if orderSecond.Uuid != "" {
-				fmt.Println("第二个问题", orderSecond.IsSolved, orderSecond.Uuid)
-				if orderSecond.IsSolved == "2" {
-					fmt.Println("第二个问题已解决", orderSecond.IsSolved, orderSecond.Uuid)
-					single2 := new(AddInfo)
-					single2.OrderId = orderSecond.Uuid
-					single2.Question = orderSecond.Description
-					single2.Answer = orderSecond.VoicePath
-					list = append(list, *single2)
-				}
-			}
+	// 		single1 := new(AddInfo)
+	// 		single1.OrderId = orderFirst.Uuid
+	// 		single1.Question = orderFirst.Description
+	// 		single1.Answer = orderFirst.VoicePath
+	// 		list = append(list, *single1)
+	// 		fmt.Println("list")
+	// 		if orderSecond.Uuid != "" {
+	// 			fmt.Println("第二个问题", orderSecond.IsSolved, orderSecond.Uuid)
+	// 			if orderSecond.IsSolved == "2" {
+	// 				fmt.Println("第二个问题已解决", orderSecond.IsSolved, orderSecond.Uuid)
+	// 				single2 := new(AddInfo)
+	// 				single2.OrderId = orderSecond.Uuid
+	// 				single2.Question = orderSecond.Description
+	// 				single2.Answer = orderSecond.VoicePath
+	// 				list = append(list, *single2)
+	// 			}
+	// 		}
+	// 	}
+
+	// }
+	if len(listNew) == 1 {
+		//只有一个追问
+		fmt.Println("只有一个 =====>>>")
+		order := listNew[0]
+		if order.IsSolved == "2" {
+			fmt.Println("这个只有一个的已经完成")
+			single := new(AddInfo)
+			single.Answer = order.VoicePath
+			single.OrderId = order.Uuid
+			single.Question = order.Description
+			list = append(list, *single)
 		}
-
+	} else if len(listNew) == 2 {
+		fmt.Println("有2个哦======》》》》")
+		fitst := listNew[0]
+		second := listNew[1]
+		if fitst.IsSolved == "2" {
+			fmt.Println("这2个中有一个的已经完成")
+			single := new(AddInfo)
+			single.Answer = fitst.VoicePath
+			single.OrderId = fitst.Uuid
+			single.Question = fitst.Description
+			list = append(list, *single)
+		}
+		if second.IsSolved == "2" {
+			fmt.Println("这2个中的第二个个的已经完成")
+			single := new(AddInfo)
+			single.Answer = second.VoicePath
+			single.OrderId = second.Uuid
+			single.Question = second.Description
+			list = append(list, *single)
+		}
 	}
 	response.Code = CODE_SUCCESS
 	response.Msg = "ok"

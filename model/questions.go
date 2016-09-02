@@ -21,7 +21,7 @@ type WechatVoiceQuestions struct {
 	AnswerId          string
 	IsLocked          string
 	LockTime          int64
-	LockedOpenId string
+	LockedOpenId      string
 	AnswerName        string
 	AnswerOpenId      string
 	NeedId            string
@@ -97,7 +97,7 @@ func GetQuestionQueryNew(req QuestionQuery) ([]WechatVoiceQuestions, int64, erro
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
 	list1 := make([]WechatVoiceQuestions, 0)
-	query := conn.Where("is_solved in (?)",[]string{"2","3"})
+	query := conn.Where("is_solved in (?)", []string{"2", "3"})
 	var err error
 	var count int64
 	if req.KeyWord != "" {
@@ -109,8 +109,8 @@ func GetQuestionQueryNew(req QuestionQuery) ([]WechatVoiceQuestions, int64, erro
 	}
 	// query = query.Order("id desc")
 
-	err = query.Not("q_type","1").Find(&list1).Count(&count).Error
-	err = query.Not("q_type","1").Order("solved_time desc").Offset(req.StartLine-1).Limit(req.EndLine - req.StartLine+1).Find(&list).Error
+	err = query.Not("q_type", "1").Find(&list1).Count(&count).Error
+	err = query.Not("q_type", "1").Order("solved_time desc").Offset(req.StartLine - 1).Limit(req.EndLine - req.StartLine + 1).Find(&list).Error
 
 	// err = query.Offset(req.StartLine).Limit(req.EndLine - req.StartLine).Find(&list).Error
 	return list, count, err
@@ -261,6 +261,13 @@ func GetLaerOther(startLine, endLine int64) ([]WechatVoiceQuestions, error) {
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("is_solved = 0").Where("answer_open_id = ?","1").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+	err := conn.Where("is_solved = 0").Where("answer_open_id = ?", "1").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+	return list, err
+}
+func GetAppendInfo(questionId string) ([]WechatVoiceQuestions, error) {
+	conn := dbpool.OpenConn()
+	defer dbpool.CloseConn(&conn)
+	list := make([]WechatVoiceQuestions, 0)
+	err := conn.Where("parent_question_id = ", questionId).Order("id desc").Find(&list).Error
 	return list, err
 }

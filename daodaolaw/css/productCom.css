@@ -945,4 +945,7 @@ ul, li {
 .chose-btn  span {
   font-size: 14px;
 }
+li {
+  list-style: none;
+}
 /*确认框end*/

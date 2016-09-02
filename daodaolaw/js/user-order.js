@@ -329,6 +329,7 @@ var PerOrder=React.createClass({
     $audio.on('pause',function(){
       clearInterval(timer)
       _this.setState({imgIndex:0})
+      _this.props.end(orderId)
     //   if(canEval){
   		// _this.props.changeEvaluate(true)
   	 //  }
@@ -395,7 +396,7 @@ var Evaluate=React.createClass({
 			 	success:function(data){
 			 		if(data.code===10000){
 			 			//发红包 redPacket 接口
-						// this.props.changeEvaluate(false)
+						this.props.changeEvaluate(false)
 						// this.props.changeMoney(true,data.redPacket)
 			 		}else{
 				    this.props.tips('评价失败')

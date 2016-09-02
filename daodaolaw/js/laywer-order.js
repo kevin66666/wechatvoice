@@ -114,7 +114,7 @@ var UnsolvedList=React.createClass({
   			if(data.code===10000){
   				location.href='answer.html?orderId='+orderId;
   			}else if(data.code===10001){
-  				this.props.tips('问题已被其他人抢走了哦')
+  				this.props.tips('问题已被其他人抢先一步了哦')
   			}
   		}.bind(this)
   	})
@@ -272,6 +272,7 @@ var PerOrder=React.createClass({
     $audio.on('pause',function(){
       clearInterval(timer)
       _this.setState({imgIndex:0})
+      _this.props.end(orderId)
     })
     if(isPlay){
       // $audio.prop({src:answer,autoplay:'autoplay'})

@@ -125,13 +125,12 @@ var UnsolvedList=React.createClass({
 		var isAddMore=this.state.isAddMore?'点击加载更多':'没有相关信息了'
 		if(orderInfo&&orderInfo.length>0){
 			list=orderInfo.map(function(dom){
-        var status=['抢答','解答','解答'][dom.questionType];
+        var status=['抢答','解答','解答'][dom.status];
         var questionType=['普通咨询','定向咨询','追问咨询'][dom.questionType];
-        var color=dom.questionType==0?'pull-right status clr-orange':'pull-right status color-skyblue';
 				return  <div className="laywer-order-list">
 									<p className="over-hidden">
 										<span className="pull-left">订单号:{dom.orderId}</span>
-										<span className={color} onTouchEnd={this.toAnswer.bind(this,dom.orderId)}>{status}</span>
+										<span className="pull-right status" onTouchEnd={this.toAnswer.bind(this,dom.orderId)}>{status}</span>
 									</p>
 									<p>{dom.content}</p>
 									<p className="over-hidden">
@@ -253,31 +252,40 @@ var PerOrder=React.createClass({
   getAnswer:function(answer,isPlay,orderId,e){
   	//听完语音后显示评价框
     var $audio=$(e.target).prev()
+    var timer=''
     var _this=this
     $audio.on('play',function(){
-      _this.setState({imgIndex:1})
+      timer=setInterval(function(){
+        var imgIndex=_this.state.imgIndex;
+        if(imgIndex<=1){
+          _this.setState({imgIndex:imgIndex+1})
+        }else{
+          _this.setState({imgIndex:0})
+        }
+      },300)
     })
     $audio.on('ended',function(){
+      clearInterval(timer)
       _this.setState({imgIndex:0})
       _this.props.end(orderId)
     })
     $audio.on('pause',function(){
+      clearInterval(timer)
       _this.setState({imgIndex:0})
       _this.props.end(orderId)
     })
     if(isPlay){
       // $audio.prop({src:answer,autoplay:'autoplay'})
       $audio[0].play()
-      this.props.changePlay(orderId)
     }else{
+      clearInterval(timer)
       $audio[0].pause()
     }
+    this.props.changePlay(orderId)
   },
 	render:function(){
 		var dom=this.props.dom;
-		var style=['voice pull-right','voice-bg pull-right'][this.state.imgIndex]
-    // alert(style)
-    alert(this.state.imgIndex)
+		var src=['img/xiaoxi.png','img/half.png'][this.state.imgIndex]
     var questionType=['普通咨询','定向咨询','追问咨询'][dom.questionType];
 		return (
 			  <div className="laywer-order-list">
@@ -291,10 +299,10 @@ var PerOrder=React.createClass({
 						<span className="pull-right">{dom.time}</span>
 					</p>
 					<div className="over-hidden padding-md-b">
-						<p className={style}>
+						<p className="voice pull-right">
 					    <audio src={dom.answer} controls="controls"/>
 					    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.answer,dom.isPlay,dom.orderId)}>查听</span>
-					    <img src="img/xiaoxi.png"/>
+					    <img src={src}/>
 				    </p>
 			    </div>
 				</div>

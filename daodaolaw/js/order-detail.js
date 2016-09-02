@@ -35,78 +35,98 @@ var OrderDetail=React.createClass({
 	},
 	getAnswer:function(answer,e){
   	var $audio=$(e.target).prev()
+  	var timer=''
   	var _this=this
   	$audio.on('play',function(){
-			 _this.setState({imgIndex:1})
+      timer=setInterval(function(){
+        var imgIndex=_this.state.imgIndex;
+        if(imgIndex<=1){
+          _this.setState({imgIndex:imgIndex+1})
+        }else{
+          _this.setState({imgIndex:0})
+        }
+      },300)
     })
-    if(this.state.isPlay){
-      $audio[0].play()
-    	this.setState({isPlay:false})
-    }else{
-      $audio[0].pause()
-    }
     $audio.on('ended',function(){
+      clearInterval(timer)
       _this.setState({
       	imgIndex:0,
       	isPlay:true
       })
     })
     $audio.on('pause',function(){
+      clearInterval(timer)
       _this.setState({
       	imgIndex:0,
       	isPlay:true
       })
     })
+    if(this.state.isPlay){
+      $audio[0].play()
+    }else{
+      clearInterval(timer)
+      $audio[0].pause()
+    }
+    this.setState({isPlay:!this.state.isPlay})
 	},
 	play:function(answer,index,e){
 	 	var $audio=$(e.target).prev()
+  	var timer=''
   	var _this=this
   	$audio.on('play',function(){
       timer=setInterval(function(){
-        index==0?_this.setState({imgOne:1}):_this.setState({imgTwo:1})
+        var imgIndex=index==0?_this.state.imgOne:_this.state.imgTwo;
+        if(imgIndex<=1){
+        	index==0?_this.setState({imgOne:imgIndex+1}):_this.setState({imgTwo:imgIndex+1})
+        }else{
+        	index==0?_this.setState({imgOne:0}):_this.setState({imgTwo:0})
+        }
       },300)
+    })
+    $audio.on('ended',function(){
+      clearInterval(timer)
+      if(index==0){
+      	_this.setState({
+	      	imgOne:0,
+	      	isOnePlay:true
+	      })
+      }else{
+      	_this.setState({
+	      	imgTwo:0,
+	      	isTwoPlay:true
+	      })
+      }
+    })
+    $audio.on('pause',function(){
+      clearInterval(timer)
+      if(index==0){
+      	_this.setState({
+	      	imgOne:0,
+	      	isOnePlay:true
+	      })
+      }else{
+      	_this.setState({
+	      	imgTwo:0,
+	      	isTwoPlay:true
+	      })
+      }
     })
     if(index==0){
     	if(this.state.isOnePlay){
 	      $audio[0].play()
-	      this.setState({isOnePlay:false})
 	    }else{
+	      clearInterval(timer)
 	      $audio[0].pause()
 	    }
     }else{
     	if(this.state.isTwoPlay){
 	      $audio[0].play()
-	      this.setState({isTwoPlay:false})
 	    }else{
+	      clearInterval(timer)
 	      $audio[0].pause()
 	    }
     }
-    $audio.on('ended',function(){
-      if(index==0){
-      	_this.setState({
-	      	imgOne:0,
-	      	isOnePlay:true
-	      })
-      }else{
-      	_this.setState({
-	      	imgTwo:0,
-	      	isTwoPlay:true
-	      })
-      }
-    })
-    $audio.on('pause',function(){
-      if(index==0){
-      	_this.setState({
-	      	imgOne:0,
-	      	isOnePlay:true
-	      })
-      }else{
-      	_this.setState({
-	      	imgTwo:0,
-	      	isTwoPlay:true
-	      })
-      }
-    })
+    index==0?this.setState({isOnePlay:!this.state.isOnePlay}):this.setState({isTwoPlay:!this.state.isTwoPlay})
 	},
 	render:function(){
 		var info=this.state.info;
@@ -116,17 +136,11 @@ var OrderDetail=React.createClass({
 		var addInfo=''
 		if(info.addInfo&&info.addInfo.length>0){
 			addInfo=info.addInfo.map(function(dom,index){
-				var style='add-voice pull-left'
-				if(index==0){
-					style=['add-voice pull-left','add-voice add-voice-bg pull-left'][this.state.imgOne]
-				}else{
-					style=['add-voice pull-left','add-voice add-voice-bg pull-left'][this.state.imgTwo]
-				}
 				return 	<li>
 						  		<p>{dom.question}</p>
 						  		<div className="over-hidden">
 						  			<p className="pull-left"><a href={url}><img src={info.pic}/></a></p>
-							  		<p className={style}>
+							  		<p className="add-voice pull-left">
 									    <audio src={dom.answer} controls="controls" ref="record"/>
 									    <span className="price" onTouchEnd={this.play.bind(this,dom.answer,index)}>点击听取</span>
 									    <img src="img/xiaoxi.png"/>
@@ -139,7 +153,7 @@ var OrderDetail=React.createClass({
 		for(var i=0;i<info.star;i++){
 			star.push(<i className="fa fa-star col-yellow"></i>)
 		}
-		var style=['voice pull-left','voice-bg voice-bg pull-left'][this.state.imgIndex]
+		var src=['img/xiaoxi.png','img/half.png'][this.state.imgIndex]
 		return (
 			<div className="quest-list">
 				<div className="media margin-lg-t padding-vertical-md">
@@ -150,10 +164,10 @@ var OrderDetail=React.createClass({
 				    	<span className="pull-right">{star}</span>
 				    </p>
 					  <p className="pull-left"><a href={url}><img src={info.pic}/></a></p>
-				    <p className={style}>
+				    <p className="voice pull-left">
 					    <audio src={info.answer} controls="controls"/>
 					    <span className="price" onTouchEnd={this.getAnswer.bind(this,info.answer)}>点击听取</span>
-					    <img src="img/xiaoxi.png"/>
+					    <img src={src}/>
 				    </p>
 				    <p className="pull-right">{info.time}</p>
 				  </div>

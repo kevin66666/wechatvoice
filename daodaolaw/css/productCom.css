@@ -622,12 +622,6 @@ ul, li {
   top: 10px;
   color: #fff;
 }
-.quest-list .voice-bg:before,.user-order .voice-bg:before,.add-voice-bg:before,.laywer-order-list .voice-bg:before {
-  background: #ff5400 !important;
-}
-.quest-list .voice-bg .price,.user-order .voice-bg .price,.add-voice-bg .price,.laywer-order-list .voice-bg .price {
-  background: #ff5400 !important;
-}
 .quest-list .voice .price {
   padding: 8px 10px 8px 25px;
   font-size: 14px;
@@ -674,10 +668,8 @@ ul, li {
   padding: 4px 10px;
   border: 1px solid #62A7EA;
   border-radius: 3px;
-  font-size: 14px;
-}
-.color-skyblue {
   color: #62A7EA;
+  font-size: 14px;
 }
 .get-answer {
   position: relative;

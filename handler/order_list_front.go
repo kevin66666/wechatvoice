@@ -527,27 +527,6 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 	}
 	switch req.OrderType {
 	case "0":
-		//带解答
-		// list, err = model.GetLawyerQs(req.OrderType, law.Uuid, req.StartLine, req.EndLine)
-		// if err != nil && !strings.Contains(err.Error(), RNF) {
-		// 	response.Code = CODE_ERROR
-		// 	response.Msg = err.Error()
-		// 	ret_str, _ := json.Marshal(response)
-		// 	return string(ret_str)
-		// }
-		// if int64(len(list)) != (req.EndLine - req.StartLine + 1) {
-		// 	a := req.EndLine - int64(len(list))
-		// 	list1, list1Err := model.GetNotSpectial(lawyer.FirstCategoryId, req.OrderType, req.StartLine, a)
-		// 	if list1Err != nil && !strings.Contains(list1Err.Error(), RNF) {
-		// 		response.Code = CODE_ERROR
-		// 		response.Msg = list1Err.Error()
-		// 		ret_str, _ := json.Marshal(response)
-		// 		return string(ret_str)
-		// 	}
-		// 	for _, k := range list1 {
-		// 		list = append(list, k)
-		// 	}
-		// }
 		//指定问题部分
 		directList, dirErr := model.GetLawerDirectInfo(openId, req.StartLine, req.EndLine)
 		if dirErr != nil && !strings.Contains(dirErr.Error(), RNF) {
@@ -609,78 +588,150 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 		for _, k := range aList {
 			list = append(list, k)
 		}
+		if err != nil && !strings.Contains(err.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = err.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
+		}
+		fmt.Println("========>>>>>>>>>>订单未完成列表")
+		fmt.Println(len(list))
+		log.Println(list)
+		fmt.Println("========>>>>>>>>>>订单未完成列表")
+		retList := make([]LawOrder, 0)
+		for _, k := range list {
+			single := new(LawOrder)
+			single.OrderId = k.Uuid
+			single.Status = k.IsSolved
+			single.Content = k.Description
+			single.Type = k.Category
+			// if req.OrderType == "0" {
+			// 	fmt.Println("请求的数据是未完成 这里是按照时间")
+
+			// }
+			single.Time = k.CreateTime
+
+			var flag bool
+			if k.IsSolved == "2" {
+				flag = true
+			} else {
+				flag = false
+			}
+			single.CanDelete = flag
+			// price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
+			var price string
+
+			single.Answer = k.VoicePath
+			single.IsPlay = true
+
+			var status string
+			//status: //0 代表抢答（直接提问的） 1代表指定提问  2代表追问
+			var qType string
+			if k.QType == "1" {
+				//追加
+				price = "0.0"
+				status = "2"
+				qType = "2"
+			} else if k.QType == "2" {
+				//指定
+				price = "1.6"
+				status = "1"
+				qType = "1"
+			} else {
+				price = "1.6"
+				status = "0"
+				qType = "0"
+			}
+			single.Price = price
+			single.Status = status
+			single.QuestionType = qType
+			retList = append(retList, *single)
+		}
+		response.Code = CODE_SUCCESS
+		response.Msg = MSG_SUCCESS
+		response.List = retList
+		ret_str1, _ := json.Marshal(response)
+		fmt.Println("未完成列表返回值为======>>>", string(ret_str1))
+		// return string(ret_str)
 	case "2":
 		list, _, err = model.QueryLawyerQuestions(req.StartLine, req.EndLine, openId)
-	}
-	if err != nil && !strings.Contains(err.Error(), RNF) {
-		response.Code = CODE_ERROR
-		response.Msg = err.Error()
-		ret_str, _ := json.Marshal(response)
-		return string(ret_str)
-	}
-	fmt.Println("========>>>>>>>>>>订单l列表")
-	fmt.Println(len(list))
-	log.Println(list)
-	fmt.Println("========>>>>>>>>>>订单l列表")
-	retList := make([]LawOrder, 0)
-	for _, k := range list {
-		single := new(LawOrder)
-		single.OrderId = k.Uuid
-		single.Status = k.IsSolved
-		single.Content = k.Description
-		single.Type = k.Category
-		single.Time = k.CreateTime
-
-		var flag bool
-		if k.IsSolved == "2" {
-			flag = true
-		} else {
-			flag = false
+		if err != nil && !strings.Contains(err.Error(), RNF) {
+			response.Code = CODE_ERROR
+			response.Msg = err.Error()
+			ret_str, _ := json.Marshal(response)
+			return string(ret_str)
 		}
-		single.CanDelete = flag
-		// price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
-		var price string
+		fmt.Println("========>>>>>>>>>>订单l列表")
+		fmt.Println(len(list))
+		log.Println(list)
+		fmt.Println("========>>>>>>>>>>订单l列表")
+		retList := make([]LawOrder, 0)
+		for _, k := range list {
+			single := new(LawOrder)
+			single.OrderId = k.Uuid
+			single.Status = k.IsSolved
+			single.Content = k.Description
+			single.Type = k.Category
+			single.Time = k.SolvedTime
+			// if req.OrderType == "0" {
+			// 	fmt.Println("请求的数据是未完成 这里是按照时间")
 
-		single.Answer = k.VoicePath
-		single.IsPlay = true
+			// }
+			single.Time = k.CreateTime
 
-		var status string
-		//status: //0 代表抢答（直接提问的） 1代表指定提问  2代表追问
-		var qType string
-		if k.QType == "1" {
-			//追加
-			price = "0.0"
-			status = "2"
-			qType = "2"
-		} else if k.QType == "2" {
-			//指定
-			price = "1.6"
-			status = "1"
-			qType = "1"
-		} else {
-			price = "1.6"
-			status = "0"
-			qType = "0"
+			var flag bool
+			if k.IsSolved == "2" {
+				flag = true
+			} else {
+				flag = false
+			}
+			single.CanDelete = flag
+			// price, _ := strconv.ParseInt(k.PaymentInfo, 10, 64)
+			var price string
+
+			single.Answer = k.VoicePath
+			single.IsPlay = true
+
+			var status string
+			//status: //0 代表抢答（直接提问的） 1代表指定提问  2代表追问
+			var qType string
+			if k.QType == "1" {
+				//追加
+				price = "0.0"
+				status = "2"
+				qType = "2"
+			} else if k.QType == "2" {
+				//指定
+				price = "1.6"
+				status = "1"
+				qType = "1"
+			} else {
+				price = "1.6"
+				status = "0"
+				qType = "0"
+			}
+			single.Price = price
+			single.Status = status
+			single.QuestionType = qType
+			/**
+				OrderId string `json:"orderId"`
+			Status string `json:"status"`
+			Content string `json:"content"`
+			Type string `json:"type"`
+			Time string `json:"time"`
+			Price int64 `json:"price"`
+			Answer string `json:"answer"`
+			*/
+			retList = append(retList, *single)
 		}
-		single.Price = price
-		single.Status = status
-		single.QuestionType = qType
-		/**
-			OrderId string `json:"orderId"`
-		Status string `json:"status"`
-		Content string `json:"content"`
-		Type string `json:"type"`
-		Time string `json:"time"`
-		Price int64 `json:"price"`
-		Answer string `json:"answer"`
-		*/
-		retList = append(retList, *single)
+		response.Code = CODE_SUCCESS
+		response.Msg = MSG_SUCCESS
+		response.List = retList
+
 	}
-	response.Code = CODE_SUCCESS
-	response.Msg = MSG_SUCCESS
-	response.List = retList
 	ret_str, _ := json.Marshal(response)
 	return string(ret_str)
+
 }
 
 type MemberRequest struct {

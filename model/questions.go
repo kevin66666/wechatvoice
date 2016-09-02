@@ -253,7 +253,7 @@ func GetLawerDirectInfo(openId string, startLine, endLine int64) ([]WechatVoiceQ
 	conn := dbpool.OpenConn()
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
-	err := conn.Where("answer_open_id = ?", openId).Where("is_solved = 0").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+	err := conn.Where("answer_open_id = ?", openId).Where("is_locked = 0").Where("is_solved = 0").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	return list, err
 }
 
@@ -262,6 +262,13 @@ func GetLaerOther(startLine, endLine int64) ([]WechatVoiceQuestions, error) {
 	defer dbpool.CloseConn(&conn)
 	list := make([]WechatVoiceQuestions, 0)
 	err := conn.Where("is_solved = 0").Where("answer_open_id = ?", "1").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
+	return list, err
+}
+func GetLockedInfo(startLine, endLine int64, openId string) ([]WechatVoiceQuestions, error) {
+	conn := dbpool.OpenConn()
+	defer dbpool.CloseConn(&conn)
+	list := make([]WechatVoiceQuestions, 0)
+	err := conn.Where("is_solved = 0").Where("locked_open_id = ?", openId).Where("is_locked =1").Order("id desc").Offset(startLine).Limit(endLine - startLine).Find(&list).Error
 	return list, err
 }
 func GetAppendInfo(questionId string) ([]WechatVoiceQuestions, error) {

@@ -305,47 +305,36 @@ var PerOrder=React.createClass({
   },
   getAnswer:function(orderId,canEval,isPlay,answer,e){
   	var $audio=$(e.target).prev()
-    var timer=''
     var _this=this
     this.props.getOrderId(orderId)
     $audio.on('play',function(){
-      timer=setInterval(function(){
-        var imgIndex=_this.state.imgIndex;
-        if(imgIndex<=1){
-          _this.setState({imgIndex:imgIndex+1})
-        }else{
-          _this.setState({imgIndex:0})
-        }
-      },300)
+      _this.setState({imgIndex:1})
     })
     $audio.on('ended',function(){
-      clearInterval(timer)
       _this.setState({imgIndex:0})
       _this.props.end(orderId)
       if(canEval){
-  		_this.props.changeEvaluate(true)
+  		  _this.props.changeEvaluate(true)
   	  }
     })
     $audio.on('pause',function(){
-      clearInterval(timer)
       _this.setState({imgIndex:0})
       _this.props.end(orderId)
-    //   if(canEval){
-  		// _this.props.changeEvaluate(true)
-  	 //  }
+     //  if(canEval){
+  		 //   _this.props.changeEvaluate(true)
+  	  // }
     })
     if(isPlay){
       // $audio.prop({src:answer,autoplay:'autoplay'})
       $audio[0].play()
+      this.props.changePlay(orderId)
     }else{
-      clearInterval(timer)
       $audio[0].pause()
     }
-    this.props.changePlay(orderId)
   },
 	render:function(){
 		var dom=this.props.dom;
-		var src=['img/xiaoxi.png','img/half.png'][this.state.imgIndex]
+		var style=['voice pull-right','voice-bg pull-right'][this.state.imgIndex]
     var questionType=['普通咨询','定向咨询','追问咨询'][dom.questionType];
     var isShowAdd=dom.questionType==2?'dispN':'user-add-num'
 		return (
@@ -361,10 +350,10 @@ var PerOrder=React.createClass({
 				</p>
 				<div className="over-hidden padding-md-b">
 					<span className={isShowAdd} onTouchEnd={this.addOne.bind(this,dom)}>可追问{dom.addNum}次</span>
-					<p className="voice pull-right">
+					<p className={style}>
 				    <audio src={dom.answer} controls="controls"/>
 				    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.orderId,dom.canEval,dom.isPlay,dom.answer)}>收听</span>
-				    <img src={src}/>  
+				    <img src="img/xiaoxi.png"/>  
 			    </p>
 				</div>
 			</div>

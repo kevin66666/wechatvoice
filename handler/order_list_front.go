@@ -564,12 +564,16 @@ func GetLayerOrderList(ctx *macaron.Context) string {
 				list = append(list, k)
 			}
 		}
+		//锁定问题部分
+		// lockList := make([]model.WechatVoiceQuestions, 0)
 		aList := make([]model.WechatVoiceQuestions, 0)
 		var aErr error
 		if int64(dirLen) < (req.EndLine - req.StartLine) {
 			//说明数量不够 需要后期去补充
 			need := req.EndLine - int64(dirLen)
 			fmt.Println("=======>>>>>>")
+			// lockList, lockErr = model.GetLockedInfo(req.StartLine, need)
+
 			aList, aErr = model.GetLaerOther(req.StartLine, need)
 		}
 		if aErr != nil && !strings.Contains(aErr.Error(), RNF) {

@@ -674,8 +674,10 @@ ul, li {
   padding: 4px 10px;
   border: 1px solid #62A7EA;
   border-radius: 3px;
-  color: #62A7EA;
   font-size: 14px;
+}
+.color-skyblue {
+  color: #62A7EA;
 }
 .get-answer {
   position: relative;

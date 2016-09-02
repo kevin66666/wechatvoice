@@ -277,6 +277,7 @@ var PerOrder=React.createClass({
 		var dom=this.props.dom;
 		var style=['voice pull-right','voice-bg pull-right'][this.state.imgIndex]
     // alert(style)
+    alett(this.state.imgIndex)
     var questionType=['普通咨询','定向咨询','追问咨询'][dom.questionType];
 		return (
 			  <div className="laywer-order-list">

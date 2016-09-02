@@ -38,7 +38,7 @@ var Ask=React.createClass({
 						typeId:data.typeId,
 						laywerId:laywerId,
 						orderId:orderId,
-						typePrice:data.typePrice,
+						// typePrice:data.typePrice,
 						parentOrderId:data.parentOrderId,
 						isAdd:isAdd
 					})

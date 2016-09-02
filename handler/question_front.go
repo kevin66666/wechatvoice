@@ -3155,7 +3155,7 @@ type DetailResponse struct {
 
 type AddInfo struct {
 	OrderId  string `json:"orderId"`
-	Question string `json:"quesion"`
+	Question string `json:"question"`
 	Answer   string `json:"answer"`
 }
 

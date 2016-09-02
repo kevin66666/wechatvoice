@@ -347,6 +347,7 @@ var PerOrder=React.createClass({
 		var dom=this.props.dom;
 		var src=['img/xiaoxi.png','img/half.png'][this.state.imgIndex]
     var questionType=['普通咨询','定向咨询','追问咨询'][dom.questionType];
+    var isShowAdd=dom.questionType==2?'dispN':'user-add-num'
 		return (
 			<div className="laywer-order-list user-order">
 				<p className="over-hidden">
@@ -359,7 +360,7 @@ var PerOrder=React.createClass({
 					<span className="pull-right">{dom.time}</span>
 				</p>
 				<div className="over-hidden padding-md-b">
-					<span className="user-add-num" onTouchEnd={this.addOne.bind(this,dom)}>可追问{dom.addNum}次</span>
+					<span className={isShowAdd} onTouchEnd={this.addOne.bind(this,dom)}>可追问{dom.addNum}次</span>
 					<p className="voice pull-right">
 				    <audio src={dom.answer} controls="controls"/>
 				    <span className="price" onTouchEnd={this.getAnswer.bind(this,dom.orderId,dom.canEval,dom.isPlay,dom.answer)}>收听</span>
@@ -397,6 +398,7 @@ var Evaluate=React.createClass({
 			 		if(data.code===10000){
 			 			//发红包 redPacket 接口
 						this.props.changeEvaluate(false)
+            this.props.tips('感谢您的评价')
 						// this.props.changeMoney(true,data.redPacket)
 			 		}else{
 				    this.props.tips('评价失败')

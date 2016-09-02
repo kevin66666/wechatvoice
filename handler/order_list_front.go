@@ -780,6 +780,9 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.Type = k.Category
 		single.Time = k.CreateTime
 		single.Answer = k.VoicePath
+		if k.QType == "1" {
+
+		}
 		single.IsPlay = true
 
 		l, errs := model.GetInfos(openId, k.Uuid)
@@ -812,11 +815,16 @@ func GetMemberOrderList(ctx *macaron.Context) string {
 		single.Price = price
 		single.LawyerId = k.AnswerId
 		var a bool
-		if k.IsRanked == "1" {
+		if k.QType == "1" {
 			a = false
 		} else {
-			a = true
+			if k.IsRanked == "1" {
+				a = false
+			} else {
+				a = true
+			}
 		}
+		fmt.Println("========>>>>>>>flag is ", a)
 		single.CanEval = a
 
 		var qType string
@@ -1220,7 +1228,7 @@ func GetQuestionToAnswer(ctx *macaron.Context) string {
 
 }
 
-func GetQuestionsToAsk(ctx *macaron.Context)string{
+func GetQuestionsToAsk(ctx *macaron.Context) string {
 	body, _ := ctx.Req.Body().String()
 	req := new(QuestionId)
 	json.Unmarshal([]byte(body), req)
@@ -1229,48 +1237,48 @@ func GetQuestionsToAsk(ctx *macaron.Context)string{
 	log.Println(openId)
 
 	response := new(CheckResponse)
-	question:=new(model.WechatVoiceQuestions)
-	questionErr:=question.GetConn().Where("uuid = ?",req.OrderId).Find(&question).Error
-	if questionErr!=nil&&!strings.Contains(questionErr.Error(),RNF){
-		fmt.Println("errors",questionErr.Error())
+	question := new(model.WechatVoiceQuestions)
+	questionErr := question.GetConn().Where("uuid = ?", req.OrderId).Find(&question).Error
+	if questionErr != nil && !strings.Contains(questionErr.Error(), RNF) {
+		fmt.Println("errors", questionErr.Error())
 		response.Code = CODE_ERROR
 		response.Msg = questionErr.Error()
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
-	if question.IsLocked =="1"{
-		if question.LockedOpenId == openId{
+	if question.IsLocked == "1" {
+		if question.LockedOpenId == openId {
 			//锁定到自己 OK 可以
 			fmt.Println("锁定到了自己 可以回答")
 			response.Code = CODE_SUCCESS
 			response.Msg = "ok"
-			ret_str,_:=json.Marshal(response)
+			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
-		}else{
+		} else {
 			fmt.Println("锁定到了别人 不行")
 			response.Code = CODE_ERROR
 			response.Msg = "已锁定"
-			ret_str,_:=json.Marshal(response)
+			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
-	}else{
+	} else {
 		//说明没锁定 锁定给当前用户
 		fmt.Println("没有锁定可以回答")
 
 		question.IsLocked = "1"
 		question.LockTime = time.Now().Unix()
 		question.LockedOpenId = openId
-		errSave :=question.GetConn().Save(&question).Error
-		if errSave!=nil&&!strings.Contains(errSave.Error(),RNF){
+		errSave := question.GetConn().Save(&question).Error
+		if errSave != nil && !strings.Contains(errSave.Error(), RNF) {
 			response.Code = CODE_ERROR
 			response.Msg = errSave.Error()
-			fmt.Println("保存出错",errSave.Error())
-			ret_str,_:=json.Marshal(response)
+			fmt.Println("保存出错", errSave.Error())
+			ret_str, _ := json.Marshal(response)
 			return string(ret_str)
 		}
 		response.Code = CODE_SUCCESS
 		response.Msg = "ok"
-		ret_str,_:=json.Marshal(response)
+		ret_str, _ := json.Marshal(response)
 		return string(ret_str)
 	}
 }

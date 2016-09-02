@@ -948,13 +948,10 @@ ul, li {
 li {
   list-style: none;
 }
-/*确认框end*/
-
-
-
 .add-info a img {
   width: 38px;
   height: 38px;
   border-radius: 50%;
   margin-right: 12px;
 }
+/*确认框end*/

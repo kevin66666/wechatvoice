@@ -136,6 +136,13 @@ var OrderDetail=React.createClass({
 		var addInfo=''
 		if(info.addInfo&&info.addInfo.length>0){
 			addInfo=info.addInfo.map(function(dom,index){
+				var src='img/xiaoxi.png'
+				if(index==0){
+					src=['img/xiaoxi.png','img/half.png'][this.state.imgOne]
+				}else{
+					src=['img/xiaoxi.png','img/half.png'][this.state.imgTwo]
+				}
+				var img=index==0?imgOne
 				return 	<li>
 						  		<p>{dom.question}</p>
 						  		<div className="over-hidden">
@@ -143,7 +150,7 @@ var OrderDetail=React.createClass({
 							  		<p className="add-voice pull-left">
 									    <audio src={dom.answer} controls="controls" ref="record"/>
 									    <span className="price" onTouchEnd={this.play.bind(this,dom.answer,index)}>点击听取</span>
-									    <img src="img/xiaoxi.png"/>
+									    <img src={src}/>
 								    </p>
 							    </div>
 						  	</li>

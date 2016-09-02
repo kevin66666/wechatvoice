@@ -47,6 +47,13 @@ var OrderDetail=React.createClass({
         }
       },300)
     })
+    if(this.state.isPlay){
+      $audio[0].play()
+    }else{
+      clearInterval(timer)
+      $audio[0].pause()
+    }
+    this.setState({isPlay:!this.state.isPlay})
     $audio.on('ended',function(){
       clearInterval(timer)
       _this.setState({
@@ -61,13 +68,6 @@ var OrderDetail=React.createClass({
       	isPlay:true
       })
     })
-    if(this.state.isPlay){
-      $audio[0].play()
-    }else{
-      clearInterval(timer)
-      $audio[0].pause()
-    }
-    this.setState({isPlay:!this.state.isPlay})
 	},
 	play:function(answer,index,e){
 	 	var $audio=$(e.target).prev()
@@ -82,34 +82,6 @@ var OrderDetail=React.createClass({
         	index==0?_this.setState({imgOne:0}):_this.setState({imgTwo:0})
         }
       },300)
-    })
-    $audio.on('ended',function(){
-      clearInterval(timer)
-      if(index==0){
-      	_this.setState({
-	      	imgOne:0,
-	      	isOnePlay:true
-	      })
-      }else{
-      	_this.setState({
-	      	imgTwo:0,
-	      	isTwoPlay:true
-	      })
-      }
-    })
-    $audio.on('pause',function(){
-      clearInterval(timer)
-      if(index==0){
-      	_this.setState({
-	      	imgOne:0,
-	      	isOnePlay:true
-	      })
-      }else{
-      	_this.setState({
-	      	imgTwo:0,
-	      	isTwoPlay:true
-	      })
-      }
     })
     if(index==0){
     	if(this.state.isOnePlay){
@@ -127,6 +99,34 @@ var OrderDetail=React.createClass({
 	    }
     }
     index==0?this.setState({isOnePlay:!this.state.isOnePlay}):this.setState({isTwoPlay:!this.state.isTwoPlay})
+    $audio.on('ended',function(){
+      clearInterval(timer)
+      if(index==0){
+      	_this.setState({
+	      	imgOne:0,
+	      	isOnePlay:true
+	      })
+      }else{
+      	_this.setState({
+	      	imgTwo:0,
+	      	isTwoPlay:true
+	      })
+      }
+    })
+    $audio.on('pause',function(){
+      clearInterval(timer)
+      if(index==0){
+      	_this.setState({
+	      	imgOne:0,
+	      	isOnePlay:true
+	      })
+      }else{
+      	_this.setState({
+	      	imgTwo:0,
+	      	isTwoPlay:true
+	      })
+      }
+    })
 	},
 	render:function(){
 		var info=this.state.info;
@@ -142,7 +142,6 @@ var OrderDetail=React.createClass({
 				}else{
 					src=['img/xiaoxi.png','img/half.png'][this.state.imgTwo]
 				}
-				var img=index==0?imgOne
 				return 	<li>
 						  		<p>{dom.question}</p>
 						  		<div className="over-hidden">
